@@ -17,7 +17,3 @@ const layout = computed(() => {
   return route.meta.layout === 'LoginLayout' ? LoginLayout : DefaultLayout;
 });
 </script>
-
-<style scoped>
-/* Thêm style nếu cần */
-</style>

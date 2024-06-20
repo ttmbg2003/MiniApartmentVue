@@ -5,7 +5,7 @@ export const authState = reactive({
   isAuthenticated: !!localStorage.getItem("token"),
 });
 
-export const login = (token: string) => {
+export const login = (token:any) => {
   localStorage.setItem("token", token);
   authState.isAuthenticated = true;
 };

@@ -2,7 +2,7 @@
   <div class="container">
     <div style="display: flex; padding-top: 20PX;
     padding-left: 5rem;align-items: center;">
-      <img src="../components/icons/minh.jpg">
+      <img class="avartar-img" src="../components/icons/minh.jpg">
       <div>
         <h1>{{ fullNameRaw || 'null' }}</h1>
         <p style="margin: 0;">{{ emailRaw || 'null' }}</p>
@@ -23,6 +23,7 @@
             <div class="form-group">
               <label>Gender</label>
               <select name="gender" v-model="localUser.gender">
+                <option selected disabled value="">Select</option>
                 <option value="true">Male</option>
                 <option value="false">Female</option>
                 <option>Other</option>
@@ -41,7 +42,7 @@
           </div>
           <div class="form-group">
             <label>Place Of Permanent</label>
-            <input type="text" v-model="localUser.placeOfPermanet" style="width: 98%;" />
+            <input type="text" v-model="localUser.placeOfPermanet" style="width: 98%;" placeholder="Your place of permanet"/>
           </div>
           <div style="display: flex;">
             <div class="form-group">
@@ -50,7 +51,7 @@
             </div>
             <div class="form-group">
               <label>Contact Number</label>
-              <input type="text" v-model="localUser.contact" />
+              <input type="text" v-model="localUser.contact" placeholder="Your contact number"/>
             </div>
           </div>
           <div style="display: flex;justify-content: center;">
@@ -67,7 +68,19 @@ import { ref, computed } from "vue";
 import type { User } from "@/type/User";
 import userService from "@/services/userService";
 import { useRoute, useRouter } from "vue-router";
+import {jwtDecode} from 'jwt-decode';
+function getEmailInfor() {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const decoded = jwtDecode(token);
+    console.log(decoded);
 
+    return decoded.sub;
+    
+  } else {
+    return null;
+  }
+}
 const editedUser = ref<User | null>(null);
 const localUser = ref<User>({
   userId: "",
@@ -84,14 +97,12 @@ const localUser = ref<User>({
 const route = useRoute();
 const router = useRouter();
 // let id = route.params.id;
-let id = "000001";
-var emailRaw = "";
+var emailRaw = getEmailInfor();
 var fullNameRaw = "";
-userService.getUserById(id).then((response) => {
+userService.getUserByEmail(emailRaw).then((response) => {
   editedUser.value = response;
   localUser.value = response;
-  localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };  
-  emailRaw = editedUser.value.email;
+  localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };
   fullNameRaw = `${localUser.value.firstName} ${localUser.value.lastName}`;
 });
 const fullName = computed({
@@ -109,7 +120,7 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toISOString().split('T')[0];
 };
 const submitForm = () => {
-  console.log(localUser.value.dateOfBirth+" DateOfBirth----");
+  console.log(localUser.value.dateOfBirth + " DateOfBirth----");
   userService.editProfile(localUser.value).then(() => {
     window.location.reload();
   });
@@ -199,7 +210,8 @@ label {
   height: 45px;
   /* width: 143px; */
 }
-.btn-change-password{
+
+.btn-change-password {
   font-family: 'Poppins', sans-serif;
   border: 2px solid #0366FF;
   font-size: 14px;
@@ -207,7 +219,8 @@ label {
   height: 45px;
   /* width: 143px; */
 }
-img {
+
+.avartar-img {
   width: 122px;
   border-radius: 70px;
   margin-right: 26px;

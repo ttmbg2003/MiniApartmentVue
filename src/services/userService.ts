@@ -11,6 +11,11 @@ class UserService {
       .get(`/api/user/getUserById?id=${id}`)
       .then((response) => response.data);
   };
+  getUserByEmail = (email: any): Promise<User> => {
+    return apiClient
+      .get(`/api/user/getUserByEmail?email=${email}`)
+      .then((response) => response.data);
+  };
   editProfile = (user: User): Promise<User> => {
     return apiClient
       .post(`/api/user/editProfile`, user)
