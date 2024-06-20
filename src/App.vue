@@ -1,19 +1,23 @@
 <template>
-      <!-- <NavBar></NavBar>
-      <RouterLink to="/profile">Profile</RouterLink>
-  <RouterView /> -->
-  <NavBar></NavBar>
-  <RouterView />
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import NavBar from "@/components/NavBar.vue";
-import { defineComponent } from "vue";
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
-defineComponent({
-  components: {
-    NavBar,
-  },
+import DefaultLayout from "@/components/DefaultLayout.vue";
+import LoginLayout from "@/components/LoginLayout.vue";
+
+const route = useRoute();
+
+const layout = computed(() => {
+  return route.meta.layout === 'LoginLayout' ? LoginLayout : DefaultLayout;
 });
 </script>
+
+<style scoped>
+/* Thêm style nếu cần */
+</style>

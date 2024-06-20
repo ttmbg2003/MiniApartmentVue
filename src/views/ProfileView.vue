@@ -108,7 +108,6 @@ const formatDate = (dateString: string) => {
   // return dateString.split('T')[0];
   return new Date(dateString).toISOString().split('T')[0];
 };
-console.log("aaaa");
 const submitForm = () => {
   console.log(localUser.value.dateOfBirth+" DateOfBirth----");
   userService.editProfile(localUser.value).then(() => {
