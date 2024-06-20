@@ -8,9 +8,34 @@
       <router-link to="/home" class="navbar-link">Management</router-link>
       <router-link to="/profile" class="navbar-link">Information</router-link>
       <router-link to="/home" class="navbar-link">Contact us</router-link>
+      <button @click="handleAuthAction" class="navbar-link">
+        {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
+      </button>
     </div>
   </nav>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
+import { authState, logout } from '@/type/auth';
+export default defineComponent({
+  name: 'NavBar',
+  setup() {
+    const router = useRouter();
+
+    const handleAuthAction = () => {
+      if (authState.isAuthenticated) {
+        logout();
+        router.push('/home');
+      } else {
+        router.push('/login');
+      }
+    };
+
+    return { authState, handleAuthAction };
+  },
+});
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
@@ -41,14 +66,3 @@
 }
 </style>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "NavBar",
-  components: {},
-  setup(props, ctx) {
-    return {};
-  },
-});
-</script>
