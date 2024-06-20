@@ -112,7 +112,7 @@ console.log("aaaa");
 const submitForm = () => {
   console.log(localUser.value.dateOfBirth+" DateOfBirth----");
   userService.editProfile(localUser.value).then(() => {
-    // window.location.reload();
+    window.location.reload();
   });
 };
 const cancelEdit = () => {
