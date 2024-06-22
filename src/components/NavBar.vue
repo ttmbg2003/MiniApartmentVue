@@ -9,6 +9,7 @@
       <!-- <router-link to="/profile" class="navbar-link">Information</router-link> -->
       <router-link to="/home" class="navbar-link">Contact us</router-link>
       <a href="/profile" class="navbar-link">Information</a>
+      <a href="/upload" class="navbar-link">upload</a>
       <button @click="handleAuthAction" class="navbar-link">
         {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
       </button>

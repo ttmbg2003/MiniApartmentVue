@@ -2,7 +2,9 @@
   <div class="container">
     <div style="display: flex; padding-top: 20PX;
     padding-left: 5rem;align-items: center;">
-      <img class="avartar-img" src="../components/icons/minh.jpg">
+    <!-- <spam><input type="file"><img class="avartar-img" src="../components/icons/minh.jpg"></spam> -->
+    <input type="file" id="fileInput" style="display:none;">
+    <img v-bind:src="localUser.image" class="avartar-img" alt="Click to upload" id="image" style="cursor: pointer;">
       <div>
         <h1>{{ fullNameRaw || 'null' }}</h1>
         <p style="margin: 0;">{{ emailRaw || 'null' }}</p>
@@ -67,20 +69,7 @@
 import { ref, computed } from "vue";
 import type { User } from "@/type/User";
 import userService from "@/services/userService";
-import { useRoute, useRouter } from "vue-router";
-import {jwtDecode} from 'jwt-decode';
-function getEmailInfor() {
-  const token = localStorage.getItem('token');
-  if (token) {
-    const decoded = jwtDecode(token);
-    console.log(decoded);
-
-    return decoded.sub;
-    
-  } else {
-    return null;
-  }
-}
+import { useRouter } from "vue-router";
 const editedUser = ref<User | null>(null);
 const localUser = ref<User>({
   userId: "",
@@ -92,12 +81,11 @@ const localUser = ref<User>({
   email: "",
   contact: "",
   password: "",
-  roleId: 0
+  roleId: 0,
+  image:""
 });
-const route = useRoute();
 const router = useRouter();
-// let id = route.params.id;
-var emailRaw = getEmailInfor();
+var emailRaw = userService.getEmailCurrentUser();
 var fullNameRaw = "";
 userService.getUserByEmail(emailRaw).then((response) => {
   editedUser.value = response;
@@ -116,7 +104,6 @@ const fullName = computed({
   }
 });
 const formatDate = (dateString: string) => {
-  // return dateString.split('T')[0];
   return new Date(dateString).toISOString().split('T')[0];
 };
 const submitForm = () => {
@@ -128,6 +115,33 @@ const submitForm = () => {
 const cancelEdit = () => {
   router.push({ name: "home" });
 };
+function init() {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    const image = document.getElementById('image') as HTMLImageElement;
+
+    if (fileInput && image) {
+        image.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (event) => {
+            const target = event.target as HTMLInputElement;
+            if (target.files && target.files[0]) {
+                const selectedFile = target.files[0];
+                console.log('File đã chọn:', selectedFile.name);
+                try {
+                    const fileUrl = await userService.uploadImage(selectedFile,emailRaw);
+                    localUser.value.image = fileUrl;
+                    console.log('File uploaded successfully:', fileUrl);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 
 <style scoped>
