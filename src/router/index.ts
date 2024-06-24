@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
+import Signup from "@/components/SignUp.vue";
 import UploadFile from "@/components/UploadFileTest.vue"
 
 const routes = [
@@ -28,6 +29,12 @@ const routes = [
     name: "login",
     component: Login,
     meta: { layout: "LoginLayout" },
+  },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: Signup,
+    meta: { layout: "SignUpLayout" },
   },
 ];
 

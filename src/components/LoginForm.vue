@@ -30,8 +30,7 @@
         />
         <br />
       </form>
-      <img src="../assets/google.svg" alt="Login using Google" />
-      <img src="../assets/facebook.svg" alt="Login using Facebook" />
+      <a href=""><p style="text-align: right; color: grey;">Forgot Password?</p></a>
       <div v-if="error" class="error">{{ error }}</div>
     </div>
   </template>
@@ -74,7 +73,9 @@ export default {
   
   <style scoped>
   @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-  
+  a{
+    text-decoration: none;
+  }
   .main {
     background: rgba(255, 255, 255, 0.4);
     position: absolute;
