@@ -9,7 +9,3 @@
   import NavBar from "@/components/NavBar.vue";
   </script>
   
-  <style scoped>
-  /* Thêm style nếu cần */
-  </style>
-  

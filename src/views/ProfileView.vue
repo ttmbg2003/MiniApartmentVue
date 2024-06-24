@@ -2,14 +2,54 @@
   <div class="container">
     <div style="display: flex; padding-top: 20PX;
     padding-left: 5rem;align-items: center;">
-      <img src="../components/icons/minh.jpg">
+      <!-- <spam><input type="file"><img class="avartar-img" src="../components/icons/minh.jpg"></spam> -->
+      <input type="file" id="fileInput" style="display:none;">
+      <img v-bind:src="localUser.image" class="avartar-img" alt="Click to upload" id="image" style="cursor: pointer;">
       <div>
         <h1>{{ fullNameRaw || 'null' }}</h1>
         <p style="margin: 0;">{{ emailRaw || 'null' }}</p>
       </div>
       <div style="display: flex;flex: 0%;justify-content: flex-end;">
         <button class="btn btn-edit-profile">Edit my profile</button>
-        <button class="btn btn-change-password">Change password</button>
+        <button class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePassModal">Change
+          password</button>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="changePassModal" tabindex="-1" aria-labelledby="changePassModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input class="input-change-pass" type="email"  />
+              </div>
+              <div class="form-group">
+                <label>Current Password</label>
+                <input class="input-change-pass" type="password"  />
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input class="input-change-pass" type="password"  />
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input class="input-change-pass" type="password"  />
+              </div>
+              
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-save">Save changes</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -18,11 +58,12 @@
           <div style="display: flex;">
             <div class="form-group">
               <label for="fullName">Full Name</label>
-              <input type="text" id="fullName" v-model="fullName" />
+              <input class="input-user-info" type="text" id="fullName" v-model="fullName" />
             </div>
             <div class="form-group">
               <label>Gender</label>
-              <select name="gender" v-model="localUser.gender">
+              <select class="input-user-info" name="gender" v-model="localUser.gender">
+                <option selected disabled value="">Select</option>
                 <option value="true">Male</option>
                 <option value="false">Female</option>
                 <option>Other</option>
@@ -32,25 +73,26 @@
           <div style="display: flex;">
             <div class="form-group">
               <label>Date Of Birth</label>
-              <input type="date" v-model="localUser.dateOfBirth" />
+              <input class="input-user-info" type="date" v-model="localUser.dateOfBirth" />
             </div>
             <div class="form-group">
               <label>Id Number</label>
-              <input type="text" v-model="localUser.userId" disabled>
+              <input class="input-user-info" type="text" v-model="localUser.userId" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>Place Of Permanent</label>
-            <input type="text" v-model="localUser.placeOfPermanet" style="width: 98%;" />
+            <input class="input-user-info" type="text" v-model="localUser.placeOfPermanet" style="width: 98%;"
+              placeholder="Your place of permanet" />
           </div>
           <div style="display: flex;">
             <div class="form-group">
               <label>Email Address</label>
-              <input type="email" v-model="localUser.email" />
+              <input class="input-user-info" type="email" v-model="localUser.email" />
             </div>
             <div class="form-group">
               <label>Contact Number</label>
-              <input type="text" v-model="localUser.contact" />
+              <input class="input-user-info" type="text" v-model="localUser.contact" placeholder="Your contact number" />
             </div>
           </div>
           <div style="display: flex;justify-content: center;">
@@ -66,8 +108,7 @@
 import { ref, computed } from "vue";
 import type { User } from "@/type/User";
 import userService from "@/services/userService";
-import { useRoute, useRouter } from "vue-router";
-
+import { useRouter } from "vue-router";
 const editedUser = ref<User | null>(null);
 const localUser = ref<User>({
   userId: "",
@@ -79,19 +120,16 @@ const localUser = ref<User>({
   email: "",
   contact: "",
   password: "",
-  roleId: 0
+  roleId: 0,
+  image: ""
 });
-const route = useRoute();
 const router = useRouter();
-// let id = route.params.id;
-let id = "000001";
-var emailRaw = "";
+var emailRaw = userService.getEmailCurrentUser();
 var fullNameRaw = "";
-userService.getUserById(id).then((response) => {
+userService.getUserByEmail(emailRaw).then((response) => {
   editedUser.value = response;
   localUser.value = response;
-  localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };  
-  emailRaw = editedUser.value.email;
+  localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };
   fullNameRaw = `${localUser.value.firstName} ${localUser.value.lastName}`;
 });
 const fullName = computed({
@@ -105,18 +143,44 @@ const fullName = computed({
   }
 });
 const formatDate = (dateString: string) => {
-  // return dateString.split('T')[0];
   return new Date(dateString).toISOString().split('T')[0];
 };
 const submitForm = () => {
-  console.log(localUser.value.dateOfBirth+" DateOfBirth----");
+  console.log(localUser.value.dateOfBirth + " DateOfBirth----");
   userService.editProfile(localUser.value).then(() => {
-    // window.location.reload();
+    window.location.reload();
   });
 };
 const cancelEdit = () => {
   router.push({ name: "home" });
 };
+function init() {
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  const image = document.getElementById('image') as HTMLImageElement;
+
+  if (fileInput && image) {
+    image.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', async (event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files[0]) {
+        const selectedFile = target.files[0];
+        console.log('File đã chọn:', selectedFile.name);
+        try {
+          const fileUrl = await userService.uploadImage(selectedFile, emailRaw);
+          localUser.value.image = fileUrl;
+          console.log('File uploaded successfully:', fileUrl);
+        } catch (error) {
+          console.error('Error uploading file:', error);
+        }
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 
 <style scoped>
@@ -133,10 +197,11 @@ body {
 }
 
 .card {
-
+  align-items: center;
   display: flex;
   justify-content: center;
-  padding: 10px 20px;
+  margin-top: 3rem;
+  border: none;
 }
 
 .form-group {
@@ -145,7 +210,7 @@ body {
   margin-right: 1rem;
 }
 
-input,
+/* input,
 select {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
@@ -160,8 +225,35 @@ select {
   background-color: #F5F6F8;
   color: #000000;
   ;
+} */
+ .input-change-pass{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  outline: none;
+  border: none;
+  padding-left: 13px;
+  width: 100%;
+  height: 43px;
+  border-radius: 8px;
+  background-color: #F5F6F8;
+  color: #000000;
+ }
+.input-user-info{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  outline: none;
+  border: none;
+  padding-left: 13px;
+  width: 471px;
+  height: 43px;
+  border-radius: 8px;
+  background-color: #F5F6F8;
+  color: #000000;
 }
-
 label {
   font-family: 'Poppins', sans-serif;
   display: block;
@@ -199,7 +291,8 @@ label {
   height: 45px;
   /* width: 143px; */
 }
-.btn-change-password{
+
+.btn-change-password {
   font-family: 'Poppins', sans-serif;
   border: 2px solid #0366FF;
   font-size: 14px;
@@ -207,7 +300,8 @@ label {
   height: 45px;
   /* width: 143px; */
 }
-img {
+
+.avartar-img {
   width: 122px;
   border-radius: 70px;
   margin-right: 26px;

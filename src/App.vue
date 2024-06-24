@@ -25,7 +25,3 @@ const layout = computed(() => {
   }
 });
 </script>
-
-<style scoped>
-/* Thêm style nếu cần */
-</style>

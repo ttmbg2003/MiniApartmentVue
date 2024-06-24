@@ -3,6 +3,8 @@ import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
 import Signup from "@/components/SignUp.vue";
+import UploadFile from "@/components/UploadFileTest.vue"
+
 const routes = [
   {
     path: "/home",
@@ -14,7 +16,13 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: ProfileView,
-    meta: { layout: "DefaultLayout" },
+    // meta: { layout: "DefaultLayout" },
+  },
+  {
+    path: "/upload",
+    name: "upload",
+    component: UploadFile,
+    // meta: { layout: "DefaultLayout" },
   },
   {
     path: "/login",

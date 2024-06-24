@@ -9,4 +9,5 @@ export interface User {
     placeOfPermanet: string;
     password : string;
     roleId: number;
+    image: string;
   }

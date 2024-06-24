@@ -60,7 +60,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        const token = response.data.token;
+        const token = response.data;
         loginAuth(token);
         this.$router.push('/home');
       } catch (error) {
@@ -71,7 +71,7 @@ export default {
 };
 </script>
   
-  <style>
+  <style scoped>
   @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
   a{
     text-decoration: none;
