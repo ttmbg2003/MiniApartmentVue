@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
-
+import Signup from "@/components/SignUp.vue";
 const routes = [
   {
     path: "/home",
@@ -21,6 +21,12 @@ const routes = [
     name: "login",
     component: Login,
     meta: { layout: "LoginLayout" },
+  },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: Signup,
+    meta: { layout: "SignUpLayout" },
   },
 ];
 

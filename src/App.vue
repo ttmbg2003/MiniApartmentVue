@@ -10,11 +10,19 @@ import { useRoute } from 'vue-router';
 
 import DefaultLayout from "@/components/DefaultLayout.vue";
 import LoginLayout from "@/components/LoginLayout.vue";
+import SignUpLayout from "@/components/SignUpLayout.vue";
 
 const route = useRoute();
 
 const layout = computed(() => {
-  return route.meta.layout === 'LoginLayout' ? LoginLayout : DefaultLayout;
+  switch (route.meta.layout) {
+    case 'LoginLayout':
+      return LoginLayout;
+    case 'SignUpLayout':
+      return SignUpLayout;
+    default:
+      return DefaultLayout;
+  }
 });
 </script>
 
