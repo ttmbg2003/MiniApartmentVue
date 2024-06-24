@@ -24,31 +24,30 @@
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <form>
+          <form @submit.prevent="submitFormChangePassword">
+            <div class="modal-body">
               <div class="form-group">
                 <label>Email Address</label>
-                <input class="input-change-pass" type="email"  />
+                <input class="input-change-pass" type="email" v-model="emailChangePass" />
               </div>
               <div class="form-group">
                 <label>Current Password</label>
-                <input class="input-change-pass" type="password"  />
+                <input class="input-change-pass" type="password" v-model="currentPasswordChange" />
               </div>
               <div class="form-group">
                 <label>New Password</label>
-                <input class="input-change-pass" type="password"  />
+                <input class="input-change-pass" type="password" v-model="newPasswordChange" />
               </div>
               <div class="form-group">
                 <label>Confirm New Password</label>
-                <input class="input-change-pass" type="password"  />
+                <input class="input-change-pass" type="password" v-model="confirmPasswordChange" />
               </div>
-              
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-save">Save changes</button>
-          </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-save">Save</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -92,7 +91,8 @@
             </div>
             <div class="form-group">
               <label>Contact Number</label>
-              <input class="input-user-info" type="text" v-model="localUser.contact" placeholder="Your contact number" />
+              <input class="input-user-info" type="text" v-model="localUser.contact"
+                placeholder="Your contact number" />
             </div>
           </div>
           <div style="display: flex;justify-content: center;">
@@ -180,6 +180,21 @@ function init() {
   }
 }
 
+var emailChangePass = "";
+var currentPasswordChange = "";
+var newPasswordChange = "";
+var confirmPasswordChange = "";
+const submitFormChangePassword = () => {
+  if (!(newPasswordChange === confirmPasswordChange)) {
+    console.log("mat khau ko trung khowsp");
+
+  } else {
+    return userService.changePassword(emailChangePass, currentPasswordChange, newPasswordChange);
+  }
+  // userService.editProfile(localUser.value).then(() => {
+  //   window.location.reload();
+  // });
+};
 document.addEventListener('DOMContentLoaded', init);
 </script>
 
@@ -226,7 +241,7 @@ select {
   color: #000000;
   ;
 } */
- .input-change-pass{
+.input-change-pass {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   font-size: 16px;
@@ -239,8 +254,9 @@ select {
   border-radius: 8px;
   background-color: #F5F6F8;
   color: #000000;
- }
-.input-user-info{
+}
+
+.input-user-info {
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   font-size: 16px;
@@ -254,6 +270,7 @@ select {
   background-color: #F5F6F8;
   color: #000000;
 }
+
 label {
   font-family: 'Poppins', sans-serif;
   display: block;
