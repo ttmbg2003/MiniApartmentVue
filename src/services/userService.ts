@@ -43,8 +43,10 @@ class UserService {
   }
   async uploadImage(selectedFile: File, email: any): Promise<string> {
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("email", email);
+    formData.append('file', selectedFile);
+    formData.append('email', email);
+
+    
 
     // const token = this.getCurrentUser();
     try {
@@ -62,6 +64,36 @@ class UserService {
       throw error;
     }
   }
+  
+  changePassword(email:string, currentPass:string, newPass:string){    
+    const token = this.getTokenUser();  
+    console.log(token);
+    
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('currentPassword', currentPass);
+    formData.append('newPassword', newPass);
+    try {
+      return apiClient.post('/api/user/changePassword', formData, {
+        headers: {
+          // 'Access-Control-Allow-Origin': true,
+          // 'Content-Type': 'application/json',
+          // 'x-access-token': token,
+          // 'Token': 'Bearer ' + token
+        }
+      }).then((response) => response.data);
+      } catch (error) {
+      console.error('Error change password:', error);
+      throw error;
+    }
+  }
+  // dataChangePass(){
+  //   return{
+  //     email:"",
+  //     currentPass:"",
+  //     newPass:""
+  //   }
+  // }
 }
 
 export default new UserService();
