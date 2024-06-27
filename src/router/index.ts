@@ -3,7 +3,7 @@ import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
 import Signup from "@/components/SignUp.vue";
-import UploadFile from "@/components/UploadFileTest.vue"
+import ListTenant from "@/views/ListOfTenantView.vue"
 
 const routes = [
   {
@@ -19,10 +19,9 @@ const routes = [
     // meta: { layout: "DefaultLayout" },
   },
   {
-    path: "/upload",
-    name: "upload",
-    component: UploadFile,
-    // meta: { layout: "DefaultLayout" },
+    path: "/tenants",
+    name: "ListTenant",
+    component: ListTenant,
   },
   {
     path: "/login",
