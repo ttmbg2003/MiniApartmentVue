@@ -61,6 +61,7 @@ export default {
           password: this.password,
         });
         const token = response.data;
+        
         loginAuth(token);
         this.$router.push('/home');
       } catch (error) {
