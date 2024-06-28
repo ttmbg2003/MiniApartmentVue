@@ -30,7 +30,7 @@
         />
         <br />
       </form>
-      <a href=""><p style="text-align: right; color: grey;">Forgot Password?</p></a>
+      <p style="text-align: right; color: grey;"><router-link to="/forgetpassword">Forget Password?</router-link></p>
       <div v-if="error" class="error">{{ error }}</div>
     </div>
   </template>

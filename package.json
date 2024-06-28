@@ -15,7 +15,9 @@
     "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
     "vue": "^3.4.21",
+    "vue-otp-input": "^1.0.0",
     "vue-router": "^4.3.0",
+    "vuetify": "^3.6.10",
     "vuex": "^4.1.0"
   },
   "devDependencies": {

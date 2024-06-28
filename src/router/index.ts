@@ -4,6 +4,7 @@ import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
 import Signup from "@/components/SignUp.vue";
 import UploadFile from "@/components/UploadFileTest.vue"
+import ForgetPassword from "@/components/ForgetPassword.vue"
 
 const routes = [
   {
@@ -36,6 +37,12 @@ const routes = [
     component: Signup,
     meta: { layout: "SignUpLayout" },
   },
+  {
+    path: "/forgetpassword",
+    name: "ForgetPassword",
+    component: ForgetPassword,
+    meta: {layout: "SignUpLayout"}
+  }
 ];
 
 const router = createRouter({

@@ -6,49 +6,20 @@
     <div class="right-section">
       <div class="main">
         <h1>Sign Up</h1>
-        <form @submit.prevent="signUp">
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            v-model="firstName"
-          />
-          <br />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            v-model="lastName"
-          />
-          <br />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            v-model="email"
-          />
-          <br />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            v-model="password"
-          />
-          <br />
-          <input
-            type="password"
-            name="rePassword"
-            placeholder="Confirm Password"
-            v-model="rePassword"
-          />
-          <br />
-          <input
-            type="submit"
-            value="Sign Up"
-            class="button"
-          />
-          <br />
+        <form v-if="!otpSent" @submit.prevent="signUp">
+          <input type="text" name="firstName" placeholder="First Name" v-model="firstName" />
+          <input type="text" name="lastName" placeholder="Last Name" v-model="lastName" />
+          <input type="email" name="email" placeholder="Email Address" v-model="email" />
+          <input type="password" name="password" placeholder="Password" v-model="password" />
+          <input type="password" name="rePassword" placeholder="Confirm Password" v-model="rePassword" />
+          <input type="submit" value="Sign Up" class="button" />
         </form>
+
+        <form v-else @submit.prevent="verifyOtp">
+          <input type="text" name="otp" placeholder="OTP" v-model="otp" />
+          <input type="submit" value="Verify OTP" class="button" />
+        </form>
+
         <div v-if="error" class="error">{{ error }}</div>
         <p class="mt-4 text-sm text-center text-gray-600">
           Already have an account? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
@@ -70,6 +41,8 @@ export default {
       email: '',
       password: '',
       rePassword: '',
+      otp: '',
+      otpSent: false,
       error: null,
     };
   },
@@ -94,10 +67,8 @@ export default {
           password: this.password,
           rePassword: this.rePassword
         });
-        const token = response.data.token;
-        
-        alert('User sign up successfully');
-        this.$router.push('/login');
+
+        this.otpSent = true; // OTP sent, proceed to OTP verification step
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.error = error.response.data;
@@ -106,6 +77,28 @@ export default {
         }
       }
     },
+    async verifyOtp() {
+      this.error = null; // Reset error message
+
+      try {
+        const response = await apiClient.post('/auth/verifyOtp', {
+          email: this.email,
+          otp: this.otp,
+          firstName: this.firstName,
+          lastName: this.lastName,
+          password: this.password
+        });
+
+        alert('User sign up successfully');
+        this.$router.push('/login');
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          this.error = error.response.data;
+        } else {
+          this.error = 'An error occurred during OTP verification. Please try again.';
+        }
+      }
+    }
   },
 };
 </script>
@@ -154,8 +147,8 @@ html, body {
   font-family: "Poppins", sans-serif;
   width: 80%; /* Điều chỉnh kích thước của form nếu cần */
   max-height: 100%; /* Đảm bảo form không vượt quá chiều cao màn hình */
-  margin-left: -260px;
-  margin-top: -80px;
+  margin-left: -550px;
+  margin-top: 0px
 }
 
 h1 {
