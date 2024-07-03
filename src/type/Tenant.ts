@@ -5,7 +5,6 @@ export interface Tenant {
     licensePlate: string;
     vehicleType: string;
     vehicleColor: string;
-    representative: boolean;
     residenceStatus: string;
     contractId: number;
     userId: string;
@@ -14,5 +13,5 @@ export interface Tenant {
     gender: string;
     dateOfBirth: string;
     contact: string;
-
+    citizenId: number;
 }
