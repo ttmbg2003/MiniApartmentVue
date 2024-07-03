@@ -13,10 +13,12 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "bootstrap-vue": "^2.23.1",
     "jwt-decode": "^4.0.0",
     "sweetalert2": "^11.12.1",
     "use-vue3-easy-data-table": "^0.1.4",
     "vue": "^3.4.21",
+    "vue-otp-input": "^1.0.0",
     "vue-router": "^4.3.0",
     "vue3-easy-data-table": "^1.5.47",
     "vuex": "^4.1.0"

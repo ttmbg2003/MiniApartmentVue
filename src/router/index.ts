@@ -3,8 +3,10 @@ import HomeView from "@/views/HomeView.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
 import Signup from "@/components/SignUp.vue";
-import ListTenant from "@/views/ListOfTenantView.vue"
-
+import ListTenant from "@/views/ListOfTenantView.vue";
+import ForgetPassword from "@/components/ForgetPassword.vue";
+import ResetPassword from "@/components/ResetPassword.vue";
+import VerifyOtp from "@/components/VerifyOtp.vue";
 const routes = [
   {
     path: "/home",
@@ -33,6 +35,24 @@ const routes = [
     path: "/signup",
     name: "Signup",
     component: Signup,
+    meta: { layout: "SignUpLayout" },
+  },
+  {
+    path: "/forgetpassword",
+    name: "ForgetPassword",
+    component: ForgetPassword,
+    meta: { layout: "SignUpLayout" },
+  },
+  {
+    path: "/verify-otp",
+    name: "VerifyOtp",
+    component: VerifyOtp,
+    meta: { layout: "SignUpLayout" },
+  },
+  {
+    path: "/reset-password",
+    name: "ResetPassword",
+    component: ResetPassword,
     meta: { layout: "SignUpLayout" },
   },
 ];
