@@ -6,7 +6,7 @@
     <div class="right-section">
       <div class="main">
         <h1>Sign Up</h1>
-        <form v-if="!otpSent" @submit.prevent="signUp">
+        <form @submit.prevent="signUp">
           <input type="text" name="firstName" placeholder="First Name" v-model="firstName" />
           <input type="text" name="lastName" placeholder="Last Name" v-model="lastName" />
           <input type="email" name="email" placeholder="Email Address" v-model="email" />
@@ -15,15 +15,28 @@
           <input type="submit" value="Sign Up" class="button" />
         </form>
 
-        <form v-else @submit.prevent="verifyOtp">
-          <input type="text" name="otp" placeholder="OTP" v-model="otp" />
-          <input type="submit" value="Verify OTP" class="button" />
-        </form>
-
         <div v-if="error" class="error">{{ error }}</div>
         <p class="mt-4 text-sm text-center text-gray-600">
           Already have an account? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
         </p>
+      </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div v-if="otpSent" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <h2>Verify OTP</h2>
+        <form @submit.prevent="verifyOtp">
+          <input type="text" name="otp" placeholder="OTP" v-model="otp" />
+          <input type="submit" value="Verify OTP" class="button" />
+          <div style="display: flex; align-items: center;">
+            <p>Haven't got the OTP?</p>
+            <button @click="resendOtp" class="button1">Click here to Resend OTP</button>
+          </div>
+          <div v-if="otpResent" class="info">{{ otpResentMessage }}</div>
+        </form>
+        <div v-if="error" class="error">{{ error }}</div>
       </div>
     </div>
   </div>
@@ -44,16 +57,20 @@ export default {
       otp: '',
       otpSent: false,
       error: null,
+      otpResent: false,
+      otpResentMessage: 'OTP sent to your email. Please verify to complete registration.',
     };
   },
   methods: {
     async signUp() {
-      this.error = null; // Reset error message
+      this.error = null;
+      this.otpResent = false;
+
       if (!this.firstName || !this.lastName || !this.email || !this.password || !this.rePassword) {
         this.error = "Please fill in all fields.";
         return;
       }
-      
+
       if (this.password !== this.rePassword) {
         this.error = "Passwords do not match!";
         return;
@@ -68,8 +85,10 @@ export default {
           rePassword: this.rePassword
         });
 
-        this.otpSent = true; // OTP sent, proceed to OTP verification step
+        this.otpSent = true;
+        this.error = null;
       } catch (error) {
+        this.otpResent = false;
         if (error.response && error.response.status === 400) {
           this.error = error.response.data;
         } else {
@@ -78,7 +97,8 @@ export default {
       }
     },
     async verifyOtp() {
-      this.error = null; // Reset error message
+      this.error = null;
+      this.otpResent = false;
 
       try {
         const response = await apiClient.post('/auth/verifyOtp', {
@@ -92,12 +112,40 @@ export default {
         alert('User sign up successfully');
         this.$router.push('/login');
       } catch (error) {
+        this.otpResent = false;
         if (error.response && error.response.status === 400) {
           this.error = error.response.data;
         } else {
           this.error = 'An error occurred during OTP verification. Please try again.';
         }
       }
+    },
+    async resendOtp() {
+      this.error = null;
+      this.otpResent = false;
+
+      try {
+        const response = await apiClient.post('/auth/resendOtpRegister', {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.email,
+          password: this.password,
+          rePassword: this.rePassword
+        });
+
+        this.error = null;
+        this.otpResent = true;
+      } catch (error) {
+        this.otpResent = false;
+        if (error.response && error.response.status === 400) {
+          this.error = error.response.data;
+        } else {
+          this.error = 'An error occurred during OTP resend. Please try again.';
+        }
+      }
+    },
+    closeModal() {
+      this.otpSent = false;
     }
   },
 };
@@ -145,16 +193,16 @@ html, body {
   padding-top: 3%;
   padding-bottom: 5%;
   font-family: "Poppins", sans-serif;
-  width: 80%; /* Điều chỉnh kích thước của form nếu cần */
-  max-height: 100%; /* Đảm bảo form không vượt quá chiều cao màn hình */
+  width: 80%;
+  max-height: 100%;
   margin-left: -550px;
-  margin-top: 0px
+  margin-top: 0px;
 }
 
 h1 {
   cursor: default;
   user-select: none;
-  font-size: 2.5rem; /* Giảm kích thước chữ của h1 */
+  font-size: 2.5rem;
 }
 
 input {
@@ -164,7 +212,7 @@ input {
   text-align: center;
   outline: none;
   margin: 10px;
-  width: 50%; /* Điều chỉnh kích thước của input nếu cần */
+  width: 50%;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
@@ -182,15 +230,69 @@ input:active {
   background: lightgreen;
   cursor: pointer;
   user-select: none;
-  padding: 8px 16px; /* Điều chỉnh kích thước của nút */
+  padding: 8px 16px;
   border-radius: 3rem;
   border: none;
-  font-size: 1rem; /* Giảm kích thước chữ của nút */
+  font-size: 1rem;
   width: 200px;
+  margin: 10px 20px;
 }
-
+.button1 {
+  background: lightgreen;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 16px;
+  border-radius: 3rem;
+  border: none;
+  font-size: 1rem;
+  width: 240px;
+  margin: 10px 20px;
+}
 .error {
   color: red;
   margin-top: 10px;
+}
+.info {
+  color: green;
+  margin-top: 10px;
+}
+
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 </style>

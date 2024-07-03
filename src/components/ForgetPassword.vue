@@ -1,100 +1,58 @@
 <template>
-    <div class="container">
-      <div class="left-section">
-      </div>
-      <div class="right-section">
-        <div class="main">
-          <h1>Forget Password</h1>
-          <form v-if="!otpSent" @submit.prevent="forgetPassword">
-            <input type="email" name="email" placeholder="Email Address" v-model="email" />
-            <input type="submit" value="Send OTP" class="button" />
-          </form>
-  
-          <form v-else @submit.prevent="verifyOtp">
-            <input type="text" name="otp" placeholder="OTP" v-model="otp" />
-            <input type="password" name="newPassword" placeholder="New Password" v-model="newPassword" />
-            <input type="password" name="confirmPassword" placeholder="Confirm New Password" v-model="confirmPassword" />
-            <input type="submit" value="Verify OTP" class="button" />
-          </form>
-  
-          <div v-if="error" class="error">{{ error }}</div>
-          <p class="mt-4 text-sm text-center text-gray-600">
-            Remembered your password? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
-          </p>
-        </div>
+  <div class="container">
+    <div class="left-section">
+    </div>
+    <div class="right-section">
+      <div class="main">
+        <h1>Forget Password</h1>
+        <form @submit.prevent="forgetPassword">
+          <input type="email" name="email" placeholder="Email Address" v-model="email" />
+          <input type="submit" value="Send OTP" class="button" />
+        </form>
+        <div v-if="error" class="error">{{ error }}</div>
+        <p class="mt-4 text-sm text-center text-gray-600">
+          Remembered your password? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
+        </p>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import apiClient from '@/utils/apiClient';
-  
-  export default {
-    name: 'ForgetPassword',
-    data() {
-      return {
-        email: '',
-        otp: '',
-        newPassword: '',
-        confirmPassword: '',
-        otpSent: false,
-        error: null,
-      };
-    },
-    methods: {
-      async forgetPassword() {
-        this.error = null; // Reset error message
-        if (!this.email) {
-          this.error = "Please fill in your email.";
-          return;
-        }
-  
-        try {
-          const response = await apiClient.post('/auth/forgetPassword', {
-            email: this.email
-          });
-  
-          this.otpSent = true; // OTP sent, proceed to OTP verification step
-        } catch (error) {
-          if (error.response && error.response.status === 400) {
-            this.error = error.response.data;
-          } else {
-            this.error = 'An error occurred during the password reset process. Please try again.';
-          }
-        }
-      },
-      async verifyOtp() {
-        this.error = null; // Reset error message
-        console.log('New Password:', this.newPassword);
-        console.log('Confirm Password:', this.confirmPassword);
-        if (this.newPassword !== this.confirmPassword) {
-          this.error = "Passwords do not match!";
-          return;
-        }
-  
-        try {
-          const response = await apiClient.post('/auth/verifyOtpForgetPassword', {
-            email: this.email,
-            otp: this.otp,
-            newPassword: this.newPassword,
-            confirmPassword: this.confirmPassword
-          });
-  
-          alert('Password reset successfully');
-          this.$router.push('/login');
-        } catch (error) {
-          if (error.response && error.response.status === 400) {
-            this.error = error.response.data;
-          } else {
-            this.error = 'An error occurred during OTP verification. Please try again.';
-          }
+  </div>
+</template>
+
+<script>
+import apiClient from '@/utils/apiClient';
+
+export default {
+  name: 'ForgetPassword',
+  data() {
+    return {
+      email: '',
+      error: null,
+    };
+  },
+  methods: {
+    async forgetPassword() {
+      this.error = null;
+      if (!this.email) {
+        this.error = "Please fill in your email.";
+        return;
+      }
+
+      try {
+        await apiClient.post('/auth/forgetPassword', { email: this.email });
+        this.$router.push({ name: 'VerifyOtp', query: { email: this.email } });
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          this.error = error.response.data;
+        } else {
+          this.error = 'An error occurred during the password reset process. Please try again.';
         }
       }
-    },
-  };
-  </script>
-  
-  <style scoped>
+    }
+  }
+};
+</script>
+
+<style scoped>
   @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
   
   * {
@@ -185,4 +143,3 @@
     margin-top: 10px;
   }
   </style>
-  
