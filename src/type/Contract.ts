@@ -1,11 +1,14 @@
 export interface Contract {
   contractId: number;
-  numberOfTenants: number;
+  roomId: number;
+  numberOfTenant: number;
   rentalFee: number;
   securityDeposite: number;
   paymentCycle: number;
-  singinDate: string;
+  contract: string;
+  signinDate: string;
   moveinDate: string;
   expireDate: string;
   contractStatus: number;
+  representative: string;
 }

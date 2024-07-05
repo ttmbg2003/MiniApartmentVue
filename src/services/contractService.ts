@@ -7,14 +7,10 @@ class ContractService {
       .get("/contract/getAllContract")
       .then((response) => response.data);
   };
-  deleteContract = (contractId: any): Promise<String> => {
-    return apiClient
-      .delete(`contract/deleteContract?contractId=${contractId}`)
-      .then((response) => response.data);
-  };
+  
   getContractByContractId = (contractId: number): Promise<Contract> => {
     return apiClient
-      .post(`contract/getContractByContractId?ContractId=${contractId}`)
+      .get(`contract/getContractByContractId/${contractId}`)
       .then((response) => response.data);
   };
 }

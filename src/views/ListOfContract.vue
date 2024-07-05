@@ -17,14 +17,17 @@
                     <div style="display: flex; justify-content: flex-end;">
                         <p style="margin-right: 31px; margin-bottom: 12px;">Total: {{ clientItemsLength }}</p>
                     </div>
-                    <EasyDataTable ref="dataTable" buttons-pagination :headers="headersContract" :items="contracts"
+                    <EasyDataTable buttons-pagination :headers="headersContract" :items="contracts"
                                    :search-value="searchValue" show-index :must-sort="true" :rows-per-page="10"
                                    table-class-name="customize-table">
                         <template #item-action="item">
                             <a @click="getContractDetails(item.contractId)" data-bs-toggle="modal" data-bs-target="#contractDetailModal">
                                 <i><img src="../components/icons/eye.png" style="width: 23px;"></i></a>
-                            <a href="#" @click="() => deleteContract(item.contractId)">
-                                <i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                        </template>
+                        <template #item-contractStatus="item">
+                            <span v-if="item.contractStatus === 1">In Lease Term</span>
+                            <span v-if="item.contractStatus === 2">Approaching Expiration</span>
+                            <span v-if="item.contractStatus === 3">Past Expiration</span>
                         </template>
                     </EasyDataTable>
                 </div>
@@ -35,15 +38,39 @@
                             <form>
                                 <div class="modal-body">
                                     <p><i><img src="../components/icons/eye.png" style="width: 23px;"></i> View Details</p>
-                                    <EasyDataTable :headers="headersContractDetail" :items="contractDetail" hide-footer
-                                                   show-index table-class-name="customize-table">
-                                        <template #item-action="item">
-                                            <a @click="allowEdit">
-                                                <i><img src="../components/icons/PencilIcon.png" style="width: 23px;"></i></a>
-                                            <a href="#" @click="() => deleteContract(item.contractId)">
-                                                <i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
-                                        </template>
-                                    </EasyDataTable>
+                                    <table>
+                                        <thead>
+                                            <th>No.</th>
+                                            <th>Room No</th>
+                                            <th>Representative</th>
+                                            <th>Number of Tenants</th>
+                                            <th>Rental Fee(VND)</th>
+                                            <th>Security Deposit(VND)</th>
+                                            <th>Payment Cycle</th>
+                                            <th>Contract</th>
+                                            <th>Signing Date</th>
+                                            <th>Move-in Date</th>
+                                            <th>Expiration Date</th>
+                                            <th>Contract Status</th>
+                                            <th>Action</th>
+                                        </thead>
+                                        <tbody>
+                                            <td>{{contractDetail?.contractId}}</td>
+                                            <td>{{contractDetail?.roomId}}</td>
+                                            <td>{{contractDetail?.representative}}</td>
+                                            <td>{{contractDetail?.numberOfTenant}}</td>
+                                            <td>{{contractDetail?.rentalFee}}</td>
+                                            <td>{{contractDetail?.securityDeposite}}</td>
+                                            <td>{{contractDetail?.paymentCycle}}</td>
+                                            <td>{{contractDetail?.contract}}</td>
+                                            <td>{{contractDetail?.signinDate}}</td>
+                                            <td>{{contractDetail?.moveinDate}}</td>
+                                            <td>{{contractDetail?.expireDate}}</td>
+                                            <td v-if="contractDetail?.contractStatus === 1">In Lease Term</td>
+                                            <td v-if="contractDetail?.contractStatus === 2">Approaching Expiration</td>
+                                            <td v-if="contractDetail?.contractStatus === 3">Past Expiration</td>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
@@ -67,70 +94,41 @@ import type { Header } from "vue3-easy-data-table";
 import Swal from 'sweetalert2';
 
 const contracts = ref<Contract[]>([]);
-const contractDetail = ref<Contract[]>([]);
+const contractDetail = ref<Contract>();
 const searchValue = ref("");
 const dataTable = ref();
 const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
 let isEdit = false;
-const allowEdit = () => {
-    $('#contractDetailModal').modal('hide');
-}
-const deleteContract = (contractId: string) => {
-    Swal.fire({
-        text: "Are you sure you want to delete?",
-        showCancelButton: true,
-        confirmButtonColor: "#0565F9",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#E8E7E7",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            contractService.deleteContract(contractId)
-            Swal.fire({
-                title: "Deleted!",
-                icon: "success",
-                showConfirmButton: false,
-            });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }
-    });
-}
+// const allowEdit = () => {
+//     $('#contractDetailModal').modal('hide');
+// }
 const getContractDetails = (contractId: number) => {
     contractService.getContractByContractId(contractId).then((response) => {
-        contracts.value = response.map(contract => ({
-            contractId: contract.contractId,
-            roomId: contract.roomId,
-            representative: contract.representative,
-            numberOfTenants: contract.numberOfTenants,
-            rentalFee: contract.rentalFee,
-            securityDeposit: contract.securityDeposit,
-            paymentCycle: contract.paymentCycle,
-            signingDate: contract.signingDate,
-            moveInDate: contract.moveInDate,
-            expirationDate: contract.expirationDate,
-            contractStatus: contract.contractStatus,
-        }));
+        contractDetail.value = response;
     });
 }
 contractService.getAllContract().then((response) => {
     contracts.value = response.map(contract => ({
-        contractId: contract.contractId,
-        roomId: contract.roomId,
-        representative: contract.representative,
-        numberOfTenants: contract.numberOfTenants,
-        rentalFee: contract.rentalFee,
-        paymentCycle: contract.paymentCycle,
-        contractStatus: contract.contractStatus,
+            contractId: contract.contractId,
+            roomId: contract.roomId,
+            representative: contract.representative,
+            numberOfTenant: contract.numberOfTenant,
+            rentalFee: contract.rentalFee,
+            securityDeposite: contract.securityDeposite,
+            paymentCycle: contract.paymentCycle,
+            contract: contract.contract,
+            signinDate: contract.signinDate,
+            moveinDate: contract.moveinDate,
+            expireDate: contract.expireDate,
+            contractStatus: contract.contractStatus,
     }));
 });
 
 const headersContract: Header[] = [
-    { text: "No.", value: "id", sortable: true },
     { text: "Contract ID", value: "contractId", sortable: true },
     { text: "Room No", value: "roomId", sortable: true },
     { text: "Representative", value: "representative", sortable: true },
-    { text: "Number of Tenants", value: "numberOfTenants", sortable: true },
+    { text: "Number of Tenants", value: "numberOfTenant", sortable: true },
     { text: "Rental Fee (VND)", value: "rentalFee", sortable: true },
     { text: "Payment Cycle", value: "paymentCycle", sortable: true },
     { text: "Contract Status", value: "contractStatus", sortable: true },
@@ -139,13 +137,13 @@ const headersContract: Header[] = [
 
 const headersContractDetail: Header[] = [
     { text: "No.", value: "id", width: 150 },
-    { text: "Contract ID", value: "contractId" },
     { text: "Room No", value: "roomId" },
     { text: "Representative", value: "representative" },
     { text: "Number of Tenants", value: "numberOfTenants" },
     { text: "Rental Fee (VND)", value: "rentalFee" },
     { text: "Security Deposit (VND)", value: "securityDeposit" },
     { text: "Payment Cycle", value: "paymentCycle" },
+    { text: "Contract", value: ""},
     { text: "Signing Date", value: "signingDate" },
     { text: "Move-in Date", value: "moveInDate" },
     { text: "Expiration Date", value: "expirationDate" },
