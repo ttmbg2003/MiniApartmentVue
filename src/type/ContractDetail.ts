@@ -11,4 +11,6 @@ export interface ContractDetail {
   obligations: string;
   commit: string;
   copies: number;
+  dated: Date;
+  placeOfCitizenId: string;
 }

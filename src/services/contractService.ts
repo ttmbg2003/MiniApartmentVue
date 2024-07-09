@@ -13,5 +13,15 @@ class ContractService {
       .get(`contract/getContractByContractId/${contractId}`)
       .then((response) => response.data);
   };
+  updateContractStatus = (contractId: number, contractStatus: number): Promise<Contract> => {
+    return apiClient
+    .put(`/contract/updateStatus/${contractId}/${contractStatus}`)
+    .then((response) => response.data);
+  };
+  updateContract = (contractId: number) : Promise<Contract> => {
+    return apiClient
+    .put(`/contract/updateContract/${contractId}`)
+    .then((response) => response.data);
+  }
 }
 export default new ContractService();
