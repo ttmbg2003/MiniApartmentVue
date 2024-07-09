@@ -7,6 +7,7 @@ import ListTenant from "@/views/ListOfTenantView.vue";
 import ForgetPassword from "@/components/ForgetPassword.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import VerifyOtp from "@/components/VerifyOtp.vue";
+import ListOfPayment from "@/views/ListOfPayment.vue";
 const routes = [
   {
     path: "/home",
@@ -24,6 +25,11 @@ const routes = [
     path: "/tenants",
     name: "ListTenant",
     component: ListTenant,
+  },
+  {
+    path: "/payment",
+    name: "ListPayment",
+    component: ListOfPayment,
   },
   {
     path: "/login",

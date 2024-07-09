@@ -16,5 +16,9 @@ class TenantService{
         return apiClient.post(`/api/tenants/getTenantByRoomId?roomId=${roomId}`)
         .then((response) => response.data);
     }
+    updateTenant = (tenantList:Tenant[]) : Promise<void> =>{
+        return apiClient.post("/api/tenants/updateTenants",tenantList)
+        .then(() => {});
+    }
 }
 export default new TenantService();

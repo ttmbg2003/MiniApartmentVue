@@ -13,7 +13,7 @@
                     <li class="li-side-bar"><i><img src="../components/icons/ContractIcon.png"></i><a class="a-side-bar"
                             href="#">Contract</a></li>
                     <li class="li-side-bar"><i><img src="../components/icons/paymentIcon.png"></i><a class="a-side-bar"
-                            href="#">Payment</a></li>
+                            href="/payment">Payment</a></li>
                 </ul>
             </div>
         </div>
