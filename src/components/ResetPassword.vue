@@ -26,7 +26,6 @@
         newPassword: '',
         confirmPassword: '',
         email: this.$route.query.email || '',
-        otp: this.$route.query.otp || '',
         error: null,
       };
     },
@@ -39,10 +38,10 @@
         }
   
         try {
-          await apiClient.post('/auth/resetPassword', {
+          await apiClient.post('/auth/forgetPasswordChange', {
             email: this.email,
-            otp: this.otp,
             newPassword: this.newPassword,
+            confirmPassword: this.confirmPassword
           });
           alert('Password reset successfully');
           this.$router.push('/login');

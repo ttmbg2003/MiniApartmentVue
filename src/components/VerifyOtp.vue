@@ -1,78 +1,77 @@
 <template>
-    <div class="container">
-      <div class="left-section">
-      </div>
-      <div class="right-section">
-        <div class="main">
-          <h1>Verify OTP</h1>
-          <form @submit.prevent="verifyOtp">
-            <input type="text" name="otp" placeholder="OTP" v-model="otp" />
-            <input type="submit" value="Verify OTP" class="button" />
-          </form>
-          <div style="display: flex; align-items: center;">
-            <p>Haven't got the OTP?</p>
-            <button @click="resendOtp" class="button1">Click here to Resend OTP</button>
-          </div>
-          <div v-if="error" class="error">{{ error }}</div>
-          <div v-if="message" class="message">{{ message }}</div>
-          <p class="mt-4 text-sm text-center text-gray-600">
-            Remembered your password? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
-          </p>
+  <div class="container">
+    <div class="left-section"></div>
+    <div class="right-section">
+      <div class="main">
+        <h1>Verify OTP</h1>
+        <form @submit.prevent="verifyOtp">
+          <input type="text" name="otp" placeholder="OTP" v-model="otp" />
+          <input type="submit" value="Verify OTP" class="button" />
+        </form>
+        <div style="display: flex; align-items: center;">
+          <p>Haven't got the OTP?</p>
+          <button @click="resendOtp" class="button1">Click here to Resend OTP</button>
         </div>
+        <div v-if="error" class="error">{{ error }}</div>
+        <div v-if="message" class="message">{{ message }}</div>
+        <p class="mt-4 text-sm text-center text-gray-600">
+          Remembered your password? <router-link to="/login" class="text-blue-500 hover:underline">Sign in here</router-link>
+        </p>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import apiClient from '@/utils/apiClient';
-  
-  export default {
-    name: 'VerifyOtp',
-    data() {
-      return {
-        otp: '',
-        email: this.$route.query.email || '',
-        error: null,
-        message: null,
-      };
-    },
-    methods: {
-      async verifyOtp() {
-        this.error = null;
-        this.message = null;
-        try {
-          await apiClient.post('/auth/verifyOtpForgetPassword', {
-            email: this.email,
-            otp: this.otp,
-          });
-          this.$router.push({ name: 'ResetPassword', query: { email: this.email, otp: this.otp } });
-        } catch (error) {
-          if (error.response && error.response.status === 400) {
-            this.error = error.response.data;
-          } else {
-            this.error = 'An error occurred during OTP verification. Please try again.';
-          }
+  </div>
+</template>
+
+<script>
+import apiClient from '@/utils/apiClient';
+
+export default {
+  name: 'VerifyOtp',
+  data() {
+    return {
+      otp: '',
+      email: this.$route.query.email || '',
+      error: null,
+      message: null,
+    };
+  },
+  methods: {
+    async verifyOtp() {
+      this.error = null;
+      this.message = null;
+      try {
+        const response = await apiClient.post('/auth/verifyOtpForgetPassword', {
+          email: this.email,
+          otp: this.otp,
+        });
+        this.$router.push({ name: 'ResetPassword', query: { email: this.email, otp: this.otp } });
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          this.error = error.response.data;
+        } else {
+          this.error = 'An error occurred during OTP verification. Please try again.';
         }
-      },
-      async resendOtp() {
-        this.error = null;
-        this.message = null;
-        try {
-          const response = await apiClient.post('/auth/resendOtpForgetPassword', {
-            email: this.email,
-          });
-          this.message = response.data;
-        } catch (error) {
-          if (error.response && error.response.status === 400) {
-            this.error = error.response.data;
-          } else {
-            this.error = 'An error occurred while resending the OTP. Please try again.';
-          }
-        }
-      },
+      }
     },
-  };
-  </script>
+    async resendOtp() {
+      this.error = null;
+      this.message = null;
+      try {
+        const response = await apiClient.post('/auth/resendOtpForgetPassword', {
+          email: this.email,
+        });
+        this.message = response.data;
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          this.error = error.response.data;
+        } else {
+          this.error = 'An error occurred while resending the OTP. Please try again.';
+        }
+      }
+    },
+  },
+};
+</script>
   
   <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");

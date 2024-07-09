@@ -1,12 +1,20 @@
 <template>
     <div class="side-bar">
+    
         <div style="margin-top: 3rem;">
+    
             <div class="background-icon-apartment-manage">
+    
                 <i class="icon-apartment-manage"><img style="    width: 30px;"
-                        src="../components/icons/apartmentManagementIcon.png"></i>
+    
+                            src="../components/icons/apartmentManagementIcon.png"></i>
+    
                 <h5>Apartment Management</h5>
+    
             </div>
+    
             <div style="text-align: center;">
+    
                 <ul style="list-style-type: none;margin-left: 20px;">
                     <li class="li-side-bar"><i><img src="../components/icons/TenantIcon.png"></i><a class="a-side-bar"
                             href="#">Tenant</a></li>
@@ -15,8 +23,11 @@
                     <li class="li-side-bar"><i><img src="../components/icons/paymentIcon.png"></i><a class="a-side-bar"
                             href="/payment">Payment</a></li>
                 </ul>
+    
             </div>
+    
         </div>
+    
     </div>
 </template>
 <style scoped>
