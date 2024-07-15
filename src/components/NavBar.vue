@@ -1,7 +1,11 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <img src="@/components/icons/TheNiceHouseLogo.png" alt="Logo" class="navbar-logo" />
+      <img
+        src="@/components/icons/TheNiceHouseLogo.png"
+        alt="Logo"
+        class="navbar-logo"
+      />
     </div>
     <div class="navbar-right">
       <router-link to="/home" class="navbar-link">About us</router-link>
@@ -9,27 +13,28 @@
       <!-- <router-link to="/profile" class="navbar-link">Information</router-link> -->
       <router-link to="/home" class="navbar-link">Contact us</router-link>
       <a href="/profile" class="navbar-link">Information</a>
-      <button @click="handleAuthAction" class="navbar-link">
-        {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
-      </button>
+      <a @click="handleAuthAction" class="navbar-link">
+        {{ authState.isAuthenticated ? "Logout" : "Login" }}
+      </a>
+      <!-- <router-link to="/login">login</router-link> -->
     </div>
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
-import { authState, logout } from '@/type/auth';
+import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
+import { authState, logout } from "@/type/auth";
 export default defineComponent({
-  name: 'NavBar',
+  name: "NavBar",
   setup() {
     const router = useRouter();
 
     const handleAuthAction = () => {
       if (authState.isAuthenticated) {
         logout();
-        router.push('/home');
+        router.push("/home");
       } else {
-        router.push('/login');
+        router.push("/login");
       }
     };
 
@@ -39,7 +44,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .navbar {
   background: white;
@@ -54,7 +59,7 @@ export default defineComponent({
 }
 
 .navbar-link {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #000000;
   text-decoration: none;
   margin-left: 20px;
@@ -66,4 +71,3 @@ export default defineComponent({
   text-decoration: underline;
 }
 </style>
-
