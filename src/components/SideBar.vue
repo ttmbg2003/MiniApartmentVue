@@ -16,13 +16,12 @@
             <div style="text-align: center;">
     
                 <ul style="list-style-type: none;margin-left: 20px;">
-    
-                    <li class="li-side-bar"><i><img src="../components/icons/TenantIcon.png"></i><a class="a-side-bar" href="#">Tenant</a></li>
-    
-                    <li class="li-side-bar"><i><img src="../components/icons/ContractIcon.png"></i><a class="a-side-bar" href="/ListOfContract">Contract</a></li>
-    
-                    <li class="li-side-bar"><i><img src="../components/icons/paymentIcon.png"></i><a class="a-side-bar" href="#">Payment</a></li>
-    
+                    <li class="li-side-bar"><i><img src="../components/icons/TenantIcon.png"></i><a class="a-side-bar"
+                            href="#">Tenant</a></li>
+                    <li class="li-side-bar"><i><img src="../components/icons/ContractIcon.png"></i><a class="a-side-bar"
+                            href="#">Contract</a></li>
+                    <li class="li-side-bar"><i><img src="../components/icons/paymentIcon.png"></i><a class="a-side-bar"
+                            href="/payment">Payment</a></li>
                 </ul>
     
             </div>

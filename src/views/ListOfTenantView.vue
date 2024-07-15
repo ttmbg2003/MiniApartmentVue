@@ -41,14 +41,14 @@
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->
-                            <form>
+                            <form @submit.prevent="updateTenant">
                                 <div class="modal-body">
                                     <p><i><img src="../components/icons/eye.png" style="width: 23px;"></i> View Details
                                     </p>
                                     <EasyDataTable :headers="headersTenantDetail" :items="tenantDetail" hide-footer
                                         show-index table-class-name="customize-table">
                                         <template #item-action="item">
-                                            <a @click="allowEdit"><i><img src="../components/icons/PencilIcon.png"
+                                            <a><i><img src="../components/icons/PencilIcon.png"
                                                         style="width: 23px;"></i></a>
                                             <a href="#" @click="() => deleteTenant(item.email)"><i><img
                                                         src="../components/icons/TrashIcon.png"
@@ -58,36 +58,36 @@
                                             <input class="input-tenant-detail" v-model="item.roomId"
                                                 style="width: 35px;">
                                         </template>
-                                        <template #item-gender="item"  v-if="isEdit == true">
+                                        <template #item-gender="item" v-if="isEdit == true">
                                             <!-- <input class="input-tenant-detail" v-model="item.gender"> -->
                                             {{ item.gender }}
                                         </template>
-                                        <template #item-dateOfBirth="item"  v-if="isEdit == true">
+                                        <template #item-dateOfBirth="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.dateOfBirth" type="date">
                                         </template>
-                                        <template #item-contact="item"  v-if="isEdit == true">
+                                        <template #item-contact="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.contact">
                                         </template>
-                                        <template #item-citizenId="item"  v-if="isEdit == true">
+                                        <template #item-citizenId="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.citizenId">
                                         </template>
-                                        <template #item-career="item"  v-if="isEdit == true">
+                                        <template #item-career="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.career"
                                                 style="width: 60px;">
                                         </template>
-                                        <template #item-licensePlate="item"  v-if="isEdit == true">
+                                        <template #item-licensePlate="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.licensePlate"
                                                 style="width: 90px;">
                                         </template>
-                                        <template #item-vehicleType="item"  v-if="isEdit == true">
+                                        <template #item-vehicleType="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.vehicleType"
                                                 style="width: 60px;">
                                         </template>
-                                        <template #item-vehicleColor="item"  v-if="isEdit == true">
+                                        <template #item-vehicleColor="item" v-if="isEdit == true">
                                             <input class="input-tenant-detail" v-model="item.vehicleColor"
                                                 style="width: 60px;">
                                         </template>
-                                        <template #item-residenceStatus="item"  v-if="isEdit == true">
+                                        <template #item-residenceStatus="item" v-if="isEdit == true">
                                             <select class="residence-status" v-model="item.residenceStatus">
                                                 <option class="btn-residence-status-success" value="Success">Success
                                                 </option>
@@ -125,7 +125,7 @@
 
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
-import { computed, ref } from "vue";
+import { computed, ref ,reactive } from "vue";
 import type { Tenant } from '@/type/Tenant'
 import tenantService from '@/services/tenantService';
 import type { Header, Item } from "vue3-easy-data-table";
@@ -134,14 +134,31 @@ import Swal from 'sweetalert2'
 // import { usePagination, useRowsPerPage } from "use-vue3-easy-data-table";
 
 const tenant = ref<Tenant[]>([]);
-const tenantDetail = ref<Tenant[]>([]);
+const tenantDetail = reactive<Tenant[]>([]);
 const searchValue = ref("");
 const dataTable = ref();
 const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
-let isEdit = false;
-const allowEdit = () =>{
+let isEdit = true;
+const allowEdit = () => {
     $('#tenantDetailModal').modal('hide');
+    isEdit = true;
 }
+const openModal = () => {
+    $('#tenantDetailModal').modal('show');
+}
+const updateTenant = async () => {
+    console.log("---------------");
+
+    try {
+        console.log('Sending tenant data:', tenantDetail);
+        await tenantService.updateTenant(tenantDetail);
+        console.log('Tenant data updated successfully');
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
 const deleteTenant = (email: string) => {
     console.log(isEdit);
     Swal.fire({
@@ -165,28 +182,57 @@ const deleteTenant = (email: string) => {
     });
 
 }
-const getTenantByRoom = (roomId: number) => {
-    tenantService.getTenantByRoomId(roomId).then((response) => {
-        tenantDetail.value = response.map(tenantDetail => ({
-            email: tenantDetail.email,
-            roomId: tenantDetail.roomId,
-            career: tenantDetail.career,
-            licensePlate: tenantDetail.licensePlate,
-            vehicleType: tenantDetail.vehicleType,
-            vehicleColor: tenantDetail.vehicleColor,
-            residenceStatus: tenantDetail.residenceStatus,
-            contractId: tenantDetail.contractId,
-            dateOfBirth: tenantDetail.dateOfBirth,
-            firstName: tenantDetail.firstName,
-            lastName: tenantDetail.lastName,
-            gender: tenantDetail.gender,
-            userId: tenantDetail.userId,
-            contact: tenantDetail.contact,
-            citizenId: tenantDetail.citizenId,
-            fullName: `${tenantDetail.firstName} ${tenantDetail.lastName}`,
-        }))
-    })
-}
+// const getTenantByRoom = (roomId: number) => {
+//     tenantService.getTenantByRoomId(roomId).then((response) => {
+//         tenantDetail.values = response.map(tenantDetail => ({
+//             email: tenantDetail.email,
+//             roomId: tenantDetail.roomId,
+//             career: tenantDetail.career,
+//             licensePlate: tenantDetail.licensePlate,
+//             vehicleType: tenantDetail.vehicleType,
+//             vehicleColor: tenantDetail.vehicleColor,
+//             residenceStatus: tenantDetail.residenceStatus,
+//             contractId: tenantDetail.contractId,
+//             dateOfBirth: tenantDetail.dateOfBirth,
+//             firstName: tenantDetail.firstName,
+//             lastName: tenantDetail.lastName,
+//             gender: tenantDetail.gender,
+//             userId: tenantDetail.userId,
+//             contact: tenantDetail.contact,
+//             citizenId: tenantDetail.citizenId,
+//             fullName: `${tenantDetail.firstName} ${tenantDetail.lastName}`,
+//         }))
+//     })
+// }
+const getTenantByRoom = async (roomId: number) => {
+            try {
+                const response = await tenantService.getTenantByRoomId(roomId);
+                if (Array.isArray(response)) {
+                    tenantDetail.splice(0, tenantDetail.length, ...response.map(({ email, roomId, career, licensePlate, vehicleType, vehicleColor, residenceStatus, contractId, dateOfBirth, firstName, lastName, gender, userId, contact, citizenId }) => ({
+                        email,
+                        roomId,
+                        career,
+                        licensePlate,
+                        vehicleType,
+                        vehicleColor,
+                        residenceStatus,
+                        contractId,
+                        dateOfBirth,
+                        firstName,
+                        lastName,
+                        gender,
+                        userId,
+                        contact,
+                        citizenId,
+                        fullName: `${firstName} ${lastName}`,
+                    })));
+                } else {
+                    console.error('Response is not an array:', response);
+                }
+            } catch (error) {
+                console.error('Error fetching tenant data:', error);
+            }
+        };
 tenantService.getAllTenant().then((response) => {
     tenant.value = response.map(tenant => ({
         email: tenant.email,
