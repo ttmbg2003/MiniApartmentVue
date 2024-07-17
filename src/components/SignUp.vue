@@ -13,7 +13,10 @@
       </div>
       <div class="signup-form">
         <p class="signin-link">
-          Already have an account? <a href="/login">Sign in here</a>
+          Already have an account?
+          <router-link to="/login" class="navbar-link"
+            >Sign in here</router-link
+          >
         </p>
         <h2>Sign Up</h2>
         <form @submit.prevent="signUp">
@@ -30,6 +33,7 @@
           <div class="form-group">
             <label for="email">Email Address*</label>
             <input type="email" id="email" v-model="email" required />
+            <span style="color: red" v-if="msg.email">{{ msg.email }}</span>
           </div>
           <div class="form-group">
             <label for="password">Password*</label>
@@ -44,6 +48,9 @@
                 <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
               </span>
             </div>
+            <span v-if="msg.password" style="color: red">{{
+              msg.password
+            }}</span>
           </div>
           <div class="form-group">
             <label for="rePassword">Confirm Password*</label>
@@ -58,6 +65,9 @@
                 <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
               </span>
             </div>
+            <span v-if="msg.rePassword" style="color: red">{{
+              msg.rePassword
+            }}</span>
           </div>
           <button type="submit" class="signup-button">Sign Up</button>
         </form>
@@ -199,6 +209,7 @@ export default {
       firstName: "",
       lastName: "",
       email: "",
+      msg: [],
       password: "",
       rePassword: "",
       otp1: "",
@@ -215,7 +226,61 @@ export default {
       showSuccessModal: false,
     };
   },
+  watch: {
+    email(value) {
+      // binding this to the data value in the email input
+      this.email = value;
+      this.validateEmail(value);
+    },
+    password(value) {
+      this.password = value;
+      this.validatePassword(value);
+    },
+    rePassword(value) {
+      this.rePassword = value;
+      this.validaterePassword(value);
+    },
+  },
   methods: {
+    validateEmail(value) {
+      // eslint-disable-next-line no-useless-escape
+      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+        this.msg["email"] = "";
+      } else {
+        this.msg["email"] = "This Email Address is not valid";
+      }
+    },
+    validatePassword(value) {
+      let difference = 8 - value.length;
+      let hasLowerCase = /[a-z]/.test(value);
+      let hasUpperCase = /[A-Z]/.test(value);
+      let hasNumber = /[0-9]/.test(value);
+      let hasSpecialChar = /[!@#$%^&*]/.test(value);
+
+      if (value.length < 8) {
+        this.msg["password"] =
+          "The Password must be at least 8 characters long, " +
+          difference +
+          " characters left";
+      } else if (
+        !hasLowerCase ||
+        !hasUpperCase ||
+        !hasNumber ||
+        !hasSpecialChar
+      ) {
+        this.msg["password"] =
+          "Please choose a strong password that includes at least 1 lowercase and uppercase letter, a number, as well as a special character (!@#$%^&*)";
+      } else {
+        this.msg["password"] = "";
+      }
+    },
+    validaterePassword(value) {
+      if (value !== this.password) {
+        this.msg["rePassword"] = "The password you entered does not match";
+      } else {
+        this.msg["rePassword"] = "";
+      }
+    },
     async signUp() {
       this.error = null;
       this.otpResent = false;
@@ -231,11 +296,15 @@ export default {
         return;
       }
 
-      if (this.password !== this.rePassword) {
-        this.error = "Passwords do not match!";
+      
+      // Gọi các hàm validate để kiểm tra email, password, và rePassword
+      this.validateEmail(this.email);
+      this.validatePassword(this.password);
+      this.validaterePassword(this.rePassword);
+      if (this.msg.email || this.msg.password || this.msg.rePassword) {
+        this.error = "Please fix the errors before proceeding.";
         return;
       }
-
       try {
         const response = await apiClient.post("/auth/signup", {
           firstName: this.firstName,
@@ -529,6 +598,7 @@ export default {
 }
 .signin-link a {
   color: #007bff;
+  text-decoration: none;
 }
 .error {
   color: red;

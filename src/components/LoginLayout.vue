@@ -16,13 +16,17 @@
       </div>
       <div class="login-form">
         <p class="signup-link">
-          Not a member? <a href="/signup">Sign up now</a>
+          Not a member?
+          <router-link to="/signup" class="navbar-link"
+            >Sign up now</router-link
+          >
         </p>
         <h2>Log in</h2>
         <form @submit.prevent="login">
           <div class="form-group">
             <label for="email">Email Address*</label>
             <input type="email" id="email" v-model="email" required />
+            <span style="color: red" v-if="msg.email">{{ msg.email }}</span>
           </div>
           <div class="form-group">
             <label for="password">Password*</label>
@@ -43,7 +47,10 @@
               <input type="checkbox" id="rememberMe" v-model="rememberMe" />
               <label for="rememberMe">Remember me</label>
             </div>
-            <router-link to="/forgetpassword" class="forgot-password"
+            <router-link
+              to="/forgetpassword"
+              class="forgot-password"
+              style="text-decoration: none"
               >Forgot Password?</router-link
             >
           </div>
@@ -191,6 +198,7 @@ export default {
       otp4: "",
       otp5: "",
       otp6: "",
+      msg: [],
       rememberMe: false,
       showPassword: false,
       otpSent: false,
@@ -201,6 +209,21 @@ export default {
     };
   },
   methods: {
+    watch: {
+      email(value) {
+        // binding this to the data value in the email input
+        this.email = value;
+        this.validateEmail(value);
+      },
+    },
+    validateEmail(value) {
+      // eslint-disable-next-line no-useless-escape
+      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+        this.msg["email"] = "";
+      } else {
+        this.msg["email"] = "This Email Address is not valid";
+      }
+    },
     async login() {
       try {
         const response = await apiClient.post("/auth/login", {
@@ -219,7 +242,7 @@ export default {
           this.$router.push("/home");
         }
       } catch (error) {
-        this.error = "Invalid email or password";
+        this.error = "This Email Address or Password is not incorrect. Retry!";
       }
     },
     async verifyOtp() {
@@ -236,7 +259,7 @@ export default {
         this.error = null; // Clear any previous errors
         console.log("OTP verified successfully. Token:", token);
       } catch (error) {
-        this.error = "Invalid OTP";
+        this.error = "Incorrect OTP provided. Retry!";
       }
     },
     closeSuccessModal() {
@@ -428,16 +451,19 @@ export default {
 }
 .form-group {
   margin-bottom: 15px;
+  text-decoration: none;
 }
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  text-decoration: none;
 }
 .form-group input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 13px;
+  text-decoration: none;
 }
 .password-input {
   display: flex;
@@ -452,19 +478,22 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  text-decoration: none;
 }
 .remember-me div {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 .login-button {
-  width: 100%;
+  width: 40%;
   padding: 10px;
   background-color: #007bff;
   border: none;
   color: white;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
+  margin-left: 8rem;
 }
 .social-login {
   text-align: center;
@@ -477,9 +506,11 @@ export default {
 .signup-link {
   text-align: center;
   margin-left: 12rem;
+  text-decoration: none;
 }
 .signup-link a {
   color: #007bff;
+  text-decoration: none;
 }
 .error {
   color: red;

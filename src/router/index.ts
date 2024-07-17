@@ -6,7 +6,6 @@ import Signup from "@/components/SignUp.vue";
 import ListTenant from "@/views/ListOfTenantView.vue";
 import ForgetPassword from "@/components/ForgetPassword.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
-import VerifyOtp from "@/components/VerifyOtp.vue";
 import ListOfPayment from "@/views/ListOfPayment.vue";
 import ListOfContract from "@/views/ListOfContract.vue";
 const routes = [
@@ -50,12 +49,7 @@ const routes = [
     component: ForgetPassword,
     meta: { layout: "SignUpLayout" },
   },
-  {
-    path: "/verify-otp",
-    name: "VerifyOtp",
-    component: VerifyOtp,
-    meta: { layout: "SignUpLayout" },
-  },
+
   {
     path: "/reset-password",
     name: "ResetPassword",

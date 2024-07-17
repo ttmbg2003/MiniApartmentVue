@@ -16,7 +16,6 @@
       <a @click="handleAuthAction" class="navbar-link">
         {{ authState.isAuthenticated ? "Logout" : "Login" }}
       </a>
-      <!-- <router-link to="/login">login</router-link> -->
     </div>
   </nav>
 </template>
