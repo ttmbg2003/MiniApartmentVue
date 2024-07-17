@@ -10,7 +10,7 @@
                 <ul style="list-style-type: none;">
                     <li class="li-side-bar"><i><img src="../components/icons/TenantIcon.png" style="width: 24px;"></i><router-link to="/tenants" class="a-side-bar">Tenant</router-link></li>
                     <li class="li-side-bar"><i><img src="../components/icons/ContractIcon.png" style="width: 24px;"></i><a class="a-side-bar"
-                            href="#">Contract</a></li>
+                            href="ListOfContract">Contract</a></li>
                     <li class="li-side-bar"><i><img src="../components/icons/paymentIcon.png" style="width: 24px;"></i><router-link to="/payment" class="a-side-bar">Payment</router-link></li>
                 </ul>
             </div>
@@ -39,20 +39,20 @@
 }
 
 .icon-apartment-manage {
-    margin-top: 10px;
-    margin-right: 10px;
-    margin-left: 4px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: 4px;
 }
 
 .a-side-bar {
-    text-decoration: none;
-    color: black;
-    margin-left: 10px;
+  text-decoration: none;
+  color: black;
+  margin-left: 10px;
 }
 
 .li-side-bar {
-    margin: 20px;
-    font-size: 20px;
-    display: flex;
+  margin: 20px;
+  font-size: 20px;
+  display: flex;
 }
 </style>
