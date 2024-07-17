@@ -218,6 +218,7 @@ export default {
       try {
         const otp =
           this.otp1 + this.otp2 + this.otp3 + this.otp4 + this.otp5 + this.otp6;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const response = await apiClient.post("/auth/verifyOtpForgetPassword", {
           email: this.email,
           otp: otp,
