@@ -11,12 +11,12 @@ class UserService {
   getUserById = (id: any): Promise<User> => {
     return apiClient
       .get(`/api/user/getUserById?id=${id}`)
-      .then((response) => response.data);
+      .then((response) => response.data['result'])
   };
   getUserByEmail = (email: any): Promise<User> => {
     return apiClient
       .get(`/api/user/getUserByEmail?email=${email}`)
-      .then((response) => response.data);
+      .then((response) => response.data['result']);
   };
   editProfile = (user: User): Promise<User> => {
     return apiClient
@@ -45,9 +45,6 @@ class UserService {
     const formData = new FormData();
     formData.append('file', selectedFile);
     formData.append('email', email);
-
-    
-
     // const token = this.getCurrentUser();
     try {
       const response = await 
