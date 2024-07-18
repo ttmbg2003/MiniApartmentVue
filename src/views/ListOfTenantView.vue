@@ -1,421 +1,282 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex">
-    <SideBar />
-    <div class="container">
-      <div class="card">
-        <div style="display: flex">
-          <div class="line-blue"></div>
-          <div>
-            <h3>List of Apartment Tenants</h3>
-            <p>List of All Apartment Tenants</p>
-          </div>
-        </div>
-        <div>
-          <div
-            style="display: flex; justify-content: center; margin-bottom: 23px"
-          >
-            <img
-              src="../components/icons/searchIcon.png"
-              style="width: 2%; height: 2%; margin-top: 8px"
-            />
-            <input
-              type="text"
-              v-model="searchValue"
-              class="input-search"
-              placeholder="Please enter a full name"
-            />
-          </div>
-          <div style="display: flex; justify-content: flex-end">
-            <p style="margin-right: 31px; margin-bottom: 12px">
-              Total: {{ clientItemsLength }}
-            </p>
-          </div>
-          <EasyDataTable
-            ref="dataTable"
-            buttons-pagination
-            :headers="headers"
-            :items="tenant"
-            :search-value="searchValue"
-            show-index
-            :must-sort="true"
-            :rows-per-page="10"
-            table-class-name="customize-table"
-          >
-            <template #item-action="item">
-              <a
-                @click="getTenantByRoom(item.roomId)"
-                data-bs-toggle="modal"
-                data-bs-target="#tenantDetailModal"
-                ><i
-                  ><img
-                    src="../components/icons/eye.png"
-                    style="width: 23px" /></i
-              ></a>
-              <a href="#" @click="() => deleteTenant(item.email)"
-                ><i
-                  ><img
-                    src="../components/icons/TrashIcon.png"
-                    style="width: 23px" /></i
-              ></a>
-            </template>
-          </EasyDataTable>
-        </div>
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="tenantDetailModal"
-          tabindex="-1"
-          aria-labelledby="tenantDetailModalLabel"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered"
-            style="max-width: 100%"
-          >
-            <div class="modal-content">
-              <!-- <div class="modal-header">
+    <div style="display: flex;height: 89%">
+        <SideBar />
+        <div class="container">
+            <div class="card">
+
+                <div style="display: flex;">
+                    <div class="line-blue"></div>
+                    <div>
+                        <h3>List of Apartment Tenants</h3>
+                        <p style="    font-style: italic;">List of All Apartment Tenants</p>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: flex;justify-content: center;">
+                        <img @click="getTenantPanigation()" src="../components/icons/searchIcon.png"
+                            style="width: 2%;height: 2%;margin-top: 8px;cursor: pointer;">
+                        <input type="text" v-model="searchValue" @change="getTenantPanigation()" class="input-search"
+                            placeholder="Please enter a full name">
+                    </div>
+                    <div v-if="tenants == ''" style="display: flex;justify-content: center">
+                        <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                    </div>
+                    <div v-else style="display: flex;justify-content: flex-end;">
+                        <p style="margin-right: 31px; margin-bottom: 0;">Total: {{ totalElement }}</p>
+                    </div>
+                    <div style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;">
+                        <div style="margin: 12px;">
+                            <table style="width: 100%;">
+                                <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
+                                    <th>No.</th>
+                                    <th>Full Name</th>
+                                    <th>Room No</th>
+                                    <th>Gender</th>
+                                    <th>D.O.B</th>
+                                    <th>Mobile No</th>
+                                    <th>Email ID</th>
+                                    <th>Citizen ID</th>
+                                    <th>Career</th>
+                                    <th>License Plate</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(tenant) in tenants" :key="tenant.email" style="height:50px;">
+                                        <td>{{ tenant.id }}</td>
+                                        <td>{{ tenant.firstName }} {{ tenant.lastName }}</td>
+                                        <td>{{ tenant.roomId }}</td>
+                                        <td>
+                                            <div v-if="tenant.gender">Male</div>
+                                            <div v-else>Female</div>
+                                        </td>
+                                        <td>{{ tenant.dateOfBirth }}</td>
+                                        <td>{{ tenant.contact }}</td>
+                                        <td>{{ tenant.email }}</td>
+                                        <td>{{ tenant.citizenId }}</td>
+                                        <td>{{ tenant.career }}</td>
+                                        <td>{{ tenant.licensePlate }}</td>
+                                        <td>
+                                            <a @click="getTenantByRoom(tenant.roomId)" data-bs-toggle="modal"
+                                                data-bs-target="#tenantDetailModal"><i><img
+                                                        src="../components/icons/eye.png" style="width: 23px;"></i></a>
+                                            <a @click="deleteTenant(tenant.email)" href="#"><i><img src="../components/icons/TrashIcon.png"
+                                                        style="width: 23px;"></i></a>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div v-else style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;display: flex;
+    justify-content: center;"><p>No data to display</p></div> -->
+                </div>
+                <nav v-if="tenants != ''" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                            <a href="#" :class="currentPage == 0 ? 'disabled-a-tag' : ''"
+                                @click="getTenantPanigation(currentPage - 1)"><i class="fa fa-angle-left"
+                                    style="font-size: x-large;"></i></a>
+                        </li>
+                        <li class="page-item" v-for="index in totalPage">
+                            <a href="#" :class="(currentPage + 1) == index ? 'current-page' : 'non-current-page'"
+                                @click="getTenantPanigation(index - 1)">{{ index }}</a>
+                        </li>
+                        <li class="page-item">
+                            <a href="#" :class="currentPage == (totalPage - 1) ? 'disabled-a-tag' : ''"
+                                @click="getTenantPanigation(currentPage + 1)"><i class="fa fa-angle-right"
+                                    style="font-size: x-large;"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Modal -->
+                <div class="modal fade" id="tenantDetailModal" tabindex="-1" aria-labelledby="tenantDetailModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;">
+                        <div class="modal-content">
+                            <!-- <div class="modal-header">
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->
-              <form @submit.prevent="updateTenant">
-                <div class="modal-body">
-                  <p>
-                    <i
-                      ><img
-                        src="../components/icons/eye.png"
-                        style="width: 23px"
-                    /></i>
-                    View Details
-                  </p>
-                  <EasyDataTable
-                    :headers="headersTenantDetail"
-                    :items="tenantDetail"
-                    hide-footer
-                    show-index
-                    table-class-name="customize-table"
-                  >
-                    <template #item-action="item">
-                      <a
-                        ><i
-                          ><img
-                            src="../components/icons/PencilIcon.png"
-                            style="width: 23px" /></i
-                      ></a>
-                      <a href="#" @click="() => deleteTenant(item.email)"
-                        ><i
-                          ><img
-                            src="../components/icons/TrashIcon.png"
-                            style="width: 23px" /></i
-                      ></a>
-                    </template>
-                    <template #item-roomId="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.roomId"
-                        style="width: 35px"
-                      />
-                    </template>
-                    <template #item-gender="item" v-if="isEdit == true">
-                      <!-- <input class="input-tenant-detail" v-model="item.gender"> -->
-                      {{ item.gender }}
-                    </template>
-                    <template #item-dateOfBirth="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.dateOfBirth"
-                        type="date"
-                      />
-                    </template>
-                    <template #item-contact="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.contact"
-                      />
-                    </template>
-                    <template #item-citizenId="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.citizenId"
-                      />
-                    </template>
-                    <template #item-career="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.career"
-                        style="width: 60px"
-                      />
-                    </template>
-                    <template #item-licensePlate="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.licensePlate"
-                        style="width: 90px"
-                      />
-                    </template>
-                    <template #item-vehicleType="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.vehicleType"
-                        style="width: 60px"
-                      />
-                    </template>
-                    <template #item-vehicleColor="item" v-if="isEdit == true">
-                      <input
-                        class="input-tenant-detail"
-                        v-model="item.vehicleColor"
-                        style="width: 60px"
-                      />
-                    </template>
-                    <template
-                      #item-residenceStatus="item"
-                      v-if="isEdit == true"
-                    >
-                      <select
-                        class="residence-status"
-                        v-model="item.residenceStatus"
-                      >
-                        <option
-                          class="btn-residence-status-success"
-                          value="Success"
-                        >
-                          Success
-                        </option>
-                        <option
-                          class="btn-residence-status-progress"
-                          value="In Progress"
-                        >
-                          In Progress
-                        </option>
-                        <option
-                          class="btn-residence-status-fail"
-                          value="Failed"
-                        >
-                          Failed
-                        </option>
-                      </select>
-                      <!-- <div class="residence-status" v-if="item.residenceStatus === 'Success'">
-                                                <button class="btn-residence-status-success btn-residence-status"
-                                                    disabled>Success</button>
-                                            </div>
-                                            <div class="residence-status" v-if="item.residenceStatus === 'In Progress'">
-                                                <button disabled
-                                                    class="btn-residence-status-progress btn-residence-status">Progress</button>
-                                            </div>
-                                            <div class="residence-status" v-if="item.residenceStatus === 'Failed'">
-                                                <button disabled
-                                                    class="btn-residence-status-fail btn-residence-status">Failed</button>
-                                            </div> -->
-                    </template>
-                  </EasyDataTable>
+                            <form @submit.prevent="updateTenant">
+                                <div class="modal-body">
+                                    <p><i><img src="../components/icons/eye.png" style="width: 23px;"></i> View Details
+                                    </p>
+                                    <table style="width: 100%;">
+                                        <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
+                                            <th>No.</th>
+                                            <th>Full Name</th>
+                                            <th>Room No</th>
+                                            <th>Gender</th>
+                                            <th>D.O.B</th>
+                                            <th>Mobile No</th>
+                                            <th>Email ID</th>
+                                            <th>Citizen ID</th>
+                                            <th>Career</th>
+                                            <th>License Plate</th>
+                                            <th>Vehicle Type</th>
+                                            <th>Vehicle Color</th>
+                                            <th style="width: 7rem;">Temporary Residence Status</th>
+                                            <th>Action</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(tenantDetail) in tenantDetail" style="height:50px;">
+                                                <td>{{ tenantDetail.id }}</td>
+                                                <td>{{ tenantDetail.firstName }} {{ tenantDetail.lastName }}</td>
+                                                <td>{{ tenantDetail.roomId }}</td>
+                                                <td>
+                                                    <div v-if="tenantDetail.gender">Male</div>
+                                                    <div v-else>Female</div>
+                                                </td>
+                                                <td>{{ tenantDetail.dateOfBirth }}</td>
+                                                <td>{{ tenantDetail.contact }}</td>
+                                                <td>{{ tenantDetail.email }}</td>
+                                                <td>{{ tenantDetail.citizenId }}</td>
+                                                <td>{{ tenantDetail.career }}</td>
+                                                <td>{{ tenantDetail.licensePlate }}</td>
+                                                <td>{{ tenantDetail.vehicleType }}</td>
+                                                <td>{{ tenantDetail.vehicleColor }}</td>
+                                                <td>{{ tenantDetail.residenceStatus }}</td>
+                                                <td>
+                                                    <a @click="isEdit = true"><i><img src="../components/icons/PencilIcon.png" style="width: 23px;"></i></a>
+                                                    <a href="#"><i><img src="../components/icons/TrashIcon.png"
+                                                                style="width: 23px;"></i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-save">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-cancel"
-                    data-bs-dismiss="modal"
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" class="btn btn-save">Save</button>
-                </div>
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
-import { computed, ref, reactive } from "vue";
-import type { Tenant } from "@/type/Tenant";
-import tenantService from "@/services/tenantService";
-import type { Header, Item } from "vue3-easy-data-table";
-import Swal from "sweetalert2";
-// import type { UsePaginationReturn, UseRowsPerPageReturn } from "use-vue3-easy-data-table";
-// import { usePagination, useRowsPerPage } from "use-vue3-easy-data-table";
+import { ref } from "vue";
+import type { Tenant } from '@/type/Tenant'
+import tenantService from '@/services/tenantService';
+import Swal from 'sweetalert2'
 
-const tenant = ref<Tenant[]>([]);
-const tenantDetail = reactive<Tenant[]>([]);
-const searchValue = ref("");
-const dataTable = ref();
-const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
-let isEdit = true;
-const allowEdit = () => {
-  $("#tenantDetailModal").modal("hide");
-  isEdit = true;
+const tenants = ref<Tenant[]>([]);
+const tenantDetail = ref<Tenant[]>([]);
+var searchValue = "";
+let isEdit = false;
+var totalElement = 0;
+var totalPage = 0;
+var currentPage = 0;
+
+const getTenantPanigation = (pageNo: number) => {
+    tenantService.getAllTenant(pageNo, searchValue).then((response) => {
+        tenants.value = response.content.map((tenants: {id:any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
+            id: tenants.id,
+            email: tenants.email,
+            roomId: tenants.roomId,
+            career: tenants.career,
+            licensePlate: tenants.licensePlate,
+            vehicleType: tenants.vehicleType,
+            vehicleColor: tenants.vehicleColor,
+            residenceStatus: tenants.residenceStatus,
+            contractId: tenants.contractId,
+            dateOfBirth: formatDate(tenants.dateOfBirth),
+            firstName: tenants.firstName,
+            lastName: tenants.lastName,
+            gender: tenants.gender,
+            userId: tenants.userId,
+            contact: tenants.contact,
+            citizenId: tenants.citizenId,
+        }));
+        totalElement = response.totalElements;
+        totalPage = response.totalPages;
+        currentPage = response.pageable.pageNumber;
+    });
+    console.log(tenants);
+    
 };
-const openModal = () => {
-  $("#tenantDetailModal").modal("show");
-};
+getTenantPanigation();
 const updateTenant = async () => {
-  console.log("---------------");
+    try {
+        console.log('Sending tenant data:', tenantDetail);
+        await tenantService.updateTenant(tenantDetail);
+        console.log('Tenant data updated successfully');
+    } catch (error) {
+        console.log(error);
 
-  try {
-    console.log("Sending tenant data:", tenantDetail);
-    await tenantService.updateTenant(tenantDetail);
-    console.log("Tenant data updated successfully");
-  } catch (error) {
-    console.log(error);
-  }
-};
+    }
+}
 
 const deleteTenant = (email: string) => {
-  console.log(isEdit);
-  Swal.fire({
-    text: "Are you sure want to delete?",
-    showCancelButton: true,
-    confirmButtonColor: "#0565F9",
-    confirmButtonText: "Delete",
-    cancelButtonColor: "#E8E7E7",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      tenantService.deleteTenant(email);
-      Swal.fire({
-        title: "Deleted!",
-        icon: "success",
-        showConfirmButton: false,
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    }
-  });
-};
-// const getTenantByRoom = (roomId: number) => {
-//     tenantService.getTenantByRoomId(roomId).then((response) => {
-//         tenantDetail.values = response.map(tenantDetail => ({
-//             email: tenantDetail.email,
-//             roomId: tenantDetail.roomId,
-//             career: tenantDetail.career,
-//             licensePlate: tenantDetail.licensePlate,
-//             vehicleType: tenantDetail.vehicleType,
-//             vehicleColor: tenantDetail.vehicleColor,
-//             residenceStatus: tenantDetail.residenceStatus,
-//             contractId: tenantDetail.contractId,
-//             dateOfBirth: tenantDetail.dateOfBirth,
-//             firstName: tenantDetail.firstName,
-//             lastName: tenantDetail.lastName,
-//             gender: tenantDetail.gender,
-//             userId: tenantDetail.userId,
-//             contact: tenantDetail.contact,
-//             citizenId: tenantDetail.citizenId,
-//             fullName: `${tenantDetail.firstName} ${tenantDetail.lastName}`,
-//         }))
-//     })
-// }
-const getTenantByRoom = async (roomId: number) => {
-  try {
-    const response = await tenantService.getTenantByRoomId(roomId);
-    if (Array.isArray(response)) {
-      tenantDetail.splice(
-        0,
-        tenantDetail.length,
-        ...response.map(
-          ({
-            email,
-            roomId,
-            career,
-            licensePlate,
-            vehicleType,
-            vehicleColor,
-            residenceStatus,
-            contractId,
-            dateOfBirth,
-            firstName,
-            lastName,
-            gender,
-            userId,
-            contact,
-            citizenId,
-          }) => ({
-            email,
-            roomId,
-            career,
-            licensePlate,
-            vehicleType,
-            vehicleColor,
-            residenceStatus,
-            contractId,
-            dateOfBirth,
-            firstName,
-            lastName,
-            gender,
-            userId,
-            contact,
-            citizenId,
-            fullName: `${firstName} ${lastName}`,
-          })
-        )
-      );
-    } else {
-      console.error("Response is not an array:", response);
-    }
-  } catch (error) {
-    console.error("Error fetching tenant data:", error);
-  }
-};
-tenantService.getAllTenant().then((response) => {
-  tenant.value = response.map((tenant) => ({
-    email: tenant.email,
-    roomId: tenant.roomId,
-    career: tenant.career,
-    licensePlate: tenant.licensePlate,
-    vehicleType: tenant.vehicleType,
-    vehicleColor: tenant.vehicleColor,
-    residenceStatus: tenant.residenceStatus,
-    contractId: tenant.contractId,
-    dateOfBirth: tenant.dateOfBirth,
-    firstName: tenant.firstName,
-    lastName: tenant.lastName,
-    gender: tenant.gender,
-    userId: tenant.userId,
-    contact: tenant.contact,
-    citizenId: tenant.citizenId,
-    fullName: `${tenant.firstName} ${tenant.lastName}`,
-  }));
-});
+    Swal.fire({
+        text: "Are you sure want to delete?",
+        showCancelButton: true,
+        confirmButtonColor: "#0565F9",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#E8E7E7",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            tenantService.deleteTenant(email)
+            Swal.fire({
+                title: "Deleted!",
+                icon: "success",
+                showConfirmButton: false,
+            });
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+    });
 
-const headers: Header[] = [
-  { text: "Full Name", value: "fullName", sortable: true },
-  { text: "Room No", value: "roomId", sortable: true },
-  { text: "Gender", value: "gender", sortable: true },
-  { text: "D.O.B", value: "dateOfBirth", sortable: true },
-  { text: "Mobile No", value: "contact", sortable: true },
-  { text: "Email ID", value: "email", sortable: true },
-  { text: "Citizen ID", value: "citizenId", sortable: true },
-  { text: "Career", value: "career", sortable: true },
-  { text: "License plate", value: "licensePlate", sortable: true },
-  { text: "Action", value: "action" },
-];
-const headersTenantDetail: Header[] = [
-  { text: "Full Name", value: "fullName", width: 150 },
-  { text: "Room No", value: "roomId" },
-  { text: "Gender", value: "gender" },
-  { text: "D.O.B", value: "dateOfBirth" },
-  { text: "Mobile No", value: "contact" },
-  { text: "Email ID", value: "email" },
-  { text: "Citizen ID", value: "citizenId" },
-  { text: "Career", value: "career" },
-  { text: "License plate", value: "licensePlate" },
-  { text: "Vehicle Type", value: "vehicleType" },
-  { text: "Vehicle Color", value: "vehicleColor" },
-  { text: "Residence Status", value: "residenceStatus" },
-  { text: "Action", value: "action" },
-];
+}
+const getTenantByRoom = async (roomId: number) => {
+    try {
+        const response = await tenantService.getTenantByRoomId(roomId);
+        tenantDetail.value = response.content.map((tenants: {id:any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
+            id: tenants.id,
+            email: tenants.email,
+            roomId: tenants.roomId,
+            career: tenants.career,
+            licensePlate: tenants.licensePlate,
+            vehicleType: tenants.vehicleType,
+            vehicleColor: tenants.vehicleColor,
+            residenceStatus: tenants.residenceStatus,
+            contractId: tenants.contractId,
+            dateOfBirth: formatDate(tenants.dateOfBirth),
+            firstName: tenants.firstName,
+            lastName: tenants.lastName,
+            gender: tenants.gender,
+            userId: tenants.userId,
+            contact: tenants.contact,
+            citizenId: tenants.citizenId,
+        }));
+        console.log(tenantDetail.value);
+        
+    } catch (error) {
+        console.error('Error fetching tenant data:', error);
+    }
+};
+const formatDate = (dateString: string) => {
+    return dateString.split('T')[0];
+};
 </script>
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
-  background: white;
-  margin-top: 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  font-family: "Poppins", sans-serif;
-  margin-right: 1rem;
-  border-radius: 14px;
+    background: white;
+    margin-top: 20px;
+    box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
+    font-family: 'Poppins', sans-serif;
+    border-radius: 14px;
+    max-width: 83%;
 }
 
 .card {
@@ -426,10 +287,10 @@ const headersTenantDetail: Header[] = [
 }
 
 .line-blue {
-  width: 4px;
-  background-color: #0064ff;
-  height: 73px;
-  margin-right: 2px;
+    width: 4px;
+    background-color: #0064FF;
+    height: 73px;
+    margin-right: 12px;
 }
 
 .input-search {
@@ -490,17 +351,26 @@ a {
   color: #fb2424;
 }
 
-.customize-table {
-  --easy-table-border: 0;
-  --easy-table-header-font-size: 15px;
-  --easy-table-header-height: 47px;
-  --easy-table-body-row-height: 43px;
-  --easy-table-header-font-color: #9b9b9b;
-  --easy-table-footer-height: 49px;
+.input-tenant-detail {
+    border: none;
+    border-radius: 5px
 }
 
-.input-tenant-detail {
-  border: none;
-  border-radius: 5px;
+.current-page {
+    color: #000231;
+}
+
+.non-current-page {
+    color: #9B9B9B;
+    text-decoration: none;
+}
+
+.page-item {
+    margin-right: 10px;
+}
+
+.disabled-a-tag {
+    pointer-events: none;
+    color: #9B9B9B;
 }
 </style>

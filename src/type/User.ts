@@ -10,4 +10,5 @@ export interface User {
   password: string;
   roleId: number;
   image: string;
+  citizenId: number;
 }

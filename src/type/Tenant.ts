@@ -1,4 +1,5 @@
 export interface Tenant {
+    id:number;
     email: string;
     roomId: number;
     career: string;
@@ -13,5 +14,5 @@ export interface Tenant {
     gender: string;
     dateOfBirth: string;
     contact: string;
-    citizenId: number;
+    citizenId: string;
 }

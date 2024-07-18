@@ -7,16 +7,18 @@
         class="navbar-logo"
       />
     </div>
-    <div class="navbar-right">
+    <div class="">
       <router-link to="/home" class="navbar-link">About us</router-link>
       <router-link to="/tenants" class="navbar-link">Management</router-link>
       <!-- <router-link to="/profile" class="navbar-link">Information</router-link> -->
       <router-link to="/home" class="navbar-link">Contact us</router-link>
-      <a href="/profile" class="navbar-link">Information</a>
-      <a @click="handleAuthAction" class="navbar-link">
-        {{ authState.isAuthenticated ? "Logout" : "Login" }}
-      </a>
+      <router-link to="/profile" class="navbar-link">Information</router-link>
     </div>
+    <div class="navbar-right">
+    <button @click="handleAuthAction" class="navbar-link">
+      {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
+    </button>
+  </div>
   </nav>
 </template>
 <script lang="ts">
@@ -61,7 +63,7 @@ export default defineComponent({
   font-family: "Poppins", sans-serif;
   color: #000000;
   text-decoration: none;
-  margin-left: 20px;
+  margin-left: 6rem;
   font-size: 20px;
   font-weight: 600;
 }

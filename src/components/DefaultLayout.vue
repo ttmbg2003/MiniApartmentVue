@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%;    background-color: #F5F6F8;">
       <NavBar />
       <router-view />
     </div>
