@@ -8,6 +8,7 @@ import ForgetPassword from "@/components/ForgetPassword.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import ListOfPayment from "@/views/ListOfPayment.vue";
 import ListOfContract from "@/views/ListOfContract.vue";
+import ReporManageView from "@/views/reportManagement/reportManageView.vue";
 const routes = [
   {
     path: "/home",
@@ -61,6 +62,7 @@ const routes = [
     name: "ListOfContract",
     component: ListOfContract,
   },
+  { path: "/report", component: ReporManageView },
 ];
 
 const router = createRouter({

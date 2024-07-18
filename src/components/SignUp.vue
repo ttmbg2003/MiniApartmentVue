@@ -6,6 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
+          style="width: 30px"
         />
       </div>
       <div class="illustration">
@@ -296,7 +297,6 @@ export default {
         return;
       }
 
-      
       // Gọi các hàm validate để kiểm tra email, password, và rePassword
       this.validateEmail(this.email);
       this.validatePassword(this.password);

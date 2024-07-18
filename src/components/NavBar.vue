@@ -15,10 +15,10 @@
       <router-link to="/profile" class="navbar-link">Information</router-link>
     </div>
     <div class="navbar-right">
-    <button @click="handleAuthAction" class="navbar-link">
-      {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
-    </button>
-  </div>
+      <button @click="handleAuthAction" class="navbar-link">
+        {{ authState.isAuthenticated ? "Logout" : "Login" }}
+      </button>
+    </div>
   </nav>
 </template>
 <script lang="ts">
