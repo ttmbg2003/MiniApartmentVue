@@ -268,7 +268,7 @@ const formatDate = (dateString: string) => {
 };
 </script>
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
     background: white;
@@ -280,10 +280,10 @@ const formatDate = (dateString: string) => {
 }
 
 .card {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-    border: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  border: none;
 }
 
 .line-blue {
@@ -294,62 +294,61 @@ const formatDate = (dateString: string) => {
 }
 
 .input-search {
-    outline: none;
-    border: none;
-    border-radius: 17px;
-    background-color: #e9e9e9;
-    padding: 7px;
+  outline: none;
+  border: none;
+  border-radius: 17px;
+  background-color: #e9e9e9;
+  padding: 7px;
 }
 
 .btn {
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
 }
 
 .btn-save {
-    background-color: #0565F9;
-    color: white;
-    width: 68px;
+  background-color: #0565f9;
+  color: white;
+  width: 68px;
 }
 
 .btn-cancel {
-    background-color: #E8E7E7;
-
+  background-color: #e8e7e7;
 }
 
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .residence-status {
-    border-radius: 6px;
-    width: 94px;
-    font-weight: 600;
-    font-size: 14px;
+  border-radius: 6px;
+  width: 94px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .residence-status-success {
-    border-color: #00d656fe;
-    color: #009d3f;
+  border-color: #00d656fe;
+  color: #009d3f;
 }
 
 .residence-status-progress {
-    border-color: #ffd79b;
-    color: #ffbd5a;
+  border-color: #ffd79b;
+  color: #ffbd5a;
 }
 
 .residence-status-fail {
-    border-color: #ff7d7d;
-    color: #fb2424;
+  border-color: #ff7d7d;
+  color: #fb2424;
 }
 
 .input-tenant-detail {
