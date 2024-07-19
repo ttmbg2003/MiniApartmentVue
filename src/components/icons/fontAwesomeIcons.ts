@@ -1,0 +1,40 @@
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faArrowRight,
+  faArrowLeft,
+  faHome,
+  faUser,
+  faCog,
+  faUserTie,
+  faBuilding,
+  faGlobe,
+  faUserGroup,
+  faCircleUser,
+  faRightFromBracket,
+  faArrowTrendUp,
+  faArrowTrendDown,
+  faCalendarCheck,
+  faSpinner,
+  faBan,
+  faCircleCheck,
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+  faArrowRight,
+  faArrowLeft,
+  faHome,
+  faUser,
+  faCog,
+  faUserTie,
+  faBuilding,
+  faGlobe,
+  faUserGroup,
+  faCircleUser,
+  faRightFromBracket,
+  faArrowTrendUp,
+  faArrowTrendDown,
+  faCalendarCheck,
+  faSpinner,
+  faBan,
+  faCircleCheck
+);
