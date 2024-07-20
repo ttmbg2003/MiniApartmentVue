@@ -142,10 +142,17 @@
         <div class="mid-elements">
           <RoomChartView />
         </div>
-        <div class="mid-elements"></div>
-        <div class="mid-elements"></div>
+        <div class="mid-elements">
+          <TenantChartViewVue />
+        </div>
+        <div class="mid-elements">
+          <PaymentChartView />
+        </div>
       </div>
-      <div class="bottom"></div>
+      <div class="container" style="margin-top: 0">
+        <div class="bottom1"><MaintenanceChartView /></div>
+        <div class="bottom2"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -153,6 +160,9 @@
 <script setup lang="ts">
 import SideBar from "@/components/SideBar.vue";
 import RoomChartView from "./RoomChartView.vue";
+import TenantChartViewVue from "./TenantChartView.vue";
+import PaymentChartView from "./PaymentChartView.vue";
+import MaintenanceChartView from "./MaintenanceChartView.vue";
 </script>
 
 <style scoped>
@@ -164,7 +174,7 @@ import RoomChartView from "./RoomChartView.vue";
 
   display: flex;
   flex-direction: column;
-  margin: 20px 20px 0 0;
+  margin: 0px 20px 0 0;
 }
 .container {
   display: flex;
@@ -205,11 +215,26 @@ import RoomChartView from "./RoomChartView.vue";
 
 .mid-elements {
   width: 32%;
-  height: 258px;
+  height: 270px;
   background: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 10px;
+  padding: 0px 25px 0px 25px;
+  margin-bottom: 0;
+}
+.bottom1 {
+  background: white;
+  height: 220px;
+  width: 42%;
+  border-radius: 10px;
+  padding: 0px 25px 0px 25px;
+}
+.bottom2 {
+  background: white;
+  height: 220px;
+  width: 55%;
   border-radius: 10px;
   padding: 0px 25px 0px 25px;
 }
