@@ -83,6 +83,9 @@ const chartOptions = {
         pointStyle: "rect",
       },
     },
+    datalabels: {
+      display: false,
+    },
   },
   scales: {
     x: {

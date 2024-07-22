@@ -17,6 +17,11 @@ import {
   faSpinner,
   faBan,
   faCircleCheck,
+  faFaceAngry,
+  faFaceFrown,
+  faFaceMeh,
+  faFaceSmile,
+  faFaceLaughSquint,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -36,5 +41,10 @@ library.add(
   faCalendarCheck,
   faSpinner,
   faBan,
-  faCircleCheck
+  faCircleCheck,
+  faFaceAngry,
+  faFaceFrown,
+  faFaceMeh,
+  faFaceSmile,
+  faFaceLaughSquint
 );
