@@ -72,6 +72,9 @@ const chartOptions = {
     legend: {
       display: false, // Xóa legend (chú giải) của biểu đồ
     },
+    datalabels: {
+      display: false,
+    },
   },
   scales: {
     x: {

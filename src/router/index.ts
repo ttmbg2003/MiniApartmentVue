@@ -11,6 +11,10 @@ import ListOfContract from "@/views/ListOfContract.vue";
 import ReporManageView from "@/views/reportManagement/reportManageView.vue";
 const routes = [
   {
+    path: "/",
+    redirect: "/home",
+  },
+  {
     path: "/home",
     name: "home",
     component: HomeView,

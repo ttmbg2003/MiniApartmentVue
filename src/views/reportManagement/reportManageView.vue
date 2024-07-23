@@ -1,5 +1,12 @@
 <template>
-  <div style="display: flex; height: 89%">
+  <div
+    style="
+      display: flex;
+      height: 89%;
+      background-color: #f5f6f8;
+      margin-top: 90px;
+    "
+  >
     <SideBar class="sidebar" />
     <div class="main-screen">
       <div style="font-weight: 600; font-size: 24px; margin-left: 36px">
@@ -151,7 +158,7 @@
       </div>
       <div class="container" style="margin-top: 0">
         <div class="bottom1"><MaintenanceChartView /></div>
-        <div class="bottom2"></div>
+        <div class="bottom2"><TenantSatView /></div>
       </div>
     </div>
   </div>
@@ -163,6 +170,7 @@ import RoomChartView from "./RoomChartView.vue";
 import TenantChartViewVue from "./TenantChartView.vue";
 import PaymentChartView from "./PaymentChartView.vue";
 import MaintenanceChartView from "./MaintenanceChartView.vue";
+import TenantSatView from "./TenantSatView.vue";
 </script>
 
 <style scoped>
@@ -236,6 +244,6 @@ import MaintenanceChartView from "./MaintenanceChartView.vue";
   height: 220px;
   width: 55%;
   border-radius: 10px;
-  padding: 0px 25px 0px 25px;
+  padding: 0px;
 }
 </style>
