@@ -1,5 +1,12 @@
 <template>
-  <div style="display: flex; height: 89%">
+  <div
+    style="
+      display: flex;
+      height: 89%;
+      background-color: #f5f6f8;
+      margin-top: 90px;
+    "
+  >
     <SideBar class="sidebar" />
     <div class="main-screen">
       <div style="font-weight: 600; font-size: 24px; margin-left: 36px">
