@@ -69,6 +69,12 @@ const routes = [
     component: ListOfContract,
   },
   { path: "/report", component: ReporManageView },
+  {
+    path: "/newContract",
+    name: "Contract",
+    component: Contract,
+    
+  },
 ];
 
 const router = createRouter({

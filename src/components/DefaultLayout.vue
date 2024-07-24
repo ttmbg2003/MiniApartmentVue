@@ -18,7 +18,9 @@
 
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
+
 import { watch } from "vue";
+
 import { useRoute } from "vue-router";
 const route = useRoute();
 watch(
@@ -28,7 +30,9 @@ watch(
     if (elements.length > 0) {
       const navbar = elements[0] as HTMLElement;
       // Kiểm tra xem có phần tử nào được tìm thấy không
-      if (newPath === "/contract") {
+
+      if (newPath === "/newContract") {
+
         navbar.style.display = "none"; // Ẩn navbar
       } else {
         navbar.style.display = ""; // Hiển thị navbar nếu đường dẫn không phải là "/contract"
