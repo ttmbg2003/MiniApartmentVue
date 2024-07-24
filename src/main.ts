@@ -15,5 +15,6 @@ const app = createApp(App);
 // app.component("EasyDataTable", Vue3EasyDataTable);
 app.use(ElementPlus);
 app.component("font-awesome-icon", FontAwesomeIcon);
+
 app.use(router);
 app.mount("#app");
