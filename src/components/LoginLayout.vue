@@ -6,7 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 12rem"
+          style="width: 30px"
         />
       </div>
       <div class="illustration">

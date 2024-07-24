@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; height: 89%">
+  <div style="display: flex; height: 100%; margin-top: 90px">
     <SideBar />
     <div class="container">
       <div class="card">

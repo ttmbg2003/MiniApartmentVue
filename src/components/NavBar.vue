@@ -15,15 +15,15 @@
       <router-link to="/profile" class="navbar-link">Information</router-link>
     </div>
     <div class="navbar-right">
-    <button @click="handleAuthAction" class="navbar-link">
-      {{ authState.isAuthenticated ? 'Logout' : 'Login' }}
-    </button>
-  </div>
+      <button @click="handleAuthAction" class="navbar-link">
+        {{ authState.isAuthenticated ? "Logout" : "Login" }}
+      </button>
+    </div>
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
+import { defineComponent, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { authState, logout } from "@/type/auth";
 export default defineComponent({
   name: "NavBar",
@@ -48,11 +48,10 @@ export default defineComponent({
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .navbar {
-  background: white;
+  opacity: 1;
   display: flex;
   align-items: center;
   padding: 10px 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .navbar-logo {
