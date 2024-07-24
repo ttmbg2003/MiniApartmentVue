@@ -6,11 +6,12 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
+          style="width: 12rem"
         />
       </div>
       <div class="illustration">
         <img
-          src="@/components/icons/login-illustration.png"
+          src="@/components/icons/signup.jpg"
           alt="Forget Password Illustration"
         />
       </div>

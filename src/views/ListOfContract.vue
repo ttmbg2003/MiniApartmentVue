@@ -1,65 +1,136 @@
 <template>
-  <div style="display: flex">
+  <div style="display: flex; height: 89%">
     <SideBar />
     <div class="container">
       <div class="card">
         <div style="display: flex">
           <div class="line-blue"></div>
           <div>
-            <h3>List of Lease Contracts</h3>
+            <h3>List of Apartment Contracts</h3>
+            <p style="font-style: italic">List of All Apartment Contracts</p>
           </div>
         </div>
         <div>
-          <div
-            style="display: flex; justify-content: center; margin-bottom: 23px"
-          >
+          <div style="display: flex; justify-content: center">
             <img
+              @click="getAllContract()"
               src="../components/icons/searchIcon.png"
-              style="width: 2%; height: 2%; margin-top: 8px"
+              style="width: 2%; height: 2%; margin-top: 8px; cursor: pointer"
             />
             <input
               type="text"
               v-model="searchValue"
+              @change="getAllContract()"
               class="input-search"
-              placeholder="Please enter contract details"
+              placeholder="Please enter a representative name"
             />
           </div>
-          <div style="display: flex; justify-content: flex-end">
-            <p style="margin-right: 31px; margin-bottom: 12px">
-              Total: {{ clientItemsLength }}
+          <div
+            v-if="contracts == ''"
+            style="display: flex; justify-content: center"
+          >
+            <p style="margin: 0; margin-top: 10px">No data to display</p>
+          </div>
+          <div v-else style="display: flex; justify-content: flex-end">
+            <p style="margin-right: 31px; margin-bottom: 0">
+              Total: {{ totalElement }}
             </p>
           </div>
-          <EasyDataTable
-            buttons-pagination
-            :headers="headersContract"
-            :items="contracts"
-            :search-value="searchValue"
-            show-index
-            :must-sort="true"
-            :rows-per-page="10"
-            table-class-name="customize-table"
+          <div
+            style="
+              box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;
+              border-radius: 5px;
+            "
           >
-            <template #item-action="item">
-              <a
-                @click="showContractDetails(item.contractId)"
-                data-bs-toggle="modal"
-                data-bs-target="#contractDetailModal"
-              >
-                <i
-                  ><img
-                    src="../components/icons/eye.png"
-                    style="width: 23px" /></i
-              ></a>
-            </template>
-            <template #item-contractStatus="item">
-              <span v-if="item.contractStatus === 1">In Lease Term</span>
-              <span v-if="item.contractStatus === 2"
-                >Approaching Expiration</span
-              >
-              <span v-if="item.contractStatus === 3">Past Expiration</span>
-            </template>
-          </EasyDataTable>
+            <div style="margin: 12px">
+              <table style="width: 100%">
+                <thead
+                  style="
+                    color: #9b9b9b;
+                    border-bottom: solid #b0b4cd 1px;
+                    height: 45px;
+                  "
+                >
+                  <th>No.</th>
+                  <th>Room No</th>
+                  <th>Representative</th>
+                  <th>Number of Tenants</th>
+                  <th>Rental Fee (VND)</th>
+                  <th>Security Deposit (VND)</th>
+                  <th>Payment Cycle</th>
+                  <th>Contract</th>
+                  <th>Contract Status</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="contract in contracts"
+                    :key="contract.contractId"
+                    style="height: 50px"
+                  >
+                    <td>{{ contract.contractId }}</td>
+                    <td>{{ contract.roomId }}</td>
+                    <td>{{ contract.representative }}</td>
+                    <td>{{ contract.numberOfTenant }}</td>
+                    <td>{{ contract.rentalFee }}</td>
+                    <td>{{ contract.securityDeposite }}</td>
+                    <td>{{ contract.paymentCycle }}</td>
+                    <td>{{ contract.contract }}</td>
+                    <td>{{ contract.expireDate }}</td>
+                    <td>{{ contract.contractStatus }}</td>
+                    <td>
+                      <a
+                        @click="getContractByRoom(contract.roomId)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#contractDetailModal"
+                        ><i
+                          ><img
+                            src="../components/icons/eye.png"
+                            style="width: 23px" /></i
+                      ></a>
+                      <a @click="deleteContract(contract.contractId)" href="#"
+                        ><i
+                          ><img
+                            src="../components/icons/TrashIcon.png"
+                            style="width: 23px" /></i
+                      ></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+        <nav v-if="contracts != ''" aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+            <li class="page-item">
+              <a
+                href="#"
+                :class="currentPage == 0 ? 'disabled-a-tag' : ''"
+                @click="getAllContract(currentPage - 1)"
+                ><i class="fa fa-angle-left" style="font-size: x-large"></i
+              ></a>
+            </li>
+            <li class="page-item" v-for="index in totalPage">
+              <a
+                href="#"
+                :class="
+                  currentPage + 1 == index ? 'current-page' : 'non-current-page'
+                "
+                @click="getAllContract(index - 1)"
+                >{{ index }}</a
+              >
+            </li>
+            <li class="page-item">
+              <a
+                href="#"
+                :class="currentPage == totalPage - 1 ? 'disabled-a-tag' : ''"
+                @click="getAllContract(currentPage + 1)"
+                ><i class="fa fa-angle-right" style="font-size: x-large"></i
+              ></a>
+            </li>
+          </ul>
+        </nav>
         <!-- Modal -->
         <div
           class="modal fade"
@@ -73,7 +144,7 @@
             style="max-width: 100%"
           >
             <div class="modal-content">
-              <form @submit.prevent="saveContractStatus">
+              <form @submit.prevent="updateContract">
                 <div class="modal-body">
                   <p>
                     <i
@@ -83,55 +154,59 @@
                     /></i>
                     View Details
                   </p>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>No.</th>
-                        <th>Room No</th>
-                        <th>Representative</th>
-                        <th>Number of Tenants</th>
-                        <th>Rental Fee(VND)</th>
-                        <th>Security Deposit(VND)</th>
-                        <th>Payment Cycle</th>
-                        <th>Contract</th>
-                        <th>Signing Date</th>
-                        <th>Move-in Date</th>
-                        <th>Expiration Date</th>
-                        <th>Contract Status</th>
-                        <th>Action</th>
-                      </tr>
+                  <table style="width: 100%">
+                    <thead
+                      style="
+                        color: #9b9b9b;
+                        border-bottom: solid #b0b4cd 1px;
+                        height: 45px;
+                      "
+                    >
+                      <th>No.</th>
+                      <th>Room No</th>
+                      <th>Number of Tenants</th>
+                      <th>Rental Fee</th>
+                      <th>Security Deposit</th>
+                      <th>Payment Cycle</th>
+                      <th>Contract</th>
+                      <th>Sign-in Date</th>
+                      <th>Move-in Date</th>
+                      <th>Expire Date</th>
+                      <th>Contract Status</th>
+                      <th>Representative</th>
+                      <th>Action</th>
                     </thead>
                     <tbody>
-                      <tr v-if="tempContractDetail">
-                        <td>{{ tempContractDetail.contractId }}</td>
-                        <td>{{ tempContractDetail.roomId }}</td>
-                        <td>{{ tempContractDetail.representative }}</td>
-                        <td>{{ tempContractDetail.numberOfTenant }}</td>
-                        <td>{{ tempContractDetail.rentalFee }}</td>
-                        <td>{{ tempContractDetail.securityDeposite }}</td>
-                        <td>{{ tempContractDetail.paymentCycle }}</td>
-                        <td>{{ tempContractDetail.contract }}</td>
-                        <td>{{ tempContractDetail.signinDate }}</td>
-                        <td>{{ tempContractDetail.moveinDate }}</td>
-                        <td>{{ tempContractDetail.expireDate }}</td>
+                      <tr
+                        v-for="contractDetail in contractDetail"
+                        style="height: 50px"
+                      >
+                        <td>{{ contractDetail.contractId }}</td>
+                        <td>{{ contractDetail.roomId }}</td>
+                        <td>{{ contractDetail.numberOfTenant }}</td>
+                        <td>{{ contractDetail.rentalFee }}</td>
+                        <td>{{ contractDetail.securityDeposite }}</td>
+                        <td>{{ contractDetail.paymentCycle }}</td>
+                        <td>{{ contractDetail.contract }}</td>
+                        <td>{{ contractDetail.signinDate }}</td>
+                        <td>{{ contractDetail.moveinDate }}</td>
+                        <td>{{ contractDetail.expireDate }}</td>
+                        <td>{{ contractDetail.contractStatus }}</td>
+                        <td>{{ contractDetail.representative }}</td>
                         <td>
-                          <select v-model="tempContractDetail.contractStatus">
-                            <option value="1">In Lease Term</option>
-                            <option value="2">Approaching Expiration</option>
-                            <option value="3">Past Expiration</option>
-                          </select>
-                        </td>
-                        <td>
-                          <a @click="allowEdit"
+                          <a @click="isEdit = true"
                             ><i
                               ><img
                                 src="../components/icons/PencilIcon.png"
                                 style="width: 23px" /></i
                           ></a>
+                          <a href="#"
+                            ><i
+                              ><img
+                                src="../components/icons/TrashIcon.png"
+                                style="width: 23px" /></i
+                          ></a>
                         </td>
-                      </tr>
-                      <tr v-else>
-                        <td colspan="13">Loading...</td>
                       </tr>
                     </tbody>
                   </table>
@@ -157,127 +232,120 @@
 
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import type { Contract } from "@/type/Contract";
 import contractService from "@/services/contractService";
-import type { Header } from "vue3-easy-data-table";
 import Swal from "sweetalert2";
-const allowEdit = () => {
-  $("#tenantDetailModal").modal("hide");
-};
+
 const contracts = ref<Contract[]>([]);
-const contractDetail = ref<Contract | null>(null);
-const tempContractDetail = ref<Contract | null>(null);
-const searchValue = ref("");
-const dataTable = ref();
-const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
+const contractDetail = ref<Contract[]>([]);
+var searchValue = "";
+let isEdit = false;
+var totalElement = 0;
+var totalPage = 0;
+var currentPage = 0;
 
-const showContractDetails = (contractId: number) => {
-  contractDetail.value = null; // Reset contractDetail before fetching new details
-  contractService.getContractByContractId(contractId).then((response) => {
-    contractDetail.value = response;
-    tempContractDetail.value = { ...response }; // Copy the response to the temporary variable
+// const getAllContract = (pageNo: number) => {
+//   contractService.getAllContract(pageNo, searchValue).then((response) => {
+//     contracts.value = response.content.map((contract: Contract) => ({
+//       contractId: contract.contractId,
+//       roomId: contract.roomId,
+//       numberOfTenant: contract.numberOfTenant,
+//       rentalFee: contract.rentalFee,
+//       securityDeposite: contract.securityDeposite,
+//       paymentCycle: contract.paymentCycle,
+//       contract: contract.contract,
+//       signinDate: formatDate(contract.signinDate),
+//       moveinDate: formatDate(contract.moveinDate),
+//       expireDate: formatDate(contract.expireDate),
+//       contractStatus: contract.contractStatus,
+//       representative: contract.representative,
+//     }));
+//     totalElement = response.totalElements;
+//     totalPage = response.totalPages;
+//     currentPage = response.pageable.pageNumber;
+//   });
+//   console.log(contracts);
+// };
+// getAllContract();
+const getAllContract = () => {
+  contractService.getAllContract().then((response) => {
+    contracts.value = response.content.map((contract: Contract) => ({
+      contractId: contract.contractId,
+      roomId: contract.roomId,
+      numberOfTenant: contract.numberOfTenant,
+      rentalFee: contract.rentalFee,
+      securityDeposite: contract.securityDeposite,
+      paymentCycle: contract.paymentCycle,
+      contract: contract.contract,
+      contractStatus: contract.contractStatus,
+      representative: contract.representative,
+    }));
   });
+  console.log(contracts);
 };
-
-const saveContractStatus = () => {
-  if (tempContractDetail.value) {
-    contractService
-      .updateContractStatus(
-        tempContractDetail.value.contractId,
-        tempContractDetail.value.contractStatus
-      )
-      .then(() => {
-        Swal.fire("Success", "Contract status updated successfully", "success");
-        // Update the original contract detail with the temp values
-        contractDetail.value = { ...tempContractDetail.value };
-
-        // Optionally, update the local contracts array to reflect the change
-        const contract = contracts.value.find(
-          (c) => c.contractId === tempContractDetail.value.contractId
-        );
-        if (contract) {
-          contract.contractStatus = tempContractDetail.value.contractStatus;
-        }
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
-
-        // Close the modal
-        const contractDetailModal = document.getElementById(
-          "contractDetailModal"
-        ) as any;
-        if (contractDetailModal) {
-          contractDetailModal.classList.remove("show");
-          contractDetailModal.setAttribute("aria-hidden", "true");
-          contractDetailModal.setAttribute("style", "display: none;");
-          const modalBackdrop = document.querySelector(".modal-backdrop");
-          if (modalBackdrop) {
-            modalBackdrop.remove();
-          }
-        }
-      })
-      .catch((error) => {
-        Swal.fire("Error", "Failed to update contract status", "error");
-      });
+getAllContract();
+const updateContract = async () => {
+  try {
+    console.log("Sending contract data:", contractDetail);
+    await contractService.updateContract(contractDetail);
+    console.log("Contract data updated successfully");
+  } catch (error) {
+    console.log(error);
   }
 };
 
-contractService.getAllContract().then((response) => {
-  contracts.value = response.map((contract) => ({
-    contractId: contract.contractId,
-    roomId: contract.roomId,
-    representative: contract.representative,
-    numberOfTenant: contract.numberOfTenant,
-    rentalFee: contract.rentalFee,
-    securityDeposite: contract.securityDeposite,
-    paymentCycle: contract.paymentCycle,
-    contract: contract.contract,
-    signinDate: contract.signinDate,
-    moveinDate: contract.moveinDate,
-    expireDate: contract.expireDate,
-    contractStatus: contract.contractStatus,
-  }));
-});
-
-const headersContract: Header[] = [
-  { text: "Contract ID", value: "contractId", sortable: true },
-  { text: "Room No", value: "roomId", sortable: true },
-  { text: "Representative", value: "representative", sortable: true },
-  { text: "Number of Tenants", value: "numberOfTenant", sortable: true },
-  { text: "Rental Fee (VND)", value: "rentalFee", sortable: true },
-  { text: "Payment Cycle", value: "paymentCycle", sortable: true },
-  { text: "Contract Status", value: "contractStatus", sortable: true },
-  { text: "Action", value: "action" },
-];
-
-const headersContractDetail: Header[] = [
-  { text: "No.", value: "id", width: 150 },
-  { text: "Room No", value: "roomId" },
-  { text: "Representative", value: "representative" },
-  { text: "Number of Tenants", value: "numberOfTenants" },
-  { text: "Rental Fee (VND)", value: "rentalFee" },
-  { text: "Security Deposit (VND)", value: "securityDeposit" },
-  { text: "Payment Cycle", value: "paymentCycle" },
-  { text: "Contract", value: "" },
-  { text: "Signing Date", value: "signingDate" },
-  { text: "Move-in Date", value: "moveInDate" },
-  { text: "Expiration Date", value: "expirationDate" },
-  { text: "Contract Status", value: "contractStatus" },
-  { text: "Action", value: "action" },
-];
+const deleteContract = (contractId: number) => {
+  Swal.fire({
+    title: "Are you sure to delete this contract?",
+    showDenyButton: true,
+    confirmButtonText: "Delete",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      contractService.deleteContract(contractId).then(() => {
+        contracts.value = contracts.value.filter(
+          (contract) => contract.contractId !== contractId
+        );
+        Swal.fire("Delete Successfully!", "", "success");
+      });
+    } else if (result.isDenied) {
+      Swal.fire("Cancel Delete", "", "info");
+    }
+  });
+};
+const getContractByRoom = (roomId: number) => {
+  contractService.getContractByRoom(roomId).then((response) => {
+    contractDetail.value = response.map((contract: Contract) => ({
+      contractId: contract.contractId,
+      roomId: contract.roomId,
+      numberOfTenant: contract.numberOfTenant,
+      rentalFee: contract.rentalFee,
+      securityDeposite: contract.securityDeposite,
+      paymentCycle: contract.paymentCycle,
+      contract: contract.contract,
+      signinDate: formatDate(contract.signinDate),
+      moveinDate: formatDate(contract.moveinDate),
+      expireDate: formatDate(contract.expireDate),
+      contractStatus: contract.contractStatus,
+      representative: contract.representative,
+    }));
+  });
+};
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-GB");
+};
 </script>
-
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
   background: white;
   margin-top: 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
   font-family: "Poppins", sans-serif;
-  margin-right: 1rem;
   border-radius: 14px;
+  max-width: 83%;
 }
 
 .card {
@@ -291,7 +359,7 @@ const headersContractDetail: Header[] = [
   width: 4px;
   background-color: #0064ff;
   height: 73px;
-  margin-right: 2px;
+  margin-right: 12px;
 }
 
 .input-search {
@@ -352,17 +420,26 @@ a {
   color: #fb2424;
 }
 
-.customize-table {
-  --easy-table-border: 0;
-  --easy-table-header-font-size: 15px;
-  --easy-table-header-height: 47px;
-  --easy-table-body-row-height: 43px;
-  --easy-table-header-font-color: #9b9b9b;
-  --easy-table-footer-height: 49px;
-}
-
 .input-tenant-detail {
   border: none;
   border-radius: 5px;
+}
+
+.current-page {
+  color: #000231;
+}
+
+.non-current-page {
+  color: #9b9b9b;
+  text-decoration: none;
+}
+
+.page-item {
+  margin-right: 10px;
+}
+
+.disabled-a-tag {
+  pointer-events: none;
+  color: #9b9b9b;
 }
 </style>
