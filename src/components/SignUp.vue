@@ -6,7 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 30px"
+          style="width: 12rem"
         />
       </div>
       <div class="illustration">
@@ -313,16 +313,14 @@ export default {
           password: this.password,
           rePassword: this.rePassword,
         });
-        console.log(response);
-        if (response.data.status === OK) {
+        if (response.data.status === 200) {
           this.otpSent = true;
           this.error = null;
-          console.log(this.otpSent);
         } else {
           this.error = response.data.result;
         }
       } catch (error) {
-        this.error = "An error occurred during sign up. Please try again.";
+        this.error = "ERROR!!!";
       }
     },
     async verifyOtp() {

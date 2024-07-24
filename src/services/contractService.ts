@@ -2,20 +2,23 @@ import type { Contract } from "@/type/Contract";
 import apiClient from "@/utils/apiClient";
 
 class ContractService {
-  getAllContract = (): Promise<any> => {
+  getAllContract = (pageNo: number, keySearch: string): Promise<any> => {
+    if (pageNo == null) {
+      pageNo = 0;
+    }
     return apiClient
-      .get("/contract/getAllContract")
-      .then((response) => response.data);
+      .get(`/contract/getAllContract?pageNo=${pageNo}&keySearch=${keySearch}`)
+      .then((response) => response.data["result"]);
   };
   getContractByRoom = (roomId: number): Promise<Contract> => {
     return apiClient
       .get(`contract/getContractByRoom/${roomId}`)
       .then((response) => response.data);
   };
-  getContractByContractId = (contractId: number): Promise<Contract> => {
+  getContractByContractId = (contractId: number): Promise<any> => {
     return apiClient
-      .get(`contract/getContractByContractId/${contractId}`)
-      .then((response) => response.data);
+      .get(`contract/getContractByContractId?contractId=${contractId}`)
+      .then((response) => response.data["result"]);
   };
   updateContractStatus = (
     contractId: number,

@@ -1,28 +1,41 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex; height: 100%; margin-top: 90px">
+  <div style="display: flex; height: 89%; margin-top: 90px">
     <SideBar />
     <div class="container">
       <div class="card">
         <div style="display: flex">
           <div class="line-blue"></div>
           <div>
-            <h3>List of Apartment Contracts</h3>
-            <p style="font-style: italic">List of All Apartment Contracts</p>
+            <h3>List of Lease Contracts</h3>
           </div>
+          <router-link
+            to="/newContract"
+            class="btn btn-primary"
+            style="
+              height: 30px;
+              border-radius: 8px;
+              border: none;
+              cursor: pointer;
+              margin-left: 35rem;
+              margin-top: 5px;
+            "
+            >Add new</router-link
+          >
         </div>
         <div>
           <div style="display: flex; justify-content: center">
             <img
-              @click="getAllContract()"
+              @click="getContractPanigation()"
               src="../components/icons/searchIcon.png"
               style="width: 2%; height: 2%; margin-top: 8px; cursor: pointer"
             />
             <input
               type="text"
               v-model="searchValue"
-              @change="getAllContract()"
+              @change="getContractPanigation()"
               class="input-search"
-              placeholder="Please enter a representative name"
+              placeholder="Please enter a full name"
             />
           </div>
           <div
@@ -76,7 +89,6 @@
                     <td>{{ contract.securityDeposite }}</td>
                     <td>{{ contract.paymentCycle }}</td>
                     <td>{{ contract.contract }}</td>
-                    <td>{{ contract.expireDate }}</td>
                     <td>{{ contract.contractStatus }}</td>
                     <td>
                       <a
@@ -86,12 +98,6 @@
                         ><i
                           ><img
                             src="../components/icons/eye.png"
-                            style="width: 23px" /></i
-                      ></a>
-                      <a @click="deleteContract(contract.contractId)" href="#"
-                        ><i
-                          ><img
-                            src="../components/icons/TrashIcon.png"
                             style="width: 23px" /></i
                       ></a>
                     </td>
@@ -107,7 +113,7 @@
               <a
                 href="#"
                 :class="currentPage == 0 ? 'disabled-a-tag' : ''"
-                @click="getAllContract(currentPage - 1)"
+                @click="getContractPanigation(currentPage - 1)"
                 ><i class="fa fa-angle-left" style="font-size: x-large"></i
               ></a>
             </li>
@@ -117,7 +123,7 @@
                 :class="
                   currentPage + 1 == index ? 'current-page' : 'non-current-page'
                 "
-                @click="getAllContract(index - 1)"
+                @click="getContractPanigation(index - 1)"
                 >{{ index }}</a
               >
             </li>
@@ -125,7 +131,7 @@
               <a
                 href="#"
                 :class="currentPage == totalPage - 1 ? 'disabled-a-tag' : ''"
-                @click="getAllContract(currentPage + 1)"
+                @click="getContractPanigation(currentPage + 1)"
                 ><i class="fa fa-angle-right" style="font-size: x-large"></i
               ></a>
             </li>
@@ -163,17 +169,18 @@
                       "
                     >
                       <th>No.</th>
+                      <th>Full Name</th>
                       <th>Room No</th>
-                      <th>Number of Tenants</th>
-                      <th>Rental Fee</th>
-                      <th>Security Deposit</th>
-                      <th>Payment Cycle</th>
-                      <th>Contract</th>
-                      <th>Sign-in Date</th>
-                      <th>Move-in Date</th>
-                      <th>Expire Date</th>
-                      <th>Contract Status</th>
-                      <th>Representative</th>
+                      <th>Gender</th>
+                      <th>D.O.B</th>
+                      <th>Mobile No</th>
+                      <th>Email ID</th>
+                      <th>Citizen ID</th>
+                      <th>Career</th>
+                      <th>License Plate</th>
+                      <th>Vehicle Type</th>
+                      <th>Vehicle Color</th>
+                      <th style="width: 7rem">Temporary Residence Status</th>
                       <th>Action</th>
                     </thead>
                     <tbody>
@@ -181,18 +188,25 @@
                         v-for="contractDetail in contractDetail"
                         style="height: 50px"
                       >
-                        <td>{{ contractDetail.contractId }}</td>
+                        <td>{{ contractDetail.id }}</td>
+                        <td>
+                          {{ contractDetail.firstName }}
+                          {{ contractDetail.lastName }}
+                        </td>
                         <td>{{ contractDetail.roomId }}</td>
-                        <td>{{ contractDetail.numberOfTenant }}</td>
-                        <td>{{ contractDetail.rentalFee }}</td>
-                        <td>{{ contractDetail.securityDeposite }}</td>
-                        <td>{{ contractDetail.paymentCycle }}</td>
-                        <td>{{ contractDetail.contract }}</td>
-                        <td>{{ contractDetail.signinDate }}</td>
-                        <td>{{ contractDetail.moveinDate }}</td>
-                        <td>{{ contractDetail.expireDate }}</td>
-                        <td>{{ contractDetail.contractStatus }}</td>
-                        <td>{{ contractDetail.representative }}</td>
+                        <td>
+                          <div v-if="contractDetail.gender">Male</div>
+                          <div v-else>Female</div>
+                        </td>
+                        <td>{{ contractDetail.dateOfBirth }}</td>
+                        <td>{{ contractDetail.contact }}</td>
+                        <td>{{ contractDetail.email }}</td>
+                        <td>{{ contractDetail.citizenId }}</td>
+                        <td>{{ contractDetail.career }}</td>
+                        <td>{{ contractDetail.licensePlate }}</td>
+                        <td>{{ contractDetail.vehicleType }}</td>
+                        <td>{{ contractDetail.vehicleColor }}</td>
+                        <td>{{ contractDetail.residenceStatus }}</td>
                         <td>
                           <a @click="isEdit = true"
                             ><i
@@ -245,97 +259,85 @@ var totalElement = 0;
 var totalPage = 0;
 var currentPage = 0;
 
-// const getAllContract = (pageNo: number) => {
-//   contractService.getAllContract(pageNo, searchValue).then((response) => {
-//     contracts.value = response.content.map((contract: Contract) => ({
-//       contractId: contract.contractId,
-//       roomId: contract.roomId,
-//       numberOfTenant: contract.numberOfTenant,
-//       rentalFee: contract.rentalFee,
-//       securityDeposite: contract.securityDeposite,
-//       paymentCycle: contract.paymentCycle,
-//       contract: contract.contract,
-//       signinDate: formatDate(contract.signinDate),
-//       moveinDate: formatDate(contract.moveinDate),
-//       expireDate: formatDate(contract.expireDate),
-//       contractStatus: contract.contractStatus,
-//       representative: contract.representative,
-//     }));
-//     totalElement = response.totalElements;
-//     totalPage = response.totalPages;
-//     currentPage = response.pageable.pageNumber;
-//   });
-//   console.log(contracts);
-// };
-// getAllContract();
-const getAllContract = () => {
-  contractService.getAllContract().then((response) => {
-    contracts.value = response.content.map((contract: Contract) => ({
-      contractId: contract.contractId,
-      roomId: contract.roomId,
-      numberOfTenant: contract.numberOfTenant,
-      rentalFee: contract.rentalFee,
-      securityDeposite: contract.securityDeposite,
-      paymentCycle: contract.paymentCycle,
-      contract: contract.contract,
-      contractStatus: contract.contractStatus,
-      representative: contract.representative,
-    }));
+const getContractPanigation = (pageNo: number) => {
+  contractService.getAllContract(pageNo, searchValue).then((response) => {
+    contracts.value = response.content.map(
+      (contracts: {
+        contractId: any;
+        roomId: any;
+        numberOfTenant: any;
+        rentalFee: any;
+        securityDeposite: any;
+        paymentCycle: any;
+        contract: any;
+        signinDate: any;
+        moveinDate: any;
+        expireDate: any;
+        contractStatus: any;
+        representative: any;
+      }) => {
+        return {
+          contractId: contracts.contractId,
+          roomId: contracts.roomId,
+          numberOfTenant: contracts.numberOfTenant,
+          rentalFee: contracts.rentalFee,
+          securityDeposite: contracts.securityDeposite,
+          paymentCycle: contracts.paymentCycle,
+          contract: contracts.contract,
+          signinDate: contracts.signinDate,
+          moveinDate: contracts.moveinDate,
+          expireDate: contracts.expireDate,
+          contractStatus: contracts.contractStatus,
+          representative: contracts.representative,
+        };
+      }
+    );
+    totalElement = response.totalElements;
+    totalPage = response.totalPages;
+    currentPage = pageNo;
   });
-  console.log(contracts);
-};
-getAllContract();
-const updateContract = async () => {
-  try {
-    console.log("Sending contract data:", contractDetail);
-    await contractService.updateContract(contractDetail);
-    console.log("Contract data updated successfully");
-  } catch (error) {
-    console.log(error);
-  }
 };
 
-const deleteContract = (contractId: number) => {
+const getContractByRoom = (roomId: number) => {
+  contractService.getContractByRoom(roomId).then((response) => {
+    contractDetail.value = [response];
+  });
+};
+
+const updateContract = () => {
+  contractService.updateContract(contractDetail.value[0]).then(() => {
+    Swal.fire({
+      icon: "success",
+      title: "Updated",
+      text: "Contract information has been updated",
+    });
+    isEdit = false;
+    getContractPanigation(currentPage);
+  });
+};
+
+const deleteContract = (email: string) => {
   Swal.fire({
-    title: "Are you sure to delete this contract?",
-    showDenyButton: true,
-    confirmButtonText: "Delete",
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      contractService.deleteContract(contractId).then(() => {
-        contracts.value = contracts.value.filter(
-          (contract) => contract.contractId !== contractId
-        );
-        Swal.fire("Delete Successfully!", "", "success");
+      contractService.deleteContract(email).then(() => {
+        Swal.fire("Deleted!", "Contract has been deleted.", "success");
+        getContractPanigation(currentPage);
       });
-    } else if (result.isDenied) {
-      Swal.fire("Cancel Delete", "", "info");
     }
   });
 };
-const getContractByRoom = (roomId: number) => {
-  contractService.getContractByRoom(roomId).then((response) => {
-    contractDetail.value = response.map((contract: Contract) => ({
-      contractId: contract.contractId,
-      roomId: contract.roomId,
-      numberOfTenant: contract.numberOfTenant,
-      rentalFee: contract.rentalFee,
-      securityDeposite: contract.securityDeposite,
-      paymentCycle: contract.paymentCycle,
-      contract: contract.contract,
-      signinDate: formatDate(contract.signinDate),
-      moveinDate: formatDate(contract.moveinDate),
-      expireDate: formatDate(contract.expireDate),
-      contractStatus: contract.contractStatus,
-      representative: contract.representative,
-    }));
-  });
-};
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB");
-};
+
+getContractPanigation(0);
 </script>
+
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
