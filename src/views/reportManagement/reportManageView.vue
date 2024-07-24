@@ -148,18 +148,62 @@
       <div class="container" style="margin-top: 0">
         <div class="mid-elements">
           <RoomChartView />
+          <div
+            class="detailBtn"
+            @click="openDetailView(), (selectedView = 'room')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g>
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1H7zM5.002 8L5 20h10V8H5.002zM9 6h8v10h2V4H9v2zm-2 5h6v2H7v-2zm0 4h6v2H7v-2z"
+                />
+              </g>
+            </svg>
+          </div>
         </div>
         <div class="mid-elements">
           <TenantChartViewVue />
+          <div
+            class="detailBtn"
+            @click="openDetailView(), (selectedView = 'tenant')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g>
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1H7zM5.002 8L5 20h10V8H5.002zM9 6h8v10h2V4H9v2zm-2 5h6v2H7v-2zm0 4h6v2H7v-2z"
+                />
+              </g>
+            </svg>
+          </div>
         </div>
         <div class="mid-elements">
           <PaymentChartView />
+          <div
+            class="detailBtn"
+            @click="openDetailView(), (selectedView = 'payment')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g>
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1.001 1.001 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1H7zM5.002 8L5 20h10V8H5.002zM9 6h8v10h2V4H9v2zm-2 5h6v2H7v-2zm0 4h6v2H7v-2z"
+                />
+              </g>
+            </svg>
+          </div>
         </div>
       </div>
       <div class="container" style="margin-top: 0">
         <div class="bottom1"><MaintenanceChartView /></div>
         <div class="bottom2"><TenantSatView /></div>
       </div>
+    </div>
+    <div v-if="displayDetailView" class="detailView">
+      <RoomDetailsView v-if="selectedView == 'room'" ref="modalRef" />
+      <TenantDetailsView v-if="selectedView == 'tenant'" ref="modalRef" />
+      <PaymentRateView v-if="selectedView == 'payment'" ref="modalRef" />
     </div>
   </div>
 </template>
@@ -171,6 +215,35 @@ import TenantChartViewVue from "./TenantChartView.vue";
 import PaymentChartView from "./PaymentChartView.vue";
 import MaintenanceChartView from "./MaintenanceChartView.vue";
 import TenantSatView from "./TenantSatView.vue";
+
+import RoomDetailsView from "./detail/RoomDetailsView.vue";
+import TenantDetailsView from "./detail/TenantDetailsView.vue";
+import PaymentRateView from "./detail/PaymentRateView.vue";
+
+import { ref } from "vue";
+import { onClickOutside } from "@vueuse/core";
+
+const displayDetailView = ref(false);
+const modalRef = ref(null);
+const selectedView = ref("");
+
+onClickOutside(modalRef, (event) => {
+  const navbar = document.querySelector(".navbar");
+
+  if (navbar) {
+    (navbar as HTMLElement).style.zIndex = "1";
+  }
+  displayDetailView.value = false;
+});
+
+function openDetailView() {
+  const navbar = document.querySelector(".navbar");
+
+  if (navbar) {
+    (navbar as HTMLElement).style.zIndex = "0";
+  }
+  displayDetailView.value = true;
+}
 </script>
 
 <style scoped>
@@ -227,10 +300,32 @@ import TenantSatView from "./TenantSatView.vue";
   background: white;
   display: flex;
   justify-content: space-between;
+  position: relative;
   align-items: center;
   border-radius: 10px;
   padding: 0px 25px 0px 25px;
   margin-bottom: 0;
+}
+.detailBtn {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 3px;
+  right: 10px;
+}
+.detailBtn:hover {
+  cursor: pointer;
+}
+.detailView {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.33);
+
+  margin-top: -90px;
 }
 .bottom1 {
   background: white;

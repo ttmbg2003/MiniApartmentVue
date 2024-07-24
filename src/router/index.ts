@@ -9,7 +9,9 @@ import ResetPassword from "@/components/ResetPassword.vue";
 import ListOfPayment from "@/views/ListOfPayment.vue";
 import ListOfContract from "@/views/ListOfContract.vue";
 import ReporManageView from "@/views/reportManagement/reportManageView.vue";
+import Contract from "@/components/Contract.vue";
 const routes = [
+  { path: "/contract", component: Contract },
   {
     path: "/",
     redirect: "/home",
