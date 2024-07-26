@@ -71,6 +71,7 @@
                         </div>
                     </div>
                     <!-- <div v-else style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;display: flex;
+
     justify-content: center;"><p>No data to display</p></div> -->
                 </div>
                 <nav v-if="tenants != ''" aria-label="Page navigation example">

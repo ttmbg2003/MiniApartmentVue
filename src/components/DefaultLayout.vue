@@ -32,7 +32,6 @@ watch(
       // Kiểm tra xem có phần tử nào được tìm thấy không
 
       if (newPath === "/newContract") {
-
         navbar.style.display = "none"; // Ẩn navbar
       } else {
         navbar.style.display = ""; // Hiển thị navbar nếu đường dẫn không phải là "/contract"
