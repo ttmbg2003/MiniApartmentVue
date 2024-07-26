@@ -770,7 +770,7 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 });
 </script>
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
     background: white;
@@ -788,10 +788,10 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 }
 
 .card {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-    border: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  border: none;
 }
 
 .line-blue {
@@ -801,19 +801,19 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 }
 
 .input-search {
-    outline: none;
-    border: none;
-    border-radius: 17px;
-    background-color: #e9e9e9;
-    padding: 7px;
+  outline: none;
+  border: none;
+  border-radius: 17px;
+  background-color: #e9e9e9;
+  padding: 7px;
 }
 
 .btn {
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
 }
 
 .btn-save {
@@ -824,18 +824,17 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 }
 
 .btn-cancel {
-    background-color: #E8E7E7;
-
+  background-color: #e8e7e7;
 }
 
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .payment-status {
@@ -866,12 +865,12 @@ a {
 }
 
 .customize-table {
-    --easy-table-border: 0;
-    --easy-table-header-font-size: 15px;
-    --easy-table-header-height: 47px;
-    --easy-table-body-row-height: 43px;
-    --easy-table-header-font-color: #9B9B9B;
-    --easy-table-footer-height: 49px;
+  --easy-table-border: 0;
+  --easy-table-header-font-size: 15px;
+  --easy-table-header-height: 47px;
+  --easy-table-body-row-height: 43px;
+  --easy-table-header-font-color: #9b9b9b;
+  --easy-table-footer-height: 49px;
 }
 
 .input-tenant-detail {

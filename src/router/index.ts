@@ -8,7 +8,14 @@ import ForgetPassword from "@/components/ForgetPassword.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import ListOfPayment from "@/views/ListOfPayment.vue";
 import ListOfContract from "@/views/ListOfContract.vue";
+import ReporManageView from "@/views/reportManagement/reportManageView.vue";
+import Contract from "@/components/Contract.vue";
 const routes = [
+  { path: "/contract", component: Contract },
+  {
+    path: "/",
+    redirect: "/home",
+  },
   {
     path: "/home",
     name: "home",
@@ -60,6 +67,13 @@ const routes = [
     path: "/ListOfContract",
     name: "ListOfContract",
     component: ListOfContract,
+  },
+  { path: "/report", component: ReporManageView },
+  {
+    path: "/newContract",
+    name: "Contract",
+    component: Contract,
+    
   },
 ];
 

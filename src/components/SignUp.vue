@@ -6,6 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
+          style="width: 12rem"
         />
       </div>
       <div class="illustration">
@@ -296,7 +297,6 @@ export default {
         return;
       }
 
-      
       // Gọi các hàm validate để kiểm tra email, password, và rePassword
       this.validateEmail(this.email);
       this.validatePassword(this.password);
@@ -313,15 +313,14 @@ export default {
           password: this.password,
           rePassword: this.rePassword,
         });
-        this.otpSent = true;
-        this.error = null;
-      } catch (error) {
-        this.otpResent = false;
-        if (error.response && error.response.status === 400) {
-          this.error = error.response.data;
+        if (response.data.status === 200) {
+          this.otpSent = true;
+          this.error = null;
         } else {
-          this.error = "An error occurred during sign up. Please try again.";
+          this.error = response.data.result;
         }
+      } catch (error) {
+        this.error = "ERROR!!!";
       }
     },
     async verifyOtp() {

@@ -72,31 +72,51 @@
                     </div>
                     <!-- <div v-else style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;display: flex;
     justify-content: center;"><p>No data to display</p></div> -->
-                </div>
-                <nav v-if="tenants != ''" aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item">
-                            <a href="#" :class="currentPage == 0 ? 'disabled-a-tag' : ''"
-                                @click="getTenantPanigation(currentPage - 1)"><i class="fa fa-angle-left"
-                                    style="font-size: x-large;"></i></a>
-                        </li>
-                        <li class="page-item" v-for="index in totalPage">
-                            <a href="#" :class="(currentPage + 1) == index ? 'current-page' : 'non-current-page'"
-                                @click="getTenantPanigation(index - 1)">{{ index }}</a>
-                        </li>
-                        <li class="page-item">
-                            <a href="#" :class="currentPage == (totalPage - 1) ? 'disabled-a-tag' : ''"
-                                @click="getTenantPanigation(currentPage + 1)"><i class="fa fa-angle-right"
-                                    style="font-size: x-large;"></i></a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- Modal -->
-                <div class="modal fade" id="tenantDetailModal" tabindex="-1" aria-labelledby="tenantDetailModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;">
-                        <div class="modal-content">
-                            <!-- <div class="modal-header">
+        </div>
+        <nav v-if="tenants != ''" aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+            <li class="page-item">
+              <a
+                href="#"
+                :class="currentPage == 0 ? 'disabled-a-tag' : ''"
+                @click="getTenantPanigation(currentPage - 1)"
+                ><i class="fa fa-angle-left" style="font-size: x-large"></i
+              ></a>
+            </li>
+            <li class="page-item" v-for="index in totalPage">
+              <a
+                href="#"
+                :class="
+                  currentPage + 1 == index ? 'current-page' : 'non-current-page'
+                "
+                @click="getTenantPanigation(index - 1)"
+                >{{ index }}</a
+              >
+            </li>
+            <li class="page-item">
+              <a
+                href="#"
+                :class="currentPage == totalPage - 1 ? 'disabled-a-tag' : ''"
+                @click="getTenantPanigation(currentPage + 1)"
+                ><i class="fa fa-angle-right" style="font-size: x-large"></i
+              ></a>
+            </li>
+          </ul>
+        </nav>
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="tenantDetailModal"
+          tabindex="-1"
+          aria-labelledby="tenantDetailModalLabel"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered"
+            style="max-width: 100%"
+          >
+            <div class="modal-content">
+              <!-- <div class="modal-header">
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->
@@ -295,27 +315,26 @@ const editTenant = async () => {
 }
 
 const deleteTenant = (email: string) => {
-    Swal.fire({
-        text: "Are you sure want to delete?",
-        showCancelButton: true,
-        confirmButtonColor: "#0565F9",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#E8E7E7",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            tenantService.deleteTenant(email)
-            Swal.fire({
-                title: "Deleted!",
-                icon: "success",
-                showConfirmButton: false,
-            });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }
-    });
-
-}
+  Swal.fire({
+    text: "Are you sure want to delete?",
+    showCancelButton: true,
+    confirmButtonColor: "#0565F9",
+    confirmButtonText: "Delete",
+    cancelButtonColor: "#E8E7E7",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      tenantService.deleteTenant(email);
+      Swal.fire({
+        title: "Deleted!",
+        icon: "success",
+        showConfirmButton: false,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  });
+};
 const getTenantByRoom = async (roomId: number) => {
     try {
         const response = await tenantService.getTenantByRoomId(roomId);
@@ -342,70 +361,69 @@ const getTenantByRoom = async (roomId: number) => {
     }
 };
 const formatDate = (dateString: string) => {
-    return dateString.split('T')[0];
+  return dateString.split("T")[0];
 };
 </script>
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
-    background: white;
-    margin-top: 20px;
-    box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
-    font-family: 'Poppins', sans-serif;
-    border-radius: 14px;
-    max-width: 83%;
+  background: white;
+  margin-top: 20px;
+  box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  max-width: 83%;
 }
 
 .card {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-    border: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  border: none;
 }
 
 .line-blue {
-    width: 4px;
-    background-color: #0064FF;
-    height: 73px;
-    margin-right: 12px;
+  width: 4px;
+  background-color: #0064ff;
+  height: 73px;
+  margin-right: 12px;
 }
 
 .input-search {
-    outline: none;
-    border: none;
-    border-radius: 17px;
-    background-color: #e9e9e9;
-    padding: 7px;
+  outline: none;
+  border: none;
+  border-radius: 17px;
+  background-color: #e9e9e9;
+  padding: 7px;
 }
 
 .btn {
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
 }
 
 .btn-save {
-    background-color: #0565F9;
-    color: white;
-    width: 68px;
+  background-color: #0565f9;
+  color: white;
+  width: 68px;
 }
 
 .btn-cancel {
-    background-color: #E8E7E7;
-
+  background-color: #e8e7e7;
 }
 
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .residence-status {
@@ -436,21 +454,21 @@ a {
 }
 
 .input-tenant-detail {
-    border: none;
-    border-radius: 5px
+  border: none;
+  border-radius: 5px;
 }
 
 .current-page {
-    color: #000231;
+  color: #000231;
 }
 
 .non-current-page {
-    color: #9B9B9B;
-    text-decoration: none;
+  color: #9b9b9b;
+  text-decoration: none;
 }
 
 .page-item {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .disabled-a-tag {
