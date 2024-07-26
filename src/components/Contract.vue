@@ -109,7 +109,7 @@
           <thead>
             <tr>
               <th>No</th>
-              <th>Full Name</th>
+              <th style="width: 60px">Full Name</th>
               <th>Gender</th>
               <th>D.O.B</th>
               <th>Mobile No</th>
@@ -126,10 +126,9 @@
               <td>1</td>
               <td>
                 <input
+                  style="width: 60px"
                   type="text"
                   v-model="contract.representative"
-                  style="width: 100px"
-                  required
                 />
               </td>
               <td>
