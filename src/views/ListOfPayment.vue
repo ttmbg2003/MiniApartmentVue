@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
+
     <div style="display: flex;height: 89%">
         <SideBar />
         <div class="container">
@@ -169,6 +170,7 @@
                     <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;justify-content: center;">
                         <div class="modal-content">
                             <!-- <div class="modal-header">
+
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->

@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
+
     <div style="display: flex;height: 89%">
         <SideBar />
         <div class="container">
@@ -71,6 +72,7 @@
                         </div>
                     </div>
                     <!-- <div v-else style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;display: flex;
+
     justify-content: center;"><p>No data to display</p></div> -->
                 </div>
                 <nav v-if="tenants != ''" aria-label="Page navigation example">
