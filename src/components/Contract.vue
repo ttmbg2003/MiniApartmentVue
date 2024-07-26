@@ -7,7 +7,8 @@
           CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br />Độc lập – Tự do – Hạnh phúc<br />-o0o-
         </p>
         <p class="centered-text">
-          HỢP ĐỒNG THUÊ CĂN HỘ CHUNG CƯ MINI<br />(Số: 3./HĐTCHNCC)
+          HỢP ĐỒNG THUÊ CĂN HỘ CHUNG CƯ MINI<br />(Số:
+          {{ contract.contractId }}./HĐTCHNCC)
         </p>
       </div>
 
@@ -37,14 +38,29 @@
 
         <p>
           ĐẠI DIỆN BÊN THUÊ (BÊN B):<br />
-          Ông/bà: <input type="text" v-model="contract.representative" /><br />
-          CMND/CCCD: <input type="tel" v-model="contract.citizenId" /> Ngày cấp:
-          <input type="date" v-model="contract.dated" /><br />
+          Ông/bà:
+          <input type="text" v-model="contract.representative" required /><br />
+          CMND/CCCD:
+          <input type="tel" v-model="contract.citizenId" required /> Ngày cấp:
+          <input
+            type="date"
+            v-model="contract.createCitizenIdDate"
+            required
+          /><br />
           Nơi cấp:
-          <input type="text" v-model="contract.placeOfCitizenId" /><br />
+          <input
+            type="text"
+            v-model="contract.createCitizenIdPlace"
+            required
+          /><br />
           Hộ khẩu:
-          <input type="text" v-model="contract.placeOfPermanet" /><br />
-          Số điện thoại: <input type="tel" v-model="contract.contact" />
+          <input
+            type="text"
+            v-model="contract.placeOfPermanet"
+            required
+          /><br />
+          Số điện thoại:
+          <input type="tel" v-model="contract.contact" required />
         </p>
 
         <p>Hai bên cùng thỏa thuận ký hợp đồng với những nội dung sau:</p>
@@ -52,32 +68,44 @@
         <h3>ĐIỀU 1: ĐỐI TƯỢNG VÀ NỘI DUNG CỦA HỢP ĐỒNG</h3>
         <p>
           1.1. Bên A cho bên B thuê căn hộ số:
-          <input type="number" v-model="contract.roomId" /><br />
+          <input type="number" v-model="contract.roomId" required /><br />
           Tại: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
           Để sử dụng vào mục đích: để ở (không trái với quy định pháp luật)<br />
           1.2. Quyền sở hữu của bên A đối với căn hộ cụ thể như sau:<br />
           a) Địa chỉ căn hộ: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
-          b) Căn hộ số: <input type="number" v-model="contract.roomId" /><br />
+          b) Căn hộ số:
+          <input type="number" v-model="contract.roomId" required /><br />
           d) Tổng diện tích sàn căn hộ là:
-          <input type="number" v-model="contract.totalArea" /> m2; diện tích đất
-          gắn liền với căn hộ là:
-          <input type="number" v-model="contract.landArea" /> m2<br />
+          <input type="number" v-model="contract.totalArea" required /> m2; diện
+          tích đất gắn liền với căn hộ là:
+          <input type="number" v-model="contract.landArea" required /> m2<br />
           (sử dụng chung là:
-          <input type="number" v-model="contract.publicArea" /> m2; sử dụng
-          riêng là:
-          <input type="number" v-model="contract.privateArea" /> m2).<br />
+          <input type="number" v-model="contract.publicArea" required /> m2; sử
+          dụng riêng là:
+          <input type="number" v-model="contract.privateArea" required />
+          m2).<br />
           e) Trang thiết bị gắn liền với căn hộ:
-          <input type="text" v-model="contract.device" /><br />
+          <input type="text" v-model="contract.device" required /><br />
           f) Nguồn gốc sở hữu:
-          <input type="text" v-model="contract.ownerOrgirin" /><br />
+          <input type="text" v-model="contract.ownerOrigin" required /><br />
           g) Những hạn chế về quyền sở hữu căn hộ (nếu có):
-          <input type="text" v-model="contract.ownerLimit" />
+          <input type="text" v-model="contract.ownerLimit" required />
         </p>
 
         <h3>
           1.3. Thông tin người thuê (bao gồm người đại diện và người ở cùng):
         </h3>
-        <table>
+        <p>
+          a) Số lượng khách thuê tối đa:
+          <input
+            type="number"
+            name="numberOfTenants"
+            v-model="contract.numberOfTenant"
+            required
+          />người
+        </p>
+        b) Dưới đây là thông tin chi tiết của khách thuê:
+        <table style="margin-left: -13rem">
           <thead>
             <tr>
               <th>No</th>
@@ -96,24 +124,84 @@
           <tbody>
             <tr>
               <td>1</td>
-              <td><input type="text" v-model="contract.representative" /></td>
               <td>
-                <select v-model="contract.gender">
+                <input
+                  type="text"
+                  v-model="contract.representative"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <select v-model="contract.gender" style="width: 100px" required>
                   <option value="0">Male</option>
                   <option value="1">Female</option>
                 </select>
               </td>
-              <td><input type="date" v-model="contract.dob" /></td>
-              <td><input type="number" v-model="contract.contact" /></td>
-              <td><input type="email" v-model="contract.email" /></td>
-              <td><input type="text" v-model="contract.career" /></td>
-              <td><input type="text" v-model="contract.licensePlate" /></td>
-              <td><input type="text" v-model="contract.vehicleType" /></td>
-              <td><input type="text" v-model="contract.vehicleColor" /></td>
               <td>
-                <select v-model="contract.relationship">
-                  <option value="0">Family</option>
-                  <option value="1">Friend</option>
+                <input
+                  type="date"
+                  v-model="contract.dob"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  v-model="contract.contact"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="email"
+                  v-model="contract.email"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="contract.career"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="contract.licensePlate"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="contract.vehicleType"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="contract.vehicleColor"
+                  style="width: 100px"
+                  required
+                />
+              </td>
+              <td>
+                <select
+                  v-model="contract.relationship"
+                  style="width: 100px"
+                  required
+                >
+                  <option value="Family">Family</option>
+                  <option value="Friend">Friend</option>
                 </select>
               </td>
             </tr>
@@ -124,7 +212,12 @@
       <p>
         ĐIỀU 2: GI&Aacute; THU&Ecirc;, PHƯƠNG THỨC V&Agrave; THỜI HẠN THANH
         TO&Aacute;N<br />2.1. Gi&aacute; cho thu&ecirc; ph&ograve;ng ở l&agrave;
-        <input type="number" name="rentalFee" v-model="contract.rentalFee" />
+        <input
+          type="number"
+          name="rentalFee"
+          v-model="contract.rentalFee"
+          required
+        />
         đồng Việt Nam/01 th&aacute;ng.<br />(Bằng chữ:<br />2.2. C&aacute;c chi
         ph&iacute; sử dụng điện, nước, điện thoại v&agrave; c&aacute;c dịch vụ
         kh&aacute;c do B&ecirc;n B thanh to&aacute;n cho b&ecirc;n cung cấp
@@ -141,6 +234,7 @@
           type="number"
           name="securityDeposite"
           v-model="contract.rentalFee"
+          required
         />VND (tương đương với 1 th&aacute;ng tiền thu&ecirc; ph&ograve;ng)<br />2.3.
         Phương thức thanh to&aacute;n: thanh to&aacute;n bằng tiền Việt Nam
         th&ocirc;ng qua h&igrave;nh thức: chuyển khoản<br />2.4. Thời hạn thanh
@@ -156,11 +250,22 @@
           type="date"
           name="moveIn"
           v-model="contract.moveinDate"
+          required
         /><br />3.2. Thời hạn cho thu&ecirc; nh&agrave; ở l&agrave; ..........
         năm (......... th&aacute;ng), kể từ
-        <input type="date" name="signinDate" v-model="contract.signinDate" />
+        <input
+          required
+          type="date"
+          name="signinDate"
+          v-model="contract.signinDate"
+        />
         đến
-        <input type="date" name="expireDate" v-model="contract.expireDate" />
+        <input
+          required
+          type="date"
+          name="expireDate"
+          v-model="contract.expireDate"
+        />
       </p>
 
       <p>
@@ -233,9 +338,9 @@
         l&yacute; hoặc tăng gi&aacute; m&agrave; kh&ocirc;ng th&ocirc;ng
         b&aacute;o cho b&ecirc;n B biết trước theo thoả thuận;<br />- Khi quyền
         sử dụng căn hộ bị hạn chế do lợi &iacute;ch của người thứ ba.<br />g)
-        C&aacute;c quyền kh&aacute;c do hai b&ecirc;n thỏa
-        thuận.......................................................................................<br />5.2.
-        Nghĩa vụ của b&ecirc;n B:
+        C&aacute;c quyền kh&aacute;c do hai b&ecirc;n thỏa thuận
+        <input required type="text" name="rights" v-model="contract.rights" />
+        <br />5.2. Nghĩa vụ của b&ecirc;n B:
       </p>
 
       <p>
@@ -263,8 +368,12 @@
         k&egrave;m danh s&aacute;ch như mục 1.3 Điều 1) đều c&oacute;
         tr&aacute;ch nhiệm v&agrave; nghĩa vụ giống nhau trong việc thực hiện
         c&aacute;c điều khoản trong hợp đồng n&agrave;y.<br />k) C&aacute;c
-        nghĩa vụ kh&aacute;c theo thỏa thuận của hai
-        b&ecirc;n......................................................................................
+        nghĩa vụ kh&aacute;c theo thỏa thuận của hai b&ecirc;n<input
+          required
+          type="text"
+          name="rights"
+          v-model="contract.obligations"
+        />
       </p>
 
       <p>
@@ -330,7 +439,8 @@
         c&aacute;c nội dung đ&atilde; thỏa thuận trong hợp đồng.<br />8.5.
         C&aacute;c cam kết kh&aacute;c (phải ph&ugrave; hợp với quy định của
         ph&aacute;p luật v&agrave; kh&ocirc;ng tr&aacute;i đạo đức x&atilde;
-        hội): .................
+        hội):
+        <input required type="text" name="rights" v-model="contract.commit" />
       </p>
 
       <p>
@@ -349,11 +459,12 @@
           type="date"
           name="signinDate"
           v-model="contract.signinDate"
-        /><br />10.2. Hợp đồng n&agrave;y được lập th&agrave;nh 3 bản v&agrave;
-        c&oacute; gi&aacute; trị như nhau. Mỗi b&ecirc;n giữ 1 bản, 1 bản lưu
-        tại cơ quan c&ocirc;ng chứng hoặc chứng thực (nếu c&oacute;) v&agrave; 1
-        bản lưu tại cơ quan thuế (c&aacute;c b&ecirc;n c&oacute; thể thỏa thuận
-        lập th&ecirc;m hợp đồng bằng tiếng Anh)./.
+        /><br />10.2. Hợp đồng n&agrave;y được lập th&agrave;nh
+        <input required type="text" name="rights" v-model="contract.copies" />
+        bản v&agrave; c&oacute; gi&aacute; trị như nhau. Mỗi b&ecirc;n giữ 1
+        bản, 1 bản lưu tại cơ quan c&ocirc;ng chứng hoặc chứng thực (nếu
+        c&oacute;) v&agrave; 1 bản lưu tại cơ quan thuế (c&aacute;c b&ecirc;n
+        c&oacute; thể thỏa thuận lập th&ecirc;m hợp đồng bằng tiếng Anh)./.
       </p>
 
       <p>
@@ -379,6 +490,7 @@
       </div>
     </div>
   </form>
+  <div v-if="error" class="error">{{ error }}</div>
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
@@ -387,42 +499,44 @@ export default {
   data() {
     return {
       contract: {
-        contractId: "",
-        date: this.getFormattedDate(),
-        firstName: "",
-        lastName: "",
-        fullName: "",
-        citizenId: "",
-        dated: "",
-        placeOfCitizenId: "",
-        placeOfPermanet: "",
-        contact: "",
-        email: "",
-        roomId: "",
         totalArea: "",
         landArea: "",
         publicArea: "",
         privateArea: "",
         device: "",
-        ownerOrgirin: "",
+        ownerOrigin: "",
         ownerLimit: "",
         rights: "",
         obligations: "",
         commit: "",
         copies: "",
-        rentalFee: "",
-        securityDeposite: "",
-        moveinDate: "",
-        signinDate: "",
-        expireDate: "",
+        relationship: "",
+        email: "",
+        roomId: "",
+        representative: "",
         gender: "",
         dob: "",
+        contact: "",
+        citizenId: "",
+        createCitizenIdDate: "",
+        createCitizenIdPlace: "",
         career: "",
         licensePlate: "",
         vehicleType: "",
         vehicleColor: "",
-        relationship: "",
-        representative: "",
+        residenceStatus: "",
+        placeOfPermanet: "",
+        id: "",
+        contractId: "",
+        numberOfTenant: "",
+        rentalFee: "",
+        securityDeposite: "",
+        paymentCycle: "",
+        signinDate: "",
+        moveinDate: "",
+        expireDate: "",
+        date: this.getFormattedDate(),
+        error: null,
       },
     };
   },
@@ -433,13 +547,57 @@ export default {
       const month = String(today.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
       const year = today.getFullYear();
 
-      return `${day}-${month}-${year}`;
+      return `${month}-${day}-${year}`;
     },
     async submitForm() {
       try {
-        const response = await apiClient.post("contract/createContract");
-      } catch {
-        console.log("Cant insert!!!");
+        const response = await apiClient.post("contract/addNewContract", {
+          totalArea: this.totalArea,
+          landArea: this.landArea,
+          publicArea: this.publicArea,
+          privateArea: this.privateArea,
+          device: this.device,
+          ownerOrigin: this.ownerOrigin,
+          ownerLimit: this.ownerLimit,
+          rights: this.rights,
+          obligations: this.obligations,
+          commit: this.commit,
+          copies: this.copies,
+          relationship: this.relationship,
+          email: this.email,
+          roomId: this.roomId,
+          representative: this.representative,
+          gender: this.gender,
+          dob: this.dob,
+          contact: this.contact,
+          citizenId: this.citizenId,
+          createCitizenIdDate: this.createCitizenIdDate,
+          createCitizenIdPlace: this.createCitizenIdPlace,
+          career: this.career,
+          licensePlate: this.licensePlate,
+          vehicleType: this.vehicleType,
+          vehicleColor: this.vehicleColor,
+          residenceStatus: this.residenceStatus,
+          placeOfPermanet: this.placeOfPermanet,
+          id: this.id,
+          contractId: this.contractId,
+          numberOfTenant: this.numberOfTenant,
+          rentalFee: this.rentalFee,
+          securityDeposite: this.securityDeposite,
+          paymentCycle: this.paymentCycle,
+          signinDate: this.signinDate,
+          moveinDate: this.moveinDate,
+          expireDate: this.expireDate,
+        });
+        if (response.data.status === 200) {
+          this.error = null;
+          alert("Successfully add new contract");
+          this.$router.push("/ListOfContract");
+        } else {
+          this.error = "Please check the entered information";
+        }
+      } catch (error) {
+        console.error("There was an error adding the contract:", error);
       }
     },
   },
@@ -475,7 +633,9 @@ th {
   text-align: left;
   background-color: #f2f2f2;
 }
-
+input {
+  border: none;
+}
 input[type="text"],
 input[type="date"],
 input[type="number"],
@@ -483,6 +643,7 @@ input[type="email"],
 select {
   width: 140px;
   box-sizing: border-box;
+  border: none;
 }
 .footer {
   margin-left: 10rem;
@@ -490,5 +651,10 @@ select {
   justify-content: space-evenly;
   flex-direction: row;
   flex-wrap: nowrap;
+}
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
 }
 </style>
