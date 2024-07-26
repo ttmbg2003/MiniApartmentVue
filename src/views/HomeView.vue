@@ -363,7 +363,8 @@ function scrollLeft() {
 <style scoped>
 .home {
   position: relative;
-
+  top: -90px;
+  z-index: 0;
   width: 100%;
   height: 100vh;
   display: flex;
