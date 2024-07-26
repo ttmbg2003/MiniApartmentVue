@@ -4,7 +4,7 @@
       display: flex;
       height: 89%;
       background-color: #f5f6f8;
-      margin-top: 90px;
+      
     "
   >
     <SideBar class="sidebar" />

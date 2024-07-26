@@ -603,7 +603,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .contract-form {
   width: 50%;
   margin: auto;

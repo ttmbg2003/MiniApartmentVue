@@ -312,7 +312,7 @@ const passwordRequirements = computed(() => [
     name: 'The password does not match',
     predicate: password.value == passwordRepeat.value,
   }
-]))
+])
 const allRequirementsMet = computed(() => {
   return passwordRequirements.value.every(
     (requirement) => requirement.predicate
