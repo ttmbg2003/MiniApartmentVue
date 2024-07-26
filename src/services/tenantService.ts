@@ -21,7 +21,7 @@ class TenantService{
     }
     updateTenant = (tenantList:Tenant[]) : Promise<void> =>{
         return apiClient.post("/api/tenants/updateTenants",tenantList)
-        .then(() => {});
+        .then((response) => response.data['result']);
     }
     // searchTenant = (key:string) :Promise<any> =>{
     //     return apiClient.post(`/api/tenants/search?keySearch=${key}`)

@@ -28,7 +28,7 @@
             <div class="modal-body">
               <div class="form-group">
                 <label>Email Address<span style="color: red;">*</span></label>
-                <input class="input-change-pass" type="email" v-model="emailChangePass" required />
+                <input class="input-change-pass" type="email" v-model="emailRaw" readonly />
               </div>
               <div class="form-group">
                 <label>Current Password<span style="color: red;">*</span></label>
@@ -36,14 +36,14 @@
                   v-model="currentPasswordChange" required />
                 <i :class="showCurrentPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
                   @click="showCurrentPassword = !showCurrentPassword" style=""></i>
-                  <div class="invalid-feedback">
-      Looks good!
-    </div>
+                <div class="invalid-feedback">
+                  Looks good!
+                </div>
               </div>
               <div class="form-group">
                 <label>New Password<span style="color: red;">*</span></label>
                 <input class="input-change-pass" v-model="password" :type="showNewPassword ? 'text' : 'password'"
-                   id="password" required />
+                  id="password" required />
                 <i :class="showNewPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
                   @click="showNewPassword = !showNewPassword"></i>
               </div>
@@ -52,7 +52,7 @@
                 <input class="input-change-pass" id="password-repeat" v-model="passwordRepeat"
                   :type="showConfirmPassword ? 'text' : 'password'" required />
                 <i :class="showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                  @click="showConfirmPassword = !showConfirmPassword" ></i>
+                  @click="showConfirmPassword = !showConfirmPassword"></i>
               </div>
               <ul class="requirements">
                 <li v-for="(requirement, key) in passwordRequirements" :key="key"
@@ -94,7 +94,7 @@
             </div>
             <div class="form-group">
               <label>Id Number</label>
-              <input class="input-user-info" type="text" v-model="localUser.citizenId">
+              <input class="input-user-info" type="number" v-model="localUser.citizenId">
             </div>
           </div>
           <div class="form-group">
@@ -109,7 +109,7 @@
             </div>
             <div class="form-group">
               <label>Contact Number</label>
-              <input class="input-user-info" type="text" v-model="localUser.contact"
+              <input class="input-user-info" type="number" v-model="localUser.contact"
                 placeholder="Your contact number" />
             </div>
           </div>
@@ -127,13 +127,8 @@ import { ref, computed, watch } from "vue";
 import type { User } from "@/type/User";
 import userService from "@/services/userService";
 import { useRouter } from "vue-router";
+import Swal from 'sweetalert2'
 
-
-// var showPassword = false;
-// const togglePassword = () => {
-//   showPassword = !showPassword;
-// }
-const editedUser = ref<User | null>(null);
 const localUser = ref<User>({
   userId: "",
   firstName: "",
@@ -152,24 +147,17 @@ const router = useRouter();
 var emailRaw = userService.getEmailCurrentUser();
 var fullNameRaw = "";
 userService.getUserByEmail(emailRaw).then((response) => {
-  editedUser.value = response;
   localUser.value = response;
-  localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };
-  console.log(localUser.value.dateOfBirth);
+  localUser.value.dateOfBirth = formatDate(response.dateOfBirth);
+  // localUser.value = { ...response, dateOfBirth: formatDate(response.dateOfBirth) };
+  console.log(response);
 
   fullNameRaw = `${localUser.value.firstName} ${localUser.value.lastName}`;
 });
-// const fullName = computed({
-//   get: () => {
-//     return `${localUser.value.firstName} ${localUser.value.lastName}`;
-//   },
-//   set: (value: string) => {
-//     const names = value.split(' ');
-//     localUser.value.firstName = names[0];
-//     localUser.value.lastName = names.slice(1).join(' ');
-//   }
-// });
 const formatDate = (dateString: string) => {
+  if (dateString == null) {
+    return null;
+  }
   return dateString.split('T')[0];
 };
 const timeFomat = (dateString: string) => {
@@ -178,7 +166,16 @@ const timeFomat = (dateString: string) => {
 const submitForm = () => {
   localUser.value.dateOfBirth = timeFomat(localUser.value.dateOfBirth)
   userService.editProfile(localUser.value).then(() => {
-    window.location.reload();
+    Swal.fire({
+      title: "Success!",
+      text: "Save successfully.",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   });
 };
 const cancelEdit = () => {
@@ -212,21 +209,21 @@ function init() {
 
 var emailChangePass = "";
 var currentPasswordChange = "";
-// var newPasswordChange = "";
-// var confirmPasswordChange = "";
+
 const password = ref('')
 const passwordRepeat = ref('')
 const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
 const submitFormChangePassword = () => {
-  console.log(password.value);
-  console.log(passwordRepeat.value);
-  if (!(password.value == passwordRepeat.value)) {
-    console.log("mat khau ko trung khowsp");
-  } else {
-    console.log("mat khau trung khowsp");
-    return userService.changePassword(emailChangePass, currentPasswordChange, password.value);
-  }
+  return userService.changePassword(emailRaw, currentPasswordChange, password.value).then((response) => {
+    Swal.fire({
+      title: "Success!",
+      text: "Save successfully.",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  });
   // userService.editProfile(localUser.value).then(() => {
   //   window.location.reload();
   // });
@@ -245,10 +242,10 @@ const passwordRequirements = computed(() => ([
     name: 'The Password must be at least 8 characters long',
     predicate: password.value.length >= 8,
   },
-  // {
-  //   name: 'Must match',
-  //   predicate: password.value == passwordRepeat.value,
-  // }
+  {
+    name: 'The password does not match',
+    predicate: password.value == passwordRepeat.value,
+  }
 ]))
 const allRequirementsMet = computed(() => {
   return passwordRequirements.value.every(requirement => requirement.predicate);
@@ -365,9 +362,11 @@ label {
   color: white;
   width: 60px;
 }
+
 .btn-save:disabled {
-cursor: not-allowed !important;
+  cursor: not-allowed !important;
 }
+
 .btn-cancel {
   background-color: #E8E7E7;
 
@@ -414,12 +413,17 @@ h1 {
 .is-error {
   color: #BA3637;
 }
-.eye-icon{
+
+.eye-icon {
   position: absolute;
-    top:71%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    left: 87%;
+  top: 71%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  left: 87%;
 }
-.disabled {  opacity: 0.6;  cursor: not-allowed;}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>

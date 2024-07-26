@@ -60,7 +60,8 @@
                                             <a @click="getTenantByRoom(tenant.roomId)" data-bs-toggle="modal"
                                                 data-bs-target="#tenantDetailModal"><i><img
                                                         src="../components/icons/eye.png" style="width: 23px;"></i></a>
-                                            <a @click="deleteTenant(tenant.email)" href="#"><i><img src="../components/icons/TrashIcon.png"
+                                            <a @click="deleteTenant(tenant.email)" href="#"><i><img
+                                                        src="../components/icons/TrashIcon.png"
                                                         style="width: 23px;"></i></a>
                                         </td>
 
@@ -124,23 +125,76 @@
                                             <tr v-for="(tenantDetail) in tenantDetail" style="height:50px;">
                                                 <td>{{ tenantDetail.id }}</td>
                                                 <td>{{ tenantDetail.firstName }} {{ tenantDetail.lastName }}</td>
-                                                <td>{{ tenantDetail.roomId }}</td>
-                                                <td>
-                                                    <div v-if="tenantDetail.gender">Male</div>
-                                                    <div v-else>Female</div>
+                                                <td v-if="isEditing">
+                                                    <!-- <input v-model="tenantDetail.roomId" style="width: 38px;"
+                                                        class="input-edit"> -->
+                                                    <select v-model="tenantDetail.roomId" class="input-edit">
+                                                        <option v-for="room in rooms" :value="room.roomId" >{{ room.roomId }}</option>
+                                                    </select>
                                                 </td>
-                                                <td>{{ tenantDetail.dateOfBirth }}</td>
-                                                <td>{{ tenantDetail.contact }}</td>
+                                                <td v-else>{{ tenantDetail.roomId }}</td>
+                                                <td v-if="isEditing">
+                                                    <select v-model="tenantDetail.gender" class="input-edit">
+                                                        <option :value="true">Male</option>
+                                                        <option :value="false">Female</option>
+                                                    </select>
+                                                </td>
+                                                <td v-else>{{ tenantDetail.gender ? 'Male' : 'Female' }}</td>
+                                                <td v-if="isEditing">
+                                                    <input type="date" v-model="tenantDetail.dateOfBirth"
+                                                        class="input-edit" style="width: 117px;">
+                                                </td>
+                                                <td v-else>{{ formatDate(tenantDetail.dateOfBirth) }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.contact" class="input-edit"
+                                                        style="width: 125px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.contact }}</td>
                                                 <td>{{ tenantDetail.email }}</td>
-                                                <td>{{ tenantDetail.citizenId }}</td>
-                                                <td>{{ tenantDetail.career }}</td>
-                                                <td>{{ tenantDetail.licensePlate }}</td>
-                                                <td>{{ tenantDetail.vehicleType }}</td>
-                                                <td>{{ tenantDetail.vehicleColor }}</td>
-                                                <td>{{ tenantDetail.residenceStatus }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.citizenId" class="input-edit"
+                                                        style="width: 136px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.citizenId }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.career" class="input-edit"
+                                                        style="width: 125px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.career }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.licensePlate" class="input-edit"
+                                                        style="width: 130px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.licensePlate }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.vehicleType" class="input-edit"
+                                                        style="width: 117px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.vehicleType }}</td>
+                                                <td v-if="isEditing">
+                                                    <input v-model="tenantDetail.vehicleColor" class="input-edit"
+                                                        style="width: 117px;" />
+                                                </td>
+                                                <td v-else>{{ tenantDetail.vehicleColor }}</td>
+                                                <td v-if="isEditing">
+                                                    <select v-model="tenantDetail.residenceStatus" class="input-edit"
+                                                        style="width: 116px;">
+                                                        <option value="Success">Success</option>
+                                                        <option value="In Progress">In Progress</option>
+                                                        <option value="Failed">Failed</option>
+                                                    </select>
+                                                </td>
+                                                <td v-else>
+                                                    <div v-if="tenantDetail.residenceStatus == 'Success'" class="residence-status-success residence-status">{{ tenantDetail.residenceStatus }}</div>
+                                                    <div v-if="tenantDetail.residenceStatus == 'In Progress'" class="residence-status-progress residence-status">{{ tenantDetail.residenceStatus }}</div>
+                                                    <div v-if="tenantDetail.residenceStatus == 'Failed'" class="residence-status-fail residence-status">{{ tenantDetail.residenceStatus }}</div>
+                                                </td>
                                                 <td>
-                                                    <a @click="isEdit = true"><i><img src="../components/icons/PencilIcon.png" style="width: 23px;"></i></a>
-                                                    <a href="#"><i><img src="../components/icons/TrashIcon.png"
+                                                    <a href="#" @click="editTenant()"><i><img
+                                                                src="../components/icons/PencilIcon.png"
+                                                                style="width: 23px;"></i></a>
+                                                    <a href="#" @click="deleteTenant(tenantDetail.email)"><i><img
+                                                                src="../components/icons/TrashIcon.png"
                                                                 style="width: 23px;"></i></a>
                                                 </td>
                                             </tr>
@@ -148,8 +202,12 @@
                                     </table>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-save">Save</button>
+                                    <button type="button" @click="isEditing = false" class="btn btn-cancel"
+                                        data-bs-dismiss="modal"><a href="#"
+                                            style="text-decoration: none;color: black;">Cancel</a></button>
+                                    <button type="submit" @click="updateTenant" :disabled="!isEditing"
+                                        class="btn btn-save"><a href="#"
+                                            style="text-decoration: none;color: white;">Save</a></button>
                                 </div>
                             </form>
                         </div>
@@ -162,22 +220,43 @@
 
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import type { Tenant } from '@/type/Tenant'
 import tenantService from '@/services/tenantService';
+import roomService from '@/services/roomService';
 import Swal from 'sweetalert2'
+import type { Room } from "@/type/Room";
 
 const tenants = ref<Tenant[]>([]);
 const tenantDetail = ref<Tenant[]>([]);
 var searchValue = "";
-let isEdit = false;
+let isEditing = false;
 var totalElement = 0;
 var totalPage = 0;
 var currentPage = 0;
-
+const timeFomat = (dateString: string) => {
+    return dateString + "T17:00:00.000+00:00";
+};
+const updateTenant = async () => {
+    isEditing = false;
+    for (const tenant of tenantDetail.value) {
+        tenant.dateOfBirth = timeFomat(tenant.dateOfBirth);
+    }
+    tenantService.updateTenant(tenantDetail.value).then((response) => {
+        console.log(response);
+        Swal.fire({
+            title: "Success!",
+            text: "Updated successfully.",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+        });
+        window.location.reload();
+    });
+}
 const getTenantPanigation = (pageNo: number) => {
     tenantService.getAllTenant(pageNo, searchValue).then((response) => {
-        tenants.value = response.content.map((tenants: {id:any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
+        tenants.value = response.content.map((tenants: { id: any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
             id: tenants.id,
             email: tenants.email,
             roomId: tenants.roomId,
@@ -199,19 +278,20 @@ const getTenantPanigation = (pageNo: number) => {
         totalPage = response.totalPages;
         currentPage = response.pageable.pageNumber;
     });
-    console.log(tenants);
-    
 };
 getTenantPanigation();
-const updateTenant = async () => {
-    try {
-        console.log('Sending tenant data:', tenantDetail);
-        await tenantService.updateTenant(tenantDetail);
-        console.log('Tenant data updated successfully');
-    } catch (error) {
-        console.log(error);
-
-    }
+const rooms = ref<Room[]>([])
+const editTenant = async () => {
+    roomService.getAllRoomAvailable().then((response) => {
+        rooms.value = response.map((room: {roomId:any; roomStatus:any; maxTenant:any}) =>({
+            roomId : room.roomId,
+            roomStatus: room.roomStatus,
+            maxTenant: room.maxTenant
+        }));        
+    })
+    await nextTick(() => {
+        isEditing = true;
+    });
 }
 
 const deleteTenant = (email: string) => {
@@ -239,7 +319,7 @@ const deleteTenant = (email: string) => {
 const getTenantByRoom = async (roomId: number) => {
     try {
         const response = await tenantService.getTenantByRoomId(roomId);
-        tenantDetail.value = response.content.map((tenants: {id:any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
+        tenantDetail.value = response.content.map((tenants: { id: any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
             id: tenants.id,
             email: tenants.email,
             roomId: tenants.roomId,
@@ -257,8 +337,6 @@ const getTenantByRoom = async (roomId: number) => {
             contact: tenants.contact,
             citizenId: tenants.citizenId,
         }));
-        console.log(tenantDetail.value);
-        
     } catch (error) {
         console.error('Error fetching tenant data:', error);
     }
@@ -335,21 +413,26 @@ a {
     width: 94px;
     font-weight: 600;
     font-size: 14px;
+    display: flex;
+    justify-content: center;
 }
 
 .residence-status-success {
-    border-color: #00d656fe;
     color: #009d3f;
+    border: solid 2px #00d656fe;
+    height: 27px;
 }
 
 .residence-status-progress {
-    border-color: #ffd79b;
     color: #ffbd5a;
+    border: solid 2px #ffd79b;
+    height: 27px;
 }
 
 .residence-status-fail {
-    border-color: #ff7d7d;
     color: #fb2424;
+    border: solid 2px #ff7d7d;
+    height: 27px;
 }
 
 .input-tenant-detail {
@@ -373,5 +456,31 @@ a {
 .disabled-a-tag {
     pointer-events: none;
     color: #9B9B9B;
+}
+
+.input-edit {
+    color: #8D8C8C;
+    border: none;
+    outline: none;
+}
+.residence-status {
+    border-radius: 6px;
+    width: 94px;
+    font-weight: 600;
+    font-size: 14px;
+}
+.residence-status-success {
+    border-color: #00d656fe;
+    color: #009d3f;
+}
+
+.residence-status-progress {
+    border-color: #ffd79b;
+    color: #ffbd5a;
+}
+
+.residence-status-fail {
+    border-color: #ff7d7d;
+    color: #fb2424;
 }
 </style>
