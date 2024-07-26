@@ -1,189 +1,142 @@
 <template>
-  <div class="container">
-    <div
-      style="
+  <div style="    height: 100%;
+    background: #F5F6F8;
+    padding-top: 28px;">
+    <div class="container">
+      <div style="
         display: flex;
         padding-top: 20px;
         padding-left: 5rem;
         align-items: center;
-        height: 33%;
-      "
-    >
-      <!-- <spam><input type="file"><img class="avartar-img" src="../components/icons/minh.jpg"></spam> -->
-      <input type="file" id="fileInput" style="display: none" />
-      <img
-        v-bind:src="localUser.image"
-        class="avartar-img"
-        alt="Click to upload"
-        id="image"
-        style="cursor: pointer"
-      />
-      <div>
-        <h1>{{ fullNameRaw || "null" }}</h1>
-        <p style="margin: 0">{{ emailRaw || "null" }}</p>
+        height: 20%;
+      ">
+        <!-- <spam><input type="file"><img class="avartar-img" src="../components/icons/minh.jpg"></spam> -->
+        <input type="file" id="fileInput" style="display: none" />
+        <img v-bind:src="localUser.image" class="avartar-img" alt="Click to upload" id="image"
+          style="cursor: pointer" />
+        <div>
+          <h1>{{ fullNameRaw || "null" }}</h1>
+          <p style="margin: 0">{{ emailRaw || "null" }}</p>
+        </div>
+        <div style="display: flex; flex: 0%; justify-content: flex-end">
+          <button class="btn btn-edit-profile">Edit my profile</button>
+          <button class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePassModal">
+            Change password
+          </button>
+        </div>
       </div>
-      <div style="display: flex; flex: 0%; justify-content: flex-end">
-        <button class="btn btn-edit-profile">Edit my profile</button>
-        <button
-          class="btn btn-change-password"
-          data-bs-toggle="modal"
-          data-bs-target="#changePassModal"
-        >
-          Change password
-        </button>
-      </div>
-    </div>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="changePassModal"
-      tabindex="-1"
-      aria-labelledby="changePassModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header" style="justify-content: center">
-            <h4 class="modal-title" id="changePassModalLabel">
-              Change Password
-            </h4>
-            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-          </div>
-          <form @submit.prevent="submitFormChangePassword">
-            <div class="modal-body">
-              <div class="form-group">
-                <label>Email Address<span style="color: red;">*</span></label>
-                <input class="input-change-pass" type="email" v-model="emailRaw" readonly />
-              </div>
-              <div class="form-group">
-                <label>Current Password<span style="color: red;">*</span></label>
-                <input :type="showCurrentPassword ? 'text' : 'password'" class="input-change-pass is-valid"
-                  v-model="currentPasswordChange" required />
-                <i :class="showCurrentPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                  @click="showCurrentPassword = !showCurrentPassword" style=""></i>
-                <div class="invalid-feedback">
-                  Looks good!
-                </div>
-              </div>
-              <div class="form-group">
-                <label>New Password<span style="color: red;">*</span></label>
-                <input class="input-change-pass" v-model="password" :type="showNewPassword ? 'text' : 'password'"
-                  id="password" required />
-                <i :class="showNewPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                  @click="showNewPassword = !showNewPassword"></i>
-              </div>
-              <div class="form-group">
-                <label>Confirm New Password<span style="color: red;">*</span></label>
-                <input class="input-change-pass" id="password-repeat" v-model="passwordRepeat"
-                  :type="showConfirmPassword ? 'text' : 'password'" required />
-                <i :class="showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                  @click="showConfirmPassword = !showConfirmPassword"></i>
-              </div>
-              <ul class="requirements">
-                <li
-                  v-for="(requirement, key) in passwordRequirements"
-                  :key="key"
-                  :class="requirement.predicate ? 'is-success' : 'is-error'"
-                >
-                  {{ requirement.name }}
-                </li>
-              </ul>
+      <!-- Modal -->
+      <div class="modal fade" id="changePassModal" tabindex="-1" aria-labelledby="changePassModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="justify-content: center">
+              <h4 class="modal-title" id="changePassModalLabel">
+                Change Password
+              </h4>
+              <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-cancel"
-                data-bs-dismiss="modal"
-              >
-                Close
+            <form @submit.prevent="submitFormChangePassword">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Email Address<span style="color: red;">*</span></label>
+                  <input class="input-change-pass" type="email" v-model="emailRaw" readonly />
+                </div>
+                <div class="form-group">
+                  <label>Current Password<span style="color: red;">*</span></label>
+                  <input :type="showCurrentPassword ? 'text' : 'password'" class="input-change-pass is-valid"
+                    v-model="currentPasswordChange" required />
+                  <i :class="showCurrentPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
+                    @click="showCurrentPassword = !showCurrentPassword" style=""></i>
+                  <div class="invalid-feedback">
+                    Looks good!
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>New Password<span style="color: red;">*</span></label>
+                  <input class="input-change-pass" v-model="password" :type="showNewPassword ? 'text' : 'password'"
+                    id="password" required />
+                  <i :class="showNewPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
+                    @click="showNewPassword = !showNewPassword"></i>
+                </div>
+                <div class="form-group">
+                  <label>Confirm New Password<span style="color: red;">*</span></label>
+                  <input class="input-change-pass" id="password-repeat" v-model="passwordRepeat"
+                    :type="showConfirmPassword ? 'text' : 'password'" required />
+                  <i :class="showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
+                    @click="showConfirmPassword = !showConfirmPassword"></i>
+                </div>
+                <ul class="requirements">
+                  <li v-for="(requirement, key) in passwordRequirements" :key="key"
+                    :class="requirement.predicate ? 'is-success' : 'is-error'">
+                    {{ requirement.name }}
+                  </li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button type="submit" class="btn btn-save" :disabled="!allRequirementsMet">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div>
+          <form @submit.prevent="submitForm">
+            <div style="display: flex">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input class="input-user-info" type="text" id="fullName" v-model="fullNameRaw" disabled />
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select class="input-user-info" name="gender" v-model="localUser.gender">
+                  <option selected disabled value="">Select</option>
+                  <option value="true">Male</option>
+                  <option value="false">Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex">
+              <div class="form-group">
+                <label>Date Of Birth</label>
+                <input class="input-user-info" type="date" v-model="localUser.dateOfBirth" />
+              </div>
+              <div class="form-group">
+                <label>Id Number</label>
+                <input class="input-user-info" type="number" v-model="localUser.citizenId">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Place Of Permanent</label>
+              <input class="input-user-info" type="text" v-model="localUser.placeOfPermanet" style="width: 98%"
+                placeholder="Your place of permanet" />
+            </div>
+            <div style="display: flex">
+              <div class="form-group">
+                <label>Email Address</label>
+                <input class="input-user-info" type="email" v-model="localUser.email" disabled />
+              </div>
+              <div class="form-group">
+                <label>Contact Number</label>
+                <input class="input-user-info" type="number" v-model="localUser.contact"
+                  placeholder="Your contact number" />
+              </div>
+            </div>
+            <div style="display: flex; justify-content: center; margin-right: 5%">
+              <button class="btn btn-cancel" type="button" @click="cancelEdit">
+                Go to home
               </button>
-              <button
-                type="submit"
-                class="btn btn-save"
-                :disabled="!allRequirementsMet"
-              >
-                Save
-              </button>
+              <button class="btn btn-save" type="submit">Save</button>
             </div>
           </form>
         </div>
-      </div>
-    </div>
-    <div class="card">
-      <div>
-        <form @submit.prevent="submitForm">
-          <div style="display: flex">
-            <div class="form-group">
-              <label for="fullName">Full Name</label>
-              <input
-                class="input-user-info"
-                type="text"
-                id="fullName"
-                v-model="fullNameRaw"
-                disabled
-              />
-            </div>
-            <div class="form-group">
-              <label>Gender</label>
-              <select
-                class="input-user-info"
-                name="gender"
-                v-model="localUser.gender"
-              >
-                <option selected disabled value="">Select</option>
-                <option value="true">Male</option>
-                <option value="false">Female</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
-          <div style="display: flex">
-            <div class="form-group">
-              <label>Date Of Birth</label>
-              <input
-                class="input-user-info"
-                type="date"
-                v-model="localUser.dateOfBirth"
-              />
-            </div>
-            <div class="form-group">
-              <label>Id Number</label>
-              <input class="input-user-info" type="number" v-model="localUser.citizenId">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Place Of Permanent</label>
-            <input
-              class="input-user-info"
-              type="text"
-              v-model="localUser.placeOfPermanet"
-              style="width: 98%"
-              placeholder="Your place of permanet"
-            />
-          </div>
-          <div style="display: flex">
-            <div class="form-group">
-              <label>Email Address</label>
-              <input
-                class="input-user-info"
-                type="email"
-                v-model="localUser.email"
-                disabled
-              />
-            </div>
-            <div class="form-group">
-              <label>Contact Number</label>
-              <input class="input-user-info" type="number" v-model="localUser.contact"
-                placeholder="Your contact number" />
-            </div>
-          </div>
-          <div style="display: flex; justify-content: center; margin-right: 5%">
-            <button class="btn btn-cancel" type="button" @click="cancelEdit">
-              Go to home
-            </button>
-            <button class="btn btn-save" type="submit">Save</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
@@ -341,18 +294,18 @@ body {
 
 .container {
   background: white;
-  margin-top: 20px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   max-width: 95%;
-  height: 85%;
-  margin-top: 90px;
+  height: 96%;
+  border-radius: 19px;
+  /* margin: 0; */
 }
 
 .card {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 6rem;
   border: none;
 }
 
