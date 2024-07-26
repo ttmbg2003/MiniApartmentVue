@@ -29,7 +29,7 @@ class UserService {
   getEmailCurrentUser() {
     const token = this.getTokenUser();
     if (token) {
-      const decoded = jwtDecode(token);
+      const decoded = jwtDecode(token);      
       return decoded.sub;
     } else {
       return null;
@@ -62,7 +62,7 @@ class UserService {
     }
   }
   
-  changePassword(email:string, currentPass:string, newPass:string){    
+  changePassword(email:any, currentPass:string, newPass:string){    
     const token = this.getTokenUser();  
     console.log(token);
     

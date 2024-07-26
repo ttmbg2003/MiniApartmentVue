@@ -1,253 +1,792 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex">
-    <SideBar />
-    <div class="container">
-      <div class="card">
-        <div style="display: flex">
-          <div class="line-blue"></div>
-          <div>
-            <h3>List of Apartment Tenants</h3>
-            <p>List of All Apartment Tenants</p>
-          </div>
-        </div>
-        <div>
-          <VueDatePicker
-            v-model="year"
-            year-picker
-            disable-year-select
-            :year-range="[2020, 2040]"
-            placeholder="Select year"
-            style="width: 153px"
-          />
-          <VueDatePicker v-model="month" month-picker />
-          <div style="display: flex; justify-content: flex-end">
-            <p style="margin-right: 31px; margin-bottom: 12px">
-              Total: {{ clientItemsLength }}
-            </p>
-          </div>
-          <EasyDataTable
-            ref="dataTable"
-            buttons-pagination
-            :headers="headersMain"
-            :items="payment"
-            show-index
-            :must-sort="true"
-            :rows-per-page="10"
-            table-class-name="customize-table"
-          >
-            <template #item-action="item">
-              <a data-bs-toggle="modal" data-bs-target="#tenantDetailModal"
-                ><i
-                  ><img
-                    src="../components/icons/eye.png"
-                    style="width: 23px" /></i
-              ></a>
-              <a href="#" @click="() => deleteTenant(item.email)"
-                ><i
-                  ><img
-                    src="../components/icons/TrashIcon.png"
-                    style="width: 23px" /></i
-              ></a>
-            </template>
-          </EasyDataTable>
-        </div>
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="tenantDetailModal"
-          tabindex="-1"
-          aria-labelledby="tenantDetailModalLabel"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered"
-            style="max-width: 100%"
-          >
-            <div class="modal-content">
-              <!-- <div class="modal-header">
+
+    <div style="display: flex;height: 89%">
+        <SideBar />
+        <div class="container">
+            <div class="card">
+
+                <div style="display: flex; margin-bottom: 10px">
+                    <div class="line-blue"></div>
+                    <div style="display: flex;align-items: center;">
+                        <h3 style="margin: 0;">List of Living Expenses</h3>
+                    </div>
+                    <div class="d-flex justify-content-end" style="    width: 76%;">
+                        <button class="btn btn-add-new" data-bs-toggle="modal" data-bs-target="#addNewExpensesModal"
+                            :disabled="month == null||month==''" @click="getRoomId"><i style="margin-right: 10px;">
+                                <img src="../components/icons/circled-plus.png"
+                                    style="margin-bottom: 3px;width: 24px;"></i>Add new</button>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: flex;">
+                        <div style="    text-align: center;">
+                            <label>Year</label>
+                            <VueDatePicker :model-value="year" year-picker :year-range="[2020, 2040]" :clearable="false"
+                                placeholder="Select year" @update:model-value="getListPayment" style="width: 107px" />
+                            <!-- <VueDatePicker :model-value="month" @update:model-value="updateMonth" month-picker placeholder="Select month" style="width: 170px;" /> -->
+                        </div>
+                        <div style="margin-left: 30px;    text-align: center;">
+                            <label>Month</label><br />
+                            <select v-model="month" @change="getExpensesByMonth"
+                                style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                                <option selected></option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                            </select>
+                        </div>
+                        <div style="margin-left: 30px;    text-align: center;">
+                            <label>Room No</label><br />
+                            <select v-model="selectedRoomId" @change="selectedRoom"
+                                style="cursor: pointer;height: 38px;width: 78px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                                <option selected></option>
+                                <option v-for="room in allRoom" :value="room.roomId">{{ room.roomId }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div v-if="payment == ''" style="display: flex;justify-content: center">
+                        <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                    </div>
+                    <div style="display: flex;justify-content: flex-end;">
+                        <p style="margin-right: 31px; margin-bottom: 0;">Total: {{ totalElement }}</p>
+                    </div>
+                    <div style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;">
+                        <div style="margin: 12px;">
+                            <table v-if="month == null || month == ''" style="width: 100%;">
+                                <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
+                                    <th>Room No</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                    <th>Apr</th>
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="payments in payment" style="height:50px;">
+                                        <td>{{ payments.roomId }}</td>
+                                        <td>{{ payments.jan }}</td>
+                                        <td>{{ payments.feb }}</td>
+                                        <td>{{ payments.mar }}</td>
+                                        <td>{{ payments.apr }}</td>
+                                        <td>{{ payments.may }}</td>
+                                        <td>{{ payments.jun }}</td>
+                                        <td>{{ payments.jul }}</td>
+                                        <td>{{ payments.aug }}</td>
+                                        <td>{{ payments.sep }}</td>
+                                        <td>{{ payments.oct }}</td>
+                                        <td>{{ payments.nov }}</td>
+                                        <td>{{ payments.dec }}</td>
+                                        <td>
+                                            <div v-if="payments.status == 'Paid'"
+                                                class="payment-status-paid payment-status">{{ payments.status }}</div>
+                                            <div v-if="payments.status == 'Partial Paid'"
+                                                class="payment-status-partial payment-status">{{ payments.status }}
+                                            </div>
+                                            <div v-if="payments.status == 'Unpaid'"
+                                                class="payment-status-unpaid payment-status">{{ payments.status }}</div>
+                                        </td>
+                                        <td>
+                                            <a @click="showExpensesDetail(payments.roomId)"><i><img
+                                                        v-if="!isShowExpensesDetail" src="../components/icons/eye.png"
+                                                        style="width: 23px;">
+                                                    <img v-if="isShowExpensesDetail"
+                                                        src="../components/icons/eye - Copy.png"
+                                                        style="width: 23px;"></i></a>
+                                            <a href="#"><i><img src="../components/icons/TrashIcon.png"
+                                                        style="width: 23px;"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table v-else style="width: 100%;">
+                                <thead style="color: #9B9B9B;">
+                                    <th class="header-table-add-new">Room No</th>
+                                    <th class="header-table-add-new">Rental Fee <br />(VND)</th>
+                                    <th class="header-table-add-new">Electricity <br />
+                                        (3.800vnd)</th>
+                                    <th class="header-table-add-new">Water<br />
+                                        (35.000vnd)</th>
+                                    <th class="header-table-add-new">Internet<br />
+                                        (VND)</th>
+                                    <th class="header-table-add-new">Service<span style="color: red;">*</span><br />
+                                        (VND)</th>
+                                    <th class="header-table-add-new">Security Deposit<br />
+                                        (VND)</th>
+                                    <th class="header-table-add-new">Debt<br />
+                                        (VND)</th>
+                                    <th class="header-table-add-new">Fine<br />
+                                        (VND)</th>
+                                    <th class="header-table-add-new" style="    width: 134px;">Status
+                                    </th>
+                                    <th class="header-table-add-new">Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="expenses in expensesByMonth" :key="expenses.month"
+                                        style="height: 35px;background-color: #9c9c9c17;">
+                                        <td  style="padding-left: 10px;">{{ expenses.roomId }}</td>
+                                        <td>{{ fomatFee(expenses.rentalFee) }}</td>
+                                        <td>{{ fomatFee((expenses.electricCurrentMeter - expenses.electricPreviousMeter)
+                                            * 3800) }}</td>
+                                        <td>{{ fomatFee((expenses.waterCurrentMeter - expenses.waterPreviousMeter) *
+                                            35000) }}</td>
+                                        <td>{{ fomatFee(expenses.internet) }}</td>
+                                        <td>{{ fomatFee(expenses.service) }}</td>
+                                        <td>{{ fomatFee(expenses.securityDeposite) }}</td>
+                                        <td>{{ fomatFee(expenses.debt) }}</td>
+                                        <td>{{ fomatFee(expenses.fine) }}</td>
+                                        <td>{{ expenses.status }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-if="isShowExpensesDetail">
+                            <ExpensesDetail :roomId="roomIdSelectDetail" :year="year" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="addNewExpensesModal" tabindex="-1"
+                    aria-labelledby="addNewExpensesModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;justify-content: center;">
+                        <div class="modal-content">
+                            <!-- <div class="modal-header">
+
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->
-              <div class="modal-body">
-                <p>
-                  <i
-                    ><img src="../components/icons/eye.png" style="width: 23px"
-                  /></i>
-                  View Details
-                </p>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-cancel"
-                  data-bs-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <button type="submit" class="btn btn-save">Save</button>
-              </div>
+                            <form @submit.prevent="submitStatus">
+                                <div class="modal-body">
+                                    <div>
+                                        <p style="color: #0265FF;"><i><img
+                                                    src="../components/icons/circled-plusblue.png"
+                                                    style="width: 23px; "></i>Add new</p>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex;">
+                                            <div style="    text-align: center;">
+                                                <label>Year</label>
+                                                <VueDatePicker :model-value="year" year-picker
+                                                    :year-range="[2020, 2040]" :clearable="false"
+                                                    placeholder="Select year" @update:model-value="getListPayment"
+                                                    style="width: 107px" />
+                                            </div>
+                                            <div style="margin-left: 30px;    text-align: center;">
+                                                <label>Month</label><br />
+                                                <select v-model="month"
+                                                    style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                                                    <option selected></option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                    <option>6</option>
+                                                    <option>7</option>
+                                                    <option>8</option>
+                                                    <option>9</option>
+                                                    <option>10</option>
+                                                    <option>11</option>
+                                                    <option>12</option>
+                                                </select>
+                                            </div>
+                                            <div style="text-align: center;margin-left: 30px;">
+                                                <label>Room</label><br />
+                                                <select class="input-add-new-expenses" v-model="selectedRoomId"
+                                                    @change="selectedRoom"
+                                                    style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                                                    <option v-for="room in roomsAvailable" :value="room.roomId">{{
+                                                        room.roomId }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="main-add-new">
+                                        <div style="margin: 0 10px 7px 10px;padding-top: 12px;">
+                                            <table style="width: 100%;    font-size: 14px;">
+                                                <thead style="color: #9B9B9B;">
+                                                    <th class="header-table-add-new">Room No</th>
+                                                    <th class="header-table-add-new">Rental Fee <br />(VND)</th>
+                                                    <th class="header-table-add-new">Electricity <br />
+                                                        (3.800vnd)</th>
+                                                    <th class="header-table-add-new">Water<br />
+                                                        (35.000vnd)</th>
+                                                    <th class="header-table-add-new">Internet<br />
+                                                        (VND)</th>
+                                                    <th class="header-table-add-new">Service<span
+                                                            style="color: red;">*</span><br />
+                                                        (VND)</th>
+                                                    <th class="header-table-add-new">Security Deposit<br />
+                                                        (VND)</th>
+                                                    <th class="header-table-add-new">Debt<br />
+                                                        (VND)</th>
+                                                    <th class="header-table-add-new">Fine<br />
+                                                        (VND)</th>
+                                                    <th class="header-table-add-new" style="    width: 134px;">Status
+                                                    </th>
+                                                    <th class="header-table-add-new">Action</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr style="height: 35px;background-color: #9c9c9c17;">
+                                                        <td>{{ selectedRoomId }}</td>
+                                                        <td>{{ fomatFee(rentalFee) }}</td>
+                                                        <td>{{ fomatFee(electricityFee) }}</td>
+                                                        <td>{{ fomatFee(waterFee) }}</td>
+                                                        <td>{{ fomatFee(internetFee) }}</td>
+                                                        <td>{{ fomatFee(serviceFee) }}</td>
+                                                        <td>{{ fomatFee(securityDeposite) }}</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td>0</td>
+                                                        <td><a><i><img src="../components/icons/eye.png"
+                                                                        style="width: 23px;">
+                                                                </i></a>
+                                                            <a href="#"><i><img src="../components/icons/TrashIcon.png"
+                                                                        style="width: 23px;"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p style="font-style: italic;">Service <span style="color: red;">*</span>:
+                                            Trash,
+                                            light, cleaning, laundy, camera, security, parking</p>
+                                        <div class="row">
+                                            <div class="col"
+                                                style="display: flex;justify-content: end;margin-right: 20px;">
+                                                <div class="form-add">
+                                                    <div style="    margin: 6px;">
+
+                                                        <h5 style="font-weight: 600;">Living Expenses</h5>
+                                                        <form @submit.prevent="submitFormExpenses">
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Creation Date<span
+                                                                            style="color: red;">*</span></label><br />
+                                                                    <input type="date" class="input-add-new-expenses" />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Due Date<span
+                                                                            style="color: red;">*</span></label><br />
+                                                                    <input type="date" class="input-add-new-expenses" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Room No<span
+                                                                            style="color: red;">*</span></label><br />
+                                                                    <input type="text" :value="selectedRoomId"
+                                                                        class="input-add-new-expenses" disabled>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Representative<span
+                                                                            style="color: red;">*</span></label><br />
+                                                                    <input type="text" :value="representative"
+                                                                        class="input-add-new-expenses" disabled>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Total</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        :value="fomatFee(rentalFee+ securityDeposite+
+                                                                                    electricityFee+ waterFee+ internetFee+
+                                                                                    serviceFee)"
+                                                                        disabled />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Rental Fee</label><br />
+                                                                    <input type="text" :value="rentalFee"
+                                                                        class="input-add-new-expenses" disabled />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Security Deposit</label><br />
+                                                                    <input type="text" :value="securityDeposite"
+                                                                        class="input-add-new-expenses" disabled />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Electricity</label><br />
+                                                                    <input type="text" v-model="electricityFee"
+                                                                        class="input-add-new-expenses" disabled>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Previous Meter</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="electricityPreviousMetter"
+                                                                        :disabled="securityDeposite != 0" />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Current Meter</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="electricityCurrentMetter"
+                                                                        @change="calculatorElectricFee"
+                                                                        :disabled="securityDeposite != 0" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Water</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="waterFee" disabled />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Previous Meter</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="waterPreviousMetter"
+                                                                        :disabled="securityDeposite != 0" />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Current Meter</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        @change="calculateWaterFee"
+                                                                        v-model="waterCurrentMetter"
+                                                                        :disabled="securityDeposite != 0" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Internet</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="internetFee" disabled />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Service</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        v-model="serviceFee"
+                                                                        :disabled="securityDeposite != 0" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <div class="form-group">
+                                                                    <label>Debt</label><br />
+                                                                    <input type="text" class="input-add-new-expenses"
+                                                                        disabled />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Fine</label><br />
+                                                                    <input type="text" class="input-add-new-expenses" />
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>Fine Reason</label><br />
+                                                                    <input type="text" class="input-add-new-expenses">
+                                                                </div>
+                                                            </div>
+                                                            <div style="display: flex;justify-content: center;">
+                                                                <button type="button" @click="submitFormExpenses"
+                                                                    class="btn btn-save">Save</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col" style="display: flex;margin-left: 20px;">
+                                                <div class="bill">
+                                                    <div style="margin: 10px 25px 10px 20px;">
+                                                        <h4 style="font-weight: 600;">Living Expenses</h4>
+                                                        <div style="display: flex;">
+                                                            <p class="col">Invoice Date</p>
+                                                            <p class="col">01 Feb,2021</p>
+                                                        </div>
+                                                        <div style="display: flex;">
+                                                            <p class="col">Due Date</p>
+                                                            <p class="col">01 Feb,2021</p>
+                                                        </div>
+                                                        <p>Below is the detailed breakdown of living expenses for your
+                                                            room.
+                                                        </p>
+                                                        <div>
+                                                            <table style="width: 100%; text-align: end;">
+                                                                <thead>
+                                                                    <th style="text-align: start;">Description</th>
+                                                                    <th>Usage</th>
+                                                                    <th>Price</th>
+                                                                    <th>Amount</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Rental Fee</td>
+                                                                        <td>1 month</td>
+                                                                        <td>{{ fomatFee(rentalFee) }}</td>
+                                                                        <td>{{ fomatFee(rentalFee) }}</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Electricity</td>
+                                                                        <td>{{
+                                                                            (electricityCurrentMetter -
+                                                                                electricityPreviousMetter).toFixed(1)
+                                                                        }} kWh</td>
+                                                                        <td>3.800 VND</td>
+                                                                        <td>{{ fomatFee(electricityFee) }}</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Water</td>
+                                                                        <td>{{ (waterCurrentMetter -
+                                                                            waterPreviousMetter).toFixed(1) }}
+                                                                            m³</td>
+                                                                        <td>35.000 VND</td>
+                                                                        <td>{{ fomatFee(waterFee) }}</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Internet</td>
+                                                                        <td>1 month</td>
+                                                                        <td>100.000 VND</td>
+                                                                        <td>100.000 VND</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Service<span
+                                                                                style="color: red;">*</span></td>
+                                                                        <td>{{ numberOfTenant }} people</td>
+                                                                        <td>130.000 VND</td>
+                                                                        <td>{{ fomatFee(serviceFee) }}</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Security Deposit
+                                                                        </td>
+                                                                        <td>1 month</td>
+                                                                        <td>{{ fomatFee(securityDeposite) }}</td>
+                                                                        <td>{{ fomatFee(securityDeposite) }}</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Debt</td>
+                                                                        <td>3.800 vnd</td>
+                                                                        <td>3.800 vnd</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td style="text-align: start;">Fine</td>
+                                                                        <td>3.800 vnd</td>
+                                                                        <td>3.800 vnd</td>
+                                                                    </tr>
+                                                                    <tr class="row-table-bill">
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td
+                                                                            style="font-style: italic;font-weight: 600;">
+                                                                            Total: </td>
+                                                                        <td
+                                                                            style="font-style: italic;font-weight: 600;">
+                                                                            {{
+                                                                                fomatFee(rentalFee+ securityDeposite+
+                                                                                    electricityFee+ waterFee+ internetFee+
+                                                                                    serviceFee)
+                                                                            }}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <p style="font-style: italic;">Service <span
+                                                                style="color: red;">*</span>: Trash,
+                                                            light, cleaning, laundy, camera, security, parking</p>
+                                                        <p style="font-style: italic;font-weight: 600;">
+                                                            Please complete the payment within the first 5 days of the
+                                                            month
+                                                            from the invoice date. Thanks!</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-save">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
-import { computed, ref, reactive } from "vue";
+import ExpensesDetail from "@/components/ExpensesByRoom.vue";
+import { computed, ref, reactive, nextTick, provide } from "vue";
 import type { IListPayment } from "@/type/IListPayment";
+import type { IRentalFee } from "@/type/IRentalFeeOfContract";
+import type { Expenses } from "@/type/ExpenseDetail";
 import paymentService from "@/services/paymentService";
-import type { Header, Item } from "vue3-easy-data-table";
-import Swal from "sweetalert2";
-// import type { UsePaginationReturn, UseRowsPerPageReturn } from "use-vue3-easy-data-table";
-// import { usePagination, useRowsPerPage } from "use-vue3-easy-data-table";
+import Swal from 'sweetalert2'
+import type { Room } from "@/type/Room";
+import roomService from "@/services/roomService";
+import contractService from "@/services/contractService";
+import expensesService from "@/services/expensesService";
 
 const payment = ref<IListPayment[]>([]);
-const searchValue = ref("");
-const dataTable = ref();
-const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
+const roomsAvailable = ref<Room[]>([]);
+const selectedRoomId = ref(0);
+const representative = ref();
+const rentalFee = ref(0);
+const securityDeposite = ref(0);
+var totalPage = 0;
+var currentPage = 0;
+const electricityFee = ref(0);
+const waterFee = ref(0);
+var waterPreviousMetter = 0;
+var waterCurrentMetter = 0;
+var electricityPreviousMetter = 0;
+var electricityCurrentMetter = 0;
+var numberOfTenant = 0;
+const internetFee = ref(100000);
+const serviceFee = ref(0);
+const inforOfContract = ref<IRentalFee>();
+const allRoom = ref<Room[]>([]);
+const totalFee = rentalFee.value + securityDeposite.value + electricityFee.value
+    + waterFee.value + internetFee.value + serviceFee.value;
+roomService.getAllRoom().then((response) => {
+    allRoom.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
+        roomId: room.roomId,
+        roomStatus: room.roomStatus,
+        maxTenant: room.maxTenant
+    }));
+})
+const expensesByMonth = ref<Expenses[]>([])
+const getExpensesByMonth = () => {
+    expensesService.getExpensesByMonth(year.value, month.value).then((response) => {
+        expensesByMonth.value = response.content.map((expenses: { roomId: any, month: any; rentalFee: any; electricPreviousMeter: any; electricCurrentMeter: any; waterPreviousMeter: any; waterCurrentMeter: any; debt: any; fine: any; status: any; internet: any; service: any; securityDeposite: any; }) => ({
+            roomId: expenses.roomId,
+            month: expenses.month,
+            rentalFee: expenses.rentalFee,
+            electricPreviousMeter: expenses.electricPreviousMeter,
+            electricCurrentMeter: expenses.electricCurrentMeter,
+            waterPreviousMeter: expenses.waterPreviousMeter,
+            waterCurrentMeter: expenses.waterCurrentMeter,
+            debt: expenses.debt,
+            fine: expenses.fine,
+            status: expenses.status,
+            internet: expenses.internet,
+            service: expenses.service,
+            securityDeposite: expenses.securityDeposite
+        }))
+        totalElement = response.totalElements;
+        totalPage = response.totalPages;
+        currentPage = response.pageable.pageNumber;
+        console.log(expensesByMonth.value);
 
-const deleteTenant = (email: string) => {
-  Swal.fire({
-    text: "Are you sure want to delete?",
-    showCancelButton: true,
-    confirmButtonColor: "#0565F9",
-    confirmButtonText: "Delete",
-    cancelButtonColor: "#E8E7E7",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      paymentService.getTenantByRoomId(email);
-      Swal.fire({
-        title: "Deleted!",
-        icon: "success",
-        showConfirmButton: false,
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+    })
+}
+const isShowExpensesDetail = ref(false);
+const showExpensesDetail = async (roomId: number) => {
+    roomIdSelectDetail.value = roomId;
+    await nextTick(() => {
+        if (isShowExpensesDetail.value == false) {
+            getListPaymentByYearAndRoom(year.value, roomId);
+            isShowExpensesDetail.value = true;
+            return;
+        }
+        if (isShowExpensesDetail.value == true) {
+            isShowExpensesDetail.value = false;
+            getListPayment(year.value);
+            return;
+        }
+
+    });
+}
+const roomIdSelectDetail = ref(0);
+const fomatFee = (fee: number) => {
+    if (isNaN(fee)) {
+        fee = 0;
     }
-  });
-};
-// const getTenantByRoom = (roomId: number) => {
-//     tenantService.getTenantByRoomId(roomId).then((response) => {
-//         tenantDetail.values = response.map(tenantDetail => ({
-//             email: tenantDetail.email,
-//             roomId: tenantDetail.roomId,
-//             career: tenantDetail.career,
-//             licensePlate: tenantDetail.licensePlate,
-//             vehicleType: tenantDetail.vehicleType,
-//             vehicleColor: tenantDetail.vehicleColor,
-//             residenceStatus: tenantDetail.residenceStatus,
-//             contractId: tenantDetail.contractId,
-//             dateOfBirth: tenantDetail.dateOfBirth,
-//             firstName: tenantDetail.firstName,
-//             lastName: tenantDetail.lastName,
-//             gender: tenantDetail.gender,
-//             userId: tenantDetail.userId,
-//             contact: tenantDetail.contact,
-//             citizenId: tenantDetail.citizenId,
-//             fullName: `${tenantDetail.firstName} ${tenantDetail.lastName}`,
-//         }))
-//     })
-// }
-// const getTenantByRoom = async (roomId: number) => {
-//             try {
-//                 const response = await tenantService.getTenantByRoomId(roomId);
-//                 if (Array.isArray(response)) {
-//                     tenantDetail.splice(0, tenantDetail.length, ...response.map(({ email, roomId, career, licensePlate, vehicleType, vehicleColor, residenceStatus, contractId, dateOfBirth, firstName, lastName, gender, userId, contact, citizenId }) => ({
-//                         email,
-//                         roomId,
-//                         career,
-//                         licensePlate,
-//                         vehicleType,
-//                         vehicleColor,
-//                         residenceStatus,
-//                         contractId,
-//                         dateOfBirth,
-//                         firstName,
-//                         lastName,
-//                         gender,
-//                         userId,
-//                         contact,
-//                         citizenId,
-//                         fullName: `${firstName} ${lastName}`,
-//                     })));
-//                 } else {
-//                     console.error('Response is not an array:', response);
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching tenant data:', error);
-//             }
-//         };
-// let year = 2024;
+    return new Intl.NumberFormat('vi-VN').format(fee);
+}
+const calculateWaterFee = () => {
+    if (waterCurrentMetter != 0 && waterPreviousMetter != 0) {
+        waterFee.value = Math.round((waterCurrentMetter - waterPreviousMetter) * 35000);
+        console.log(waterFee.value);
+
+    }
+}
+const calculatorElectricFee = () => {
+    if (electricityPreviousMetter != 0 && electricityCurrentMetter != 0) {
+        electricityFee.value = Math.round((electricityCurrentMetter - electricityPreviousMetter) * 3800);
+    }
+}
+const getRoomId = async () => {
+    await roomService.getAllRoomAvailable().then((response) => {
+        roomsAvailable.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
+            roomId: room.roomId,
+            roomStatus: room.roomStatus,
+            maxTenant: room.maxTenant
+        }));
+    })
+}
+const selectedRoom = async () => {
+    inforOfContract.value = await contractService.getRepesentativeByRoomId(selectedRoomId.value);
+    representative.value = inforOfContract.value?.representative;
+    rentalFee.value = inforOfContract.value?.rentalFee;
+    securityDeposite.value = inforOfContract.value?.securityDeposite;
+    numberOfTenant = inforOfContract.value?.numberOfTenant;
+    serviceFee.value = numberOfTenant * 130000;
+}
+const expenses = ref<Expenses>();
+const submitStatus = () => {
+    console.log("submit form status");
+}
+const submitFormExpenses = () => {
+    console.log("submit form expenses");
+    // Swal.fire({
+    //     text: "Are you sure want to save?",
+    //     icon: "question",
+    //     showCancelButton: true,
+    //     confirmButtonColor: "#0565F9",
+    //     confirmButtonText: "Save",
+    //     cancelButtonColor: "#E8E7E7",
+    // }).then((result) => {
+    //     if (result.isConfirmed) {
+    //         // if(securityDeposite.value == 0 &&  )
+    if (securityDeposite.value == 0 && (electricityFee.value == 0 || waterFee.value == 0)) {
+        Swal.fire({
+            text: "Invalid data",
+            icon: "error",
+        })
+    }
+    else {
+        expenses.value = {
+            roomId: selectedRoomId.value,
+            electricCurrentMeter: electricityCurrentMetter,
+            electricPreviousMeter: electricityPreviousMetter,
+            internet: internetFee.value,
+            fine: 0,
+            debt: 0,
+            rentalFee: rentalFee.value,
+            securityDeposite: securityDeposite.value,
+            service: serviceFee.value,
+            waterCurrentMeter: waterCurrentMetter,
+            waterPreviousMeter: waterPreviousMetter,
+            year: year.value.toString(),
+            month: month.value,
+            status: "Unpaid"
+        }
+        expensesService.addNewExpenses(expenses.value).then((response) => {
+            if (response == "add success") {
+                Swal.fire({
+                    text: "Save success !",
+                    icon: "success"
+                })
+            } else {
+                Swal.fire({
+                    text: "Save fail !",
+                    icon: "error"
+                })
+            }
+        })
+    }
+    // }
+    // });
+
+}
 const year = ref(new Date().getFullYear());
-const month = ref(new Date().getMonth());
-console.log(year);
+// const year = 2024;
+const month = ref();
+var totalElement = 0;
+const updateYear = (year: any) => {
+    year.value = year
 
+    console.log(`Current selection - ${year}`);
+}
+const getListPayment = (yearSelected: any) => {
+    year.value = yearSelected
+    paymentService.getListPaymentByYear(yearSelected).then((response) => {
+        payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
+            roomId: payment.roomId,
+            dec: payment.dec,
+            apr: payment.apr,
+            aug: payment.aug,
+            feb: payment.feb,
+            jan: payment.jan,
+            jul: payment.jul,
+            jun: payment.jun,
+            mar: payment.mar,
+            may: payment.may,
+            nov: payment.nov,
+            oct: payment.oct,
+            sep: payment.sep,
+            status: payment.status,
+        }));
+        totalElement = response.totalElements;
+    });
+}
+const getListPaymentByYearAndRoom = async (yearSelected: any, roomId: any) => {
+    year.value = yearSelected
+    await paymentService.getListPaymentByYearAndROom(yearSelected, roomId).then((response) => {
+        payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
+            roomId: payment.roomId,
+            dec: payment.dec,
+            apr: payment.apr,
+            aug: payment.aug,
+            feb: payment.feb,
+            jan: payment.jan,
+            jul: payment.jul,
+            jun: payment.jun,
+            mar: payment.mar,
+            may: payment.may,
+            nov: payment.nov,
+            oct: payment.oct,
+            sep: payment.sep,
+            status: payment.status,
+        }));
+        totalElement = response.totalElements;
+    });
+}
 paymentService.getListPaymentByYear(year.value).then((response) => {
-  payment.value = response.map((payment) => ({
-    roomId: payment.roomId,
-    dec: payment.dec,
-    apr: payment.apr,
-    aug: payment.aug,
-    feb: payment.feb,
-    jan: payment.jan,
-    jul: payment.jul,
-    jun: payment.jun,
-    mar: payment.mar,
-    may: payment.may,
-    nov: payment.nov,
-    oct: payment.oct,
-    sep: payment.sep,
-    status: payment.status,
-  }));
+    payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
+        roomId: payment.roomId,
+        dec: payment.dec,
+        apr: payment.apr,
+        aug: payment.aug,
+        feb: payment.feb,
+        jan: payment.jan,
+        jul: payment.jul,
+        jun: payment.jun,
+        mar: payment.mar,
+        may: payment.may,
+        nov: payment.nov,
+        oct: payment.oct,
+        sep: payment.sep,
+        status: payment.status,
+    }));
+    totalElement = response.totalElements;
 });
-
-const headersMain: Header[] = [
-  { text: "Room No", value: "roomId", sortable: true },
-  { text: "Jan", value: "jan", sortable: true },
-  { text: "Feb", value: "feb", sortable: true },
-  { text: "Mar", value: "mar", sortable: true },
-  { text: "Apr", value: "apr", sortable: true },
-  { text: "May", value: "may", sortable: true },
-  { text: "Jun", value: "jun", sortable: true },
-  { text: "Jul", value: "jul", sortable: true },
-  { text: "Aug", value: "aug", sortable: true },
-  { text: "Sep", value: "sep" },
-  { text: "Oct", value: "oct" },
-  { text: "Nov", value: "nov" },
-  { text: "Dec", value: "dec" },
-  { text: "Status", value: "status" },
-  { text: "Action", value: "action" },
-];
-const headersTenantDetail: Header[] = [
-  { text: "Full Name", value: "fullName", width: 150 },
-  { text: "Room No", value: "roomId" },
-  { text: "Gender", value: "gender" },
-  { text: "D.O.B", value: "dateOfBirth" },
-  { text: "Mobile No", value: "contact" },
-  { text: "Email ID", value: "email" },
-  { text: "Citizen ID", value: "citizenId" },
-  { text: "Career", value: "career" },
-  { text: "License plate", value: "licensePlate" },
-  { text: "Vehicle Type", value: "vehicleType" },
-  { text: "Vehicle Color", value: "vehicleColor" },
-  { text: "Residence Status", value: "residenceStatus" },
-  { text: "Action", value: "action" },
-];
 </script>
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
 .container {
-  background: white;
-  margin-top: 20px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  font-family: "Poppins", sans-serif;
-  margin-right: 1rem;
-  border-radius: 14px;
+    background: white;
+    margin-top: 20px;
+    box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
+    font-family: 'Poppins', sans-serif;
+    border-radius: 14px;
+    max-width: 83%;
+}
+
+.main-add-new {
+    background: white;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
 }
 
 .card {
@@ -258,10 +797,9 @@ const headersTenantDetail: Header[] = [
 }
 
 .line-blue {
-  width: 4px;
-  background-color: #0064ff;
-  height: 73px;
-  margin-right: 2px;
+    width: 4px;
+    background-color: #0064FF;
+    margin-right: 12px;
 }
 
 .input-search {
@@ -281,9 +819,10 @@ const headersTenantDetail: Header[] = [
 }
 
 .btn-save {
-  background-color: #0565f9;
-  color: white;
-  width: 68px;
+    background-color: #0565F9;
+    color: white;
+    width: 68px;
+    margin-right: 23px;
 }
 
 .btn-cancel {
@@ -300,26 +839,31 @@ a {
   cursor: pointer;
 }
 
-.residence-status {
-  border-radius: 6px;
-  width: 94px;
-  font-weight: 600;
-  font-size: 14px;
+.payment-status {
+    border-radius: 6px;
+    width: 94px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
 }
 
-.residence-status-success {
-  border-color: #00d656fe;
-  color: #009d3f;
+.payment-status-paid {
+    color: #009d3f;
+    border: solid 2px #00d656fe;
+    height: 27px;
 }
 
-.residence-status-progress {
-  border-color: #ffd79b;
-  color: #ffbd5a;
+.payment-status-partial {
+    color: #ffbd5a;
+    border: solid 2px #ffd79b;
+    height: 27px;
 }
 
-.residence-status-fail {
-  border-color: #ff7d7d;
-  color: #fb2424;
+.payment-status-unpaid {
+    color: #fb2424;
+    border: solid 2px #ff7d7d;
+    height: 27px;
 }
 
 .customize-table {
@@ -332,7 +876,73 @@ a {
 }
 
 .input-tenant-detail {
-  border: none;
-  border-radius: 5px;
+    border: none;
+    border-radius: 5px
+}
+
+.btn {
+    height: 38px;
+    border-radius: 8px;
+    border: none;
+    margin: 10px 8px;
+    cursor: pointer;
+}
+
+.btn-add-new {
+    background-color: #0565F9;
+    color: white;
+}
+
+.form-add {
+    background: white;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    width: 80%;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    position: relative;
+}
+
+.input-add-new-expenses {
+    font-family: 'Poppins', sans-serif;
+    line-height: 24px;
+    outline: none;
+    border: none;
+    height: 43px;
+    border-radius: 8px;
+    background-color: #F5F6F8;
+    width: 160px;
+}
+
+.input-group {
+    display: flex;
+}
+
+.header-table-add-new {
+    padding-bottom: 8px;
+}
+
+.bill {
+    background: white;
+    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25);
+    width: 80%;
+    margin-bottom: 12px;
+    border-radius: 20px;
+}
+
+.row-table-bill {
+    border-bottom: 1px solid #9ea0a7;
+    height: 40px;
+}
+
+p {
+    margin: 0;
+}
+
+.dp__theme_light {
+    --dp-background-color: #E0DEDE66;
 }
 </style>
