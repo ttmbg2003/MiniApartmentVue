@@ -32,7 +32,7 @@
       </select>
     </div>
     <div class="mid">
-      <div id="mid1" style="width: 300px">
+      <div id="mid1" style="width: 320px">
         <div class="midItems">
           <div>
             <p>Total Rooms</p>
@@ -46,44 +46,14 @@
               {{ total }}
             </div>
           </div>
-          <div class="homeIconBg" style="background: #fff3d6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0,0,256,256"
-              width="26px"
-              height="25px"
-            >
-              <g
-                fill="#ff9500"
-                fill-rule="nonzero"
-                stroke="none"
-                stroke-width="1"
-                stroke-linecap="butt"
-                stroke-linejoin="miter"
-                stroke-miterlimit="10"
-                stroke-dasharray=""
-                stroke-dashoffset="0"
-                font-family="none"
-                font-weight="none"
-                font-size="none"
-                text-anchor="none"
-                style="mix-blend-mode: normal"
-              >
-                <g transform="scale(5.12,5.12)">
-                  <path
-                    d="M24.96289,1.05469c-0.20987,0.00724 -0.41214,0.08036 -0.57812,0.20898l-23,17.94727c-0.43579,0.33978 -0.51361,0.96851 -0.17383,1.4043c0.33978,0.43579 0.96851,0.51361 1.4043,0.17383l1.38477,-1.08008v26.29102c0.00006,0.55226 0.44774,0.99994 1,1h13.83203c0.10799,0.01785 0.21818,0.01785 0.32617,0h11.67383c0.10799,0.01785 0.21818,0.01785 0.32617,0h13.8418c0.55226,-0.00006 0.99994,-0.44774 1,-1v-26.29102l1.38477,1.08008c0.2819,0.21983 0.65967,0.27257 0.991,0.13833c0.33133,-0.13423 0.56586,-0.43504 0.61526,-0.7891c0.0494,-0.35406 -0.09386,-0.70757 -0.37579,-0.92736l-7.61523,-5.94141v-7.26953h-6v2.58594l-9.38477,-7.32227c-0.18607,-0.14428 -0.41707,-0.21828 -0.65234,-0.20898zM25,3.32227l19,14.82617v26.85156h-12v-19h-14v19h-12v-26.85156zM37,8h2v3.70898l-2,-1.5625zM20,28h10v17h-10z"
-                  ></path>
-                </g>
-              </g>
-            </svg>
-          </div>
+          <img src="/src/components/icons/orangeHomeIcon.png" />
         </div>
-        <div class="midItems">
+        <div class="midItems" style="padding-top: 0px; padding-bottom: 0px">
           <div>
             <p>Occupied Rooms</p>
             <div
               style="
+                margin-top: -10px;
                 font-weight: 700;
                 font-size: 20px;
                 color: rgba(32, 34, 36, 1);
@@ -92,45 +62,218 @@
               {{ occupied }}
             </div>
           </div>
-          <div
-            class="homeIconBg"
-            style="
-              background: rgba(221, 167, 250, 1);
-              width: 30px;
-              height: 30px;
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0,0,256,256"
-              width="26px"
-              height="25px"
+          <img src="/src/components/icons/purpleHomeIcon.png" />
+        </div>
+        <div class="midItems" style="padding-top: 0px; padding-bottom: 0px">
+          <div>
+            <p>Vacant Rooms</p>
+            <div
+              style="
+                margin-top: -10px;
+                font-weight: 700;
+                font-size: 20px;
+                color: rgba(32, 34, 36, 1);
+              "
             >
-              <g
-                fill="rgba(183, 69, 244, 1)"
-                fill-rule="nonzero"
-                stroke="none"
-                stroke-width="1"
-                stroke-linecap="butt"
-                stroke-linejoin="miter"
-                stroke-miterlimit="10"
-                stroke-dasharray=""
-                stroke-dashoffset="0"
-                font-family="none"
-                font-weight="none"
-                font-size="none"
-                text-anchor="none"
-                style="mix-blend-mode: normal"
-              >
-                <g transform="scale(5.12,5.12)">
-                  <path
-                    d="M24.96289,1.05469c-0.20987,0.00724 -0.41214,0.08036 -0.57812,0.20898l-23,17.94727c-0.43579,0.33978 -0.51361,0.96851 -0.17383,1.4043c0.33978,0.43579 0.96851,0.51361 1.4043,0.17383l1.38477,-1.08008v26.29102c0.00006,0.55226 0.44774,0.99994 1,1h13.83203c0.10799,0.01785 0.21818,0.01785 0.32617,0h11.67383c0.10799,0.01785 0.21818,0.01785 0.32617,0h13.8418c0.55226,-0.00006 0.99994,-0.44774 1,-1v-26.29102l1.38477,1.08008c0.2819,0.21983 0.65967,0.27257 0.991,0.13833c0.33133,-0.13423 0.56586,-0.43504 0.61526,-0.7891c0.0494,-0.35406 -0.09386,-0.70757 -0.37579,-0.92736l-7.61523,-5.94141v-7.26953h-6v2.58594l-9.38477,-7.32227c-0.18607,-0.14428 -0.41707,-0.21828 -0.65234,-0.20898zM25,3.32227l19,14.82617v26.85156h-12v-19h-14v19h-12v-26.85156zM37,8h2v3.70898l-2,-1.5625zM20,28h10v17h-10z"
-                  ></path>
-                </g>
-              </g>
-            </svg>
+              {{ vacant }}
+            </div>
           </div>
+          <img src="/src/components/icons/greenHomeIcon.png" />
+        </div>
+        <div class="midItems" style="padding-top: 0px; padding-bottom: 0px">
+          <div>
+            <p>Reserved Rooms</p>
+            <div
+              style="
+                margin-top: -10px;
+                font-weight: 700;
+                font-size: 20px;
+                color: rgba(32, 34, 36, 1);
+              "
+            >
+              {{ reserved }}
+            </div>
+          </div>
+          <img src="/src/components/icons/blueHomeIcon.png" />
+        </div>
+      </div>
+      <div id="mid2" style="width: 460px; margin-top: 27px">
+        <div class="midItems" style="flex-direction: column">
+          <div style="width: 100%">
+            <div
+              style="
+                font-weight: 700;
+                font-size: 16px;
+                padding-top: 10px;
+                margin-bottom: 30px;
+              "
+            >
+              Room Status
+            </div>
+          </div>
+
+          <table>
+            <tr>
+              <th>No.</th>
+              <th>Status</th>
+              <th>Rooms</th>
+              <th>Rate (%)</th>
+            </tr>
+            <tr v-for="(items, index) in roomStatusTable" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ items.status }}</td>
+              <td>{{ items.room }}</td>
+              <td>{{ items.rate }}</td>
+            </tr>
+          </table>
+          <div style="width: 100%; margin-top: 10px; margin-bottom: 10px">
+            <div style="font-weight: 600; font-style: italic; font-size: 12px">
+              Total: {{ total }} rooms
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="mid3" style="width: 420px; margin-top: 27px">
+        <div class="midItems" style="padding-top: 14px; padding-bottom: 14px">
+          <RoomChartView />
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="filter">
+        <img
+          style="width: 56px; height: 15px; margin-right: 10px"
+          src="/src/components/icons/filter.png"
+        />
+        <el-checkbox-group v-model="statusFilter" size="small">
+          <el-checkbox label="Occupied" value="occupied" border />
+          <el-checkbox label="Vacant" value="vacant" border />
+          <el-checkbox label="Reserved" value="reserved" border />
+        </el-checkbox-group>
+      </div>
+      <div class="listTable">
+        <div class="table1">
+          <table>
+            <tr>
+              <th style="width: 64.06px">No.</th>
+              <th style="width: 125.74px">Room No</th>
+              <th style="width: 197.03px">
+                Rental Fee
+                <span
+                  style="
+                    font-family: Roboto;
+                    font-size: 11px;
+                    font-weight: 500;
+                    line-height: 12.89px;
+                    letter-spacing: 0.01em;
+                    text-align: left;
+                  "
+                  >(VND)</span
+                >
+              </th>
+              <th style="width: 127.18px">Status</th>
+            </tr>
+            <template v-if="roomListTable.length > 0">
+              <tr v-for="index in 5" :key="index">
+                <td
+                  v-if="index > roomListTable.length"
+                  style="height: 40px"
+                ></td>
+                <td v-else>{{ index }}</td>
+                <td>{{ roomListTable[index - 1]?.roomNo }}</td>
+                <td>{{ roomListTable[index - 1]?.fee }}</td>
+                <td v-if="roomListTable[index - 1]?.status === 'occupied'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/occupied.png"
+                  />
+                </td>
+                <td v-else-if="roomListTable[index - 1]?.status === 'reserved'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/reserved.png"
+                  />
+                </td>
+                <td v-else-if="roomListTable[index - 1]?.status === 'vacant'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/vacant.png"
+                  />
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr v-for="index in 5" :key="index">
+                <td v-if="index == 3" colspan="5" style="text-align: center">
+                  No data available
+                </td>
+                <td v-else style="height: 40px"></td>
+              </tr>
+            </template>
+          </table>
+        </div>
+        <div
+          style="width: 1px; height: 200px; background: rgba(176, 180, 205, 1)"
+        ></div>
+        <div class="table2">
+          <table>
+            <tr>
+              <th style="width: 64.06px">No.</th>
+              <th style="width: 125.74px">Room No</th>
+              <th style="width: 197.03px">
+                Rental Fee
+                <span
+                  style="
+                    font-family: Roboto;
+                    font-size: 11px;
+                    font-weight: 500;
+                    line-height: 12.89px;
+                    letter-spacing: 0.01em;
+                    text-align: left;
+                  "
+                  >(VND)</span
+                >
+              </th>
+              <th style="width: 127.18px">Status</th>
+            </tr>
+            <template v-if="roomListTable.length >= 6">
+              <tr v-for="index in 5" :key="index">
+                <td
+                  v-if="index + 5 > roomListTable.length"
+                  style="height: 40px"
+                ></td>
+                <td v-else>{{ index + 5 }}</td>
+                <td>{{ roomListTable[index + 4]?.roomNo }}</td>
+                <td>{{ roomListTable[index + 4]?.fee }}</td>
+                <td v-if="roomListTable[index + 4]?.status === 'occupied'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/occupied.png"
+                  />
+                </td>
+                <td v-else-if="roomListTable[index + 4]?.status === 'reserved'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/reserved.png"
+                  />
+                </td>
+                <td v-else-if="roomListTable[index + 4]?.status === 'vacant'">
+                  <img
+                    style="width: 60px; height: auto"
+                    src="/src/components/icons/vacant.png"
+                  />
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr v-for="index in 5" :key="index">
+                <td v-if="index == 3" colspan="4" style="text-align: center">
+                  No data available
+                </td>
+                <td v-else style="height: 40px"></td>
+              </tr>
+            </template>
+          </table>
         </div>
       </div>
     </div>
@@ -138,10 +281,49 @@
 </template>
 
 <script setup lang="ts">
+import RoomChartView from "../RoomChartView.vue";
+import { ref, watch, onMounted } from "vue";
 const occupied = 35;
-const vancant = 10;
+const vacant = 10;
 const reserved = 5;
-const total = occupied + vancant + reserved;
+const total = occupied + vacant + reserved;
+const roomStatusTable = [
+  { status: "Occupied", room: occupied, rate: (occupied / total) * 100 },
+  { status: "vacant", room: vacant, rate: (vacant / total) * 100 },
+  { status: "Reserved", room: reserved, rate: (reserved / total) * 100 },
+];
+interface roomDetailItem {
+  roomNo: number;
+  fee: string;
+  status: string;
+}
+const statusFilter = ref(["occupied"]);
+const roomDetailList = ref<roomDetailItem[]>([
+  { roomNo: 101, fee: "1.000.000", status: "occupied" },
+  { roomNo: 102, fee: "1.000.000", status: "occupied" },
+  { roomNo: 103, fee: "1.000.000", status: "vacant" },
+  { roomNo: 104, fee: "1.000.000", status: "occupied" },
+  { roomNo: 105, fee: "1.000.000", status: "reserved" },
+  { roomNo: 101, fee: "1.000.000", status: "occupied" },
+  { roomNo: 102, fee: "1.000.000", status: "occupied" },
+]);
+const roomListTable = ref<roomDetailItem[]>([]);
+const filterRoomList = () => {
+  roomListTable.value = []; // Clear the table before pushing new items
+  for (let i = 0; i < roomDetailList.value.length; i++) {
+    const item = roomDetailList.value[i];
+    if (statusFilter.value.includes(item.status)) {
+      roomListTable.value.push(item);
+    }
+  }
+  console.log(roomListTable.value.length);
+};
+
+// Watch for changes in statusFilter
+watch(statusFilter, filterRoomList);
+
+// Run the filter function when the component is first mounted
+onMounted(filterRoomList);
 </script>
 
 <style scoped>
@@ -174,6 +356,9 @@ const total = occupied + vancant + reserved;
 }
 .mid {
   display: flex;
+
+  padding-left: 30px;
+
   justify-content: space-between;
 }
 .midItems {
@@ -184,6 +369,7 @@ const total = occupied + vancant + reserved;
   background: white;
   border-radius: 12px;
   padding: 10px;
+  margin-bottom: 10px;
 }
 .midItems p {
   font-weight: 600;
@@ -197,5 +383,69 @@ const total = occupied + vancant + reserved;
   width: 50px;
   height: 50px;
   border-radius: 22px;
+}
+#mid2 th,
+td {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  background: white;
+}
+.bottom {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  flex-grow: 1;
+  margin-left: 30px;
+  border-radius: 12px;
+
+  padding: 10px 30px 10px 30px;
+}
+.filter {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 5px;
+
+  border-bottom: 1px solid rgba(176, 180, 205, 1);
+}
+.el-checkbox {
+  width: 87px;
+  height: 27px;
+}
+.listTable {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 30px 0 30px;
+}
+
+.table1,
+.table2 {
+  width: 574px;
+  display: flex;
+  justify-content: center;
+  height: 240px;
+}
+.table1 {
+  padding-right: 60px;
+}
+.table2 {
+  padding-left: 60px;
+}
+
+.listTable th {
+  background: none;
+  color: rgba(155, 155, 155, 1);
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16.41px;
+  letter-spacing: 0.01em;
+  text-align: left;
+  border: none;
+}
+.listTable td {
+  border: none;
 }
 </style>

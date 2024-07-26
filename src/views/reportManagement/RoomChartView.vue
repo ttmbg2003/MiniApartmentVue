@@ -25,7 +25,7 @@ const chartData = {
   labels: ["Vacant", "Reserved", "Occupied"],
   datasets: [
     {
-      data: [40, 20, 12],
+      data: [10, 5, 35],
       backgroundColor: ["#3070f5", "#57beb5", "#ae59dc"],
     },
   ],

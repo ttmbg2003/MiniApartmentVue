@@ -81,7 +81,7 @@
           <thead>
             <tr>
               <th>No</th>
-              <th>Full Name</th>
+              <th style="width: 60px">Full Name</th>
               <th>Gender</th>
               <th>D.O.B</th>
               <th>Mobile No</th>
@@ -96,7 +96,13 @@
           <tbody>
             <tr>
               <td>1</td>
-              <td><input type="text" v-model="contract.representative" /></td>
+              <td>
+                <input
+                  style="width: 60px"
+                  type="text"
+                  v-model="contract.representative"
+                />
+              </td>
               <td>
                 <select v-model="contract.gender">
                   <option value="0">Male</option>
