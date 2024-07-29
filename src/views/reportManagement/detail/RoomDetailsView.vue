@@ -18,7 +18,7 @@
             font-weight: 600;
             font-size: 24px;
             color: rgba(5, 101, 249, 1);
-            margin-left: 5px;
+            margin-left: 0.5rem;
           "
         >
           Room Status Details
@@ -31,7 +31,7 @@
         <option value="3">March</option>
       </select>
     </div>
-    <div class="mid">
+    <div class="mid" style="max-height: fit-content">
       <div id="mid1" style="width: 320px">
         <div class="midItems">
           <div>
@@ -97,7 +97,7 @@
           <img src="/src/components/icons/blueHomeIcon.png" />
         </div>
       </div>
-      <div id="mid2" style="width: 460px; margin-top: 27px">
+      <div id="mid2" style="width: 29rem; margin-top: 1.8rem">
         <div class="midItems" style="flex-direction: column">
           <div style="width: 100%">
             <div
@@ -112,7 +112,7 @@
             </div>
           </div>
 
-          <table>
+          <table style="width: 100%">
             <tr>
               <th>No.</th>
               <th>Status</th>
@@ -133,7 +133,7 @@
           </div>
         </div>
       </div>
-      <div id="mid3" style="width: 420px; margin-top: 27px">
+      <div id="mid3" style="width: 26rem; margin-top: 1.8rem">
         <div class="midItems" style="padding-top: 14px; padding-bottom: 14px">
           <RoomChartView />
         </div>
@@ -155,7 +155,7 @@
         <div class="table1">
           <table>
             <tr>
-              <th style="width: 64.06px">No.</th>
+              <th style="width: 1rem">No.</th>
               <th style="width: 125.74px">Room No</th>
               <th style="width: 197.03px">
                 Rental Fee
@@ -342,6 +342,7 @@ onMounted(filterRoomList);
 }
 .title {
   display: flex;
+  height: 4rem;
 }
 .header select {
   position: absolute;
@@ -357,7 +358,7 @@ onMounted(filterRoomList);
 .mid {
   display: flex;
 
-  padding-left: 30px;
+  padding-left: 2rem;
 
   justify-content: space-between;
 }
@@ -376,20 +377,10 @@ onMounted(filterRoomList);
   font-size: 16px;
   color: rgb(90, 89, 89);
 }
-.homeIconBg {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 22px;
-}
+
 #mid2 th,
 td {
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  background: white;
+  border-bottom: 0.5px solid rgba(176, 180, 205, 1);
 }
 .bottom {
   display: flex;
@@ -422,7 +413,6 @@ td {
 
 .table1,
 .table2 {
-  width: 574px;
   display: flex;
   justify-content: center;
   height: 240px;
