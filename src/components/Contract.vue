@@ -1,4 +1,3 @@
-
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <form @submit.prevent="submitForm">
@@ -603,7 +602,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .contract-form {
   width: 50%;
   margin: auto;

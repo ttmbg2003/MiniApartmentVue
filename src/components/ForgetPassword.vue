@@ -6,13 +6,13 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 12rem"
+          style="width: 10rem; margin-bottom: 6rem"
         />
       </div>
       <div class="illustration">
         <img
-          src="@/components/icons/signup.jpg"
-          alt="Forget Password Illustration"
+          src="@/components/icons/signupphoto.png"
+          alt="Signup Illustration"
         />
       </div>
       <div class="login-form">
@@ -20,10 +20,10 @@
           Already a member?
           <router-link to="/login" class="navbar-link">Log in</router-link>
         </p>
-        <h2>Forget Password</h2>
+        <h2>Forgot Password</h2>
         <form @submit.prevent="forgetPassword">
           <div class="form-group">
-            <label for="email">Email Address*</label>
+            <div><img src="@/components/icons/EmailAddress.png" /></div>
             <input type="email" id="email" v-model="email" required />
             <span style="color: red" v-if="errorMessage">{{
               errorMessage
@@ -145,11 +145,9 @@
             </svg>
           </div>
         </div>
-        <h2>Congratulations!</h2>
-        <p>
-          Your account has been verified successfully. Change your password.
-        </p>
-        <button @click="closeSuccessModal" class="verify-button">Done</button>
+        <h2>Success!</h2>
+        <p>Your password has been updated successfully.</p>
+        <button @click="closeSuccessModal" class="verify-button">Back to Log in</button>
       </div>
     </div>
   </div>
@@ -381,9 +379,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 40rem;
   background-color: #b7dae8;
-  padding: 20px;
 }
 .login-container {
   display: flex;
@@ -395,6 +392,7 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 100%;
+  background-image: url(@/components/icons/Signupbg.png);
 }
 .illustration {
   flex: 1;
@@ -416,6 +414,10 @@ export default {
   margin-bottom: 20px;
   font-size: 24px;
   text-align: center;
+}
+.form-row {
+  display: flex;
+  justify-content: space-between;
 }
 .form-group {
   margin-bottom: 15px;
@@ -454,14 +456,14 @@ export default {
   text-decoration: none;
 }
 .login-button {
-  width: 40%;
+  width: 30%;
   padding: 10px;
   background-color: #007bff;
   border: none;
   color: white;
-  border-radius: 20px;
+  border-radius: 25px;
   cursor: pointer;
-  margin-left: 8rem;
+  margin-left: 9.5rem;
 }
 .social-login {
   text-align: center;
@@ -474,7 +476,9 @@ export default {
 .signup-link {
   text-align: center;
   margin-left: 12rem;
-  text-decoration: none;
+  position: absolute;
+  bottom: 33rem;
+  right: 6rem;
 }
 .signup-link a {
   color: #007bff;
@@ -528,7 +532,7 @@ export default {
   border-bottom: 3px solid rgba(0, 0, 0, 0.5);
   margin: 0 10px;
   text-align: center;
-  font-size: 36px;
+  font-size: 24px;
 }
 .input:focus {
   border-bottom: 3px solid orange;
@@ -560,6 +564,7 @@ export default {
   color: white;
 }
 .resend-otp {
+  cursor: pointer;
   color: #007bff;
   cursor: pointer;
 }

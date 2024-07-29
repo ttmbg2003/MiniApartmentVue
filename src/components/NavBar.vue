@@ -14,10 +14,14 @@
       <router-link to="/home" class="navbar-link">Contact us</router-link>
       <router-link to="/profile" class="navbar-link">Information</router-link>
     </div>
-    <div class="navbar-right">
-      <button @click="handleAuthAction" class="navbar-link">
-        {{ authState.isAuthenticated ? "Logout" : "Login" }}
-      </button>
+    <div>
+      <div @click="handleAuthAction" class="login-logout">
+        <div v-if="!authState.isAuthenticated">Log in</div>
+        <div v-else style="width: 80px">
+          <img src="@/components/icons/logout.png" />
+        </div>
+        <!-- {{ authState.isAuthenticated ? "Logout" : "Login" }} -->
+      </div>
     </div>
   </nav>
 </template>
@@ -69,5 +73,16 @@ export default defineComponent({
 
 .navbar-link:hover {
   text-decoration: underline;
+  cursor: pointer;
+}
+.login-logout {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #000000;
+  text-decoration: none;
+  position: absolute;
+  top: -15px;
+  width: 56px;
+  right: 10px;
 }
 </style>
