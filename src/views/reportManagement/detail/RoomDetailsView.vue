@@ -32,7 +32,7 @@
       </select>
     </div>
     <div class="mid" style="max-height: fit-content">
-      <div id="mid1" style="width: 320px">
+      <div id="mid1" style="width: 20rem">
         <div class="midItems">
           <div>
             <p>Total Rooms</p>
@@ -97,7 +97,7 @@
           <img src="/src/components/icons/blueHomeIcon.png" />
         </div>
       </div>
-      <div id="mid2" style="width: 29rem; margin-top: 1.8rem">
+      <div id="mid2" style="width: 25rem; margin-top: 1.8rem">
         <div class="midItems" style="flex-direction: column">
           <div style="width: 100%">
             <div
