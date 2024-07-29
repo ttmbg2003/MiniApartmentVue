@@ -73,7 +73,6 @@ const routes = [
     path: "/newContract",
     name: "Contract",
     component: Contract,
-    
   },
 ];
 

@@ -1,18 +1,24 @@
 <template>
   <nav class="navbar">
-    <div class="navbar-left">
+    <router-link to="/home" class="navbar-left">
       <img
         src="@/components/icons/TheNiceHouseLogo.png"
         alt="Logo"
         class="navbar-logo"
       />
-    </div>
+    </router-link>
     <div class="">
-      <router-link to="/home" class="navbar-link">About us</router-link>
+      <router-link to="/home" id="aboutLink" class="navbar-link"
+        >About us</router-link
+      >
       <router-link to="/tenants" class="navbar-link">Management</router-link>
       <!-- <router-link to="/profile" class="navbar-link">Information</router-link> -->
-      <router-link to="/home" class="navbar-link">Contact us</router-link>
-      <router-link to="/profile" class="navbar-link">Information</router-link>
+      <router-link to="/home" id="contactLink" class="navbar-link"
+        >Contact us</router-link
+      >
+      <router-link to="/home" id="infoLink" class="navbar-link"
+        >Information</router-link
+      >
     </div>
     <div>
       <div @click="handleAuthAction" class="login-logout">
