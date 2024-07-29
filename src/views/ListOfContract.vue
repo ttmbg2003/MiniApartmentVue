@@ -1,6 +1,8 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex; height: 89%; margin-top: 90px">
+
+  <div style="display: flex; height: 89%;">
+
     <SideBar />
     <div class="container">
       <div class="card">
