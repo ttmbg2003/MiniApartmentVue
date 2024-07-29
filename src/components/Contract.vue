@@ -147,7 +147,7 @@
               </td>
               <td>
                 <input
-                  type="number"
+                  type="tel"
                   v-model="contract.contact"
                   style="width: 100px"
                   required
@@ -213,6 +213,7 @@
         TO&Aacute;N<br />2.1. Gi&aacute; cho thu&ecirc; ph&ograve;ng ở l&agrave;
         <input
           type="number"
+          @input="(event) => (contract.securityDeposite = event.target.value)"
           name="rentalFee"
           v-model="contract.rentalFee"
           required
@@ -493,7 +494,6 @@
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
-
 export default {
   data() {
     return {
@@ -523,23 +523,25 @@ export default {
         licensePlate: "",
         vehicleType: "",
         vehicleColor: "",
-        residenceStatus: "",
+        residenceStatus: "Fail",
         placeOfPermanet: "",
-        id: "",
-        contractId: "",
         numberOfTenant: "",
         rentalFee: "",
         securityDeposite: "",
-        paymentCycle: "",
+        paymentCycle: 3,
         signinDate: "",
         moveinDate: "",
         expireDate: "",
-        date: this.getFormattedDate(),
-        error: null,
       },
+      date: this.getFormattedDate(),
+      error: Error,
     };
   },
   methods: {
+    formatDate: function (event) {
+      const date = new Date(event);
+      return date.toISOString().slice(0, 10); // YYYY-MM-DD
+    },
     getFormattedDate() {
       const today = new Date();
       const day = String(today.getDate()).padStart(2, "0");
@@ -548,8 +550,43 @@ export default {
 
       return `${month}-${day}-${year}`;
     },
+    validateForm() {
+      // Kiểm tra tất cả các trường bắt buộc
+      return (
+        this.contract.representative ||
+        this.contract.citizenId ||
+        this.contract.createCitizenIdDate ||
+        this.contract.createCitizenIdPlace ||
+        this.contract.placeOfPermanet ||
+        this.contract.contact ||
+        this.contract.roomId ||
+        this.contract.totalArea ||
+        this.contract.landArea ||
+        this.contract.publicArea ||
+        this.contract.privateArea ||
+        this.contract.device ||
+        this.contract.ownerOrigin ||
+        this.contract.ownerLimit ||
+        this.contract.numberOfTenant ||
+        this.contract.rentalFee ||
+        this.contract.securityDeposite ||
+        this.contract.signinDate ||
+        this.contract.moveinDate ||
+        this.contract.expireDate
+      );
+    },
     async submitForm() {
+      if (!this.validateForm()) {
+        this.error = "Please fill in all fields.";
+        return;
+      }
       try {
+        this.contract.expireDate = this.formatDate(this.contract.expireDate);
+        this.contract.moveinDate = this.formatDate(this.contract.moveinDate);
+        this.contract.signinDate = this.formatDate(this.contract.signinDate);
+        this.contract.createCitizenIdPlace = this.formatDate(
+          this.contract.createCitizenIdPlace
+        );
         const response = await apiClient.post("contract/addNewContract", {
           totalArea: this.totalArea,
           landArea: this.landArea,
@@ -591,12 +628,15 @@ export default {
         if (response.data.status === 200) {
           this.error = null;
           alert("Successfully add new contract");
-          this.$router.push("/ListOfContract");
+          console.log("Dữ liệu hợp đồng:", this.contract);
         } else {
-          this.error = "Please check the entered information";
+          this.error = "Failed to create contract.";
+          console.log("Dữ liệu hợp đồng:", this.contract);
         }
       } catch (error) {
-        console.error("There was an error adding the contract:", error);
+        this.error = "PHAC DIUUUUUUUUUUUUUUUUUU";
+        console.log(error);
+        console.log("Dữ liệu hợp đồng:", this.contract);
       }
     },
   },
@@ -632,9 +672,7 @@ th {
   text-align: left;
   background-color: #f2f2f2;
 }
-input {
-  border: none;
-}
+
 input[type="text"],
 input[type="date"],
 input[type="number"],
@@ -642,7 +680,6 @@ input[type="email"],
 select {
   width: 140px;
   box-sizing: border-box;
-  border: none;
 }
 .footer {
   margin-left: 10rem;
