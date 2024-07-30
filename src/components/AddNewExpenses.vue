@@ -361,8 +361,8 @@ const internetFee = ref(100000);
 const serviceFee = ref(0);
 const inforOfContract = ref<IRentalFee>();
 const selectedRoomId = ref(0);
-const selectedRoom = async () => {
-    inforOfContract.value = await contractService.getRepesentativeByRoomId(selectedRoomId.value);
+const selectedRoom = async () => {    
+    inforOfContract.value = await contractService.getRepesentativeByRoomId(selectedRoomId.value,props.month);
     representative.value = inforOfContract.value?.representative;
     rentalFee.value = inforOfContract.value!.rentalFee;
     securityDeposite.value = inforOfContract.value!.securityDeposite;
