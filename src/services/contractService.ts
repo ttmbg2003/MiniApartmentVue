@@ -33,8 +33,8 @@ class ContractService {
     .put(`/contract/updateContract/${contractId}`)
     .then((response) => response.data);
   }
-  getRepesentativeByRoomId = (roomId:any) : any =>{
-    return apiClient.get(`/contract/getRepesentative?roomId=${roomId}`)
+  getRepesentativeByRoomId = (roomId:any, month:any) : any =>{
+    return apiClient.get(`/contract/getRepesentative?roomId=${roomId}&month=${month}`)
     .then((response) => response.data['result'])
   }
 }
