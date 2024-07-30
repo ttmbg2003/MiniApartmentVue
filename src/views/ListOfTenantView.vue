@@ -285,6 +285,8 @@ const getTenantPanigation = (pageNo: number) => {
         totalElement = response.totalElements;
         totalPage = response.totalPages;
         currentPage = response.pageable.pageNumber;
+        console.log(response);
+        
     });
 };
 getTenantPanigation();

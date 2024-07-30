@@ -26,5 +26,9 @@ class ExpensesService{
         return apiClient.get(`/api/expenses/getExpensesBymonth?pageNo=${pageNo}&year=${year}&month=${month}`)
         .then((response) => response.data['result'])
     }
+    getExpensesByMonthAndRoom = (year:any,month:number,room:number): Promise<any> =>{
+        return apiClient.get(`/api/expenses/getExpensesByRoomAndMonth?roomId=${room}&year=${year}&month=${month}`)
+        .then((response) => response.data['result'])        
+    }
 }
 export default new ExpensesService();
