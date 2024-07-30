@@ -534,7 +534,7 @@ export default {
         this.contract.expireDate
       );
     },
-     
+
     async submitForm() {
       if (!this.validateForm()) {
         this.error = "Please fill in all fields.";
