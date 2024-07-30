@@ -1,8 +1,6 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-
-  <div style="display: flex; height: 89%;">
-
+  <div style="display: flex; height: 89%">
     <SideBar />
     <div class="container">
       <div class="card">
@@ -11,19 +9,22 @@
           <div>
             <h3>List of Lease Contracts</h3>
           </div>
-          <router-link
-            to="/newContract"
-            class="btn btn-primary"
-            style="
-              height: 30px;
-              border-radius: 8px;
-              border: none;
-              cursor: pointer;
-              margin-left: 35rem;
-              margin-top: 5px;
-            "
-            >Add new</router-link
-          >
+
+          <router-link to="/newContract">
+            <div class="d-flex justify-content-end" style="width: 64rem">
+              <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#addNewExpensesModal"
+              >
+                <i style="margin-right: 10px">
+                  <img
+                    src="../components/icons/circled-plus.png"
+                    style="margin-bottom: 3px; width: 24px" /></i
+                >Add new
+              </button>
+            </div>
+          </router-link>
         </div>
         <div>
           <div style="display: flex; justify-content: center">
@@ -83,7 +84,7 @@
                     :key="contract.contractId"
                     style="height: 50px"
                   >
-                    <td>{{ contract.contractId }}</td>
+                    <td>{{ contract.id }}</td>
                     <td>{{ contract.roomId }}</td>
                     <td>{{ contract.representative }}</td>
                     <td>{{ contract.numberOfTenant }}</td>
@@ -265,6 +266,7 @@ const getContractPanigation = (pageNo: number) => {
   contractService.getAllContract(pageNo, searchValue).then((response) => {
     contracts.value = response.content.map(
       (contracts: {
+        id: any;
         contractId: any;
         roomId: any;
         numberOfTenant: any;
@@ -279,6 +281,7 @@ const getContractPanigation = (pageNo: number) => {
         representative: any;
       }) => {
         return {
+          id: contracts.id,
           contractId: contracts.contractId,
           roomId: contracts.roomId,
           numberOfTenant: contracts.numberOfTenant,
@@ -375,8 +378,8 @@ getContractPanigation(0);
 }
 
 .btn {
-  height: 30px;
-  border-radius: 8px;
+  height: 37px;
+  border-radius: 14px;
   border: none;
   margin: 10px 8px;
   cursor: pointer;

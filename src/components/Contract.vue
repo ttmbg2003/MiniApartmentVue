@@ -120,8 +120,9 @@
               </td>
               <td>
                 <select v-model="contract.gender" style="width: 100px">
-                  <option value="true">Male</option>
-                  <option value="false">Female</option>
+                  <option value="1">Male</option>
+                  <option value="2">Female</option>
+                  <option value="3">Others</option>
                 </select>
               </td>
               <td>
