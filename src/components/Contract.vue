@@ -456,6 +456,7 @@
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
+import Swal from "sweetalert2";
 export default {
   data() {
     return {
@@ -487,16 +488,16 @@ export default {
         licensePlate: "",
         vehicleType: "",
         vehicleColor: "",
-        residenceStatus: "Fail",
+        residenceStatus: "Failed",
         rentalFee: "",
         securityDeposite: "",
         paymentCycle: 3,
         signinDate: "",
         moveinDate: "",
         expireDate: "",
+        error: null,
       },
       date: this.getFormattedDate(),
-      error: Error,
     };
   },
   methods: {
@@ -533,13 +534,12 @@ export default {
         this.contract.expireDate
       );
     },
-     
+
     async submitForm() {
-      // if (!this.validateForm()) {
-      //   this.error = "Please fill in all fields.";
-      //   return;
-      // }
-      console.log("Bước 1.1");
+      if (!this.validateForm()) {
+        this.error = "Please fill in all fields.";
+        return;
+      }
       try {
         const response = await apiClient.post("contract/addNewContract", {
           totalArea: this.contract.totalArea,
@@ -579,22 +579,26 @@ export default {
           moveinDate: this.contract.moveinDate,
           expireDate: this.contract.expireDate,
         });
-        console.log("Bước 2:", response.data);
         if (response.data.status === 200) {
           this.error = null;
-          alert("Successfully add new contract");
-          console.log("Dữ liệu hợp đồng:", this.contract);
+          Swal.fire({
+            title: "Success!",
+            text: "Contract is created successfully.",
+            icon: "success",
+            timer: 2000,
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+          this.$router.push("/tenants");
         } else {
           this.error = response.data.result;
-          console.log("Dữ liệu hợp đồng err:", this.contract);
         }
-        console.log("Sau bước 2 đến đây");
       } catch (error) {
         // this.error = response.data;
         console.log("Lỗi ở catch: ", error);
         console.log("Dữ liệu hợp đồng:", this.contract);
       }
-      console.log("Hết");
     },
   },
 };
