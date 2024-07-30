@@ -47,8 +47,9 @@
                                         <td>{{ tenant.firstName }} {{ tenant.lastName }}</td>
                                         <td>{{ tenant.roomId }}</td>
                                         <td>
-                                            <div v-if="tenant.gender">Male</div>
-                                            <div v-else>Female</div>
+                                            <div v-if="tenant.gender == 1">Male</div>
+                                            <div v-if="tenant.gender == 2">Female</div>
+                                            <div v-if="tenant.gender == 3">Other</div>
                                         </td>
                                         <td>{{ tenant.dateOfBirth }}</td>
                                         <td>{{ tenant.contact }}</td>
@@ -137,11 +138,16 @@
                                                 <td v-else>{{ tenantDetail.roomId }}</td>
                                                 <td v-if="isEditing">
                                                     <select v-model="tenantDetail.gender" class="input-edit">
-                                                        <option :value="true">Male</option>
-                                                        <option :value="false">Female</option>
+                                                        <option :value="1">Male</option>
+                                                        <option :value="2">Female</option>
+                                                        <option :value="3">Other</option>
                                                     </select>
                                                 </td>
-                                                <td v-else>{{ tenantDetail.gender ? 'Male' : 'Female' }}</td>
+                                                <td v-else>
+                                                    <div v-if="tenantDetail.gender == 1">Male</div>
+                                                    <div v-if="tenantDetail.gender == 2">Female</div>
+                                                    <div v-if="tenantDetail.gender == 3">Other</div>
+                                                </td>
                                                 <td v-if="isEditing">
                                                     <input type="date" v-model="tenantDetail.dateOfBirth"
                                                         class="input-edit" style="width: 117px;">
@@ -189,13 +195,13 @@
                                                 <td v-else>
                                                     <div v-if="tenantDetail.residenceStatus == 'Success'"
                                                         class="residence-status-success residence-status">{{
-                                                        tenantDetail.residenceStatus }}</div>
+                                                            tenantDetail.residenceStatus }}</div>
                                                     <div v-if="tenantDetail.residenceStatus == 'In Progress'"
                                                         class="residence-status-progress residence-status">{{
-                                                        tenantDetail.residenceStatus }}</div>
+                                                            tenantDetail.residenceStatus }}</div>
                                                     <div v-if="tenantDetail.residenceStatus == 'Failed'"
                                                         class="residence-status-fail residence-status">{{
-                                                        tenantDetail.residenceStatus }}</div>
+                                                            tenantDetail.residenceStatus }}</div>
                                                 </td>
                                                 <td>
                                                     <a href="#" @click="editTenant()"><i><img
@@ -286,7 +292,7 @@ const getTenantPanigation = (pageNo: number) => {
         totalPage = response.totalPages;
         currentPage = response.pageable.pageNumber;
         console.log(response);
-        
+
     });
 };
 getTenantPanigation();
