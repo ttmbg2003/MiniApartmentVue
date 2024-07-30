@@ -21,10 +21,27 @@
       >
     </div>
     <div>
-      <div @click="handleAuthAction" class="login-logout">
-        <div v-if="!authState.isAuthenticated">Log in</div>
-        <div v-else style="width: 80px">
-          <img src="@/components/icons/logout.png" />
+      <div>
+        <div
+          class="loginBtn"
+          @click="handleAuthAction"
+          v-if="!authState.isAuthenticated"
+        >
+          Log in
+        </div>
+        <div v-else>
+          <div class="logoutBtn" @click="handleAuthAction">
+            <font-awesome-icon
+              :icon="['fas', 'right-from-bracket']"
+              style="margin: 0"
+            />
+            <p style="margin: 0; margin-left: 0.5rem">Log out</p>
+          </div>
+          <router-link to="/profile" class="avatar"
+            ><font-awesome-icon
+              style="width: 1.8rem; height: 1.8rem"
+              :icon="['fas', 'user']"
+          /></router-link>
         </div>
         <!-- {{ authState.isAuthenticated ? "Logout" : "Login" }} -->
       </div>
@@ -81,7 +98,8 @@ export default defineComponent({
   text-decoration: underline;
   cursor: pointer;
 }
-.login-logout {
+.loginBtn {
+  font-size: 18px;
   text-decoration: underline;
   cursor: pointer;
   color: #000000;
@@ -90,5 +108,30 @@ export default defineComponent({
   top: -15px;
   width: 56px;
   right: 10px;
+}
+.logoutBtn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 7rem;
+  right: -1rem;
+  top: -0.7rem;
+  cursor: pointer;
+}
+.avatar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(224, 224, 224, 0.542);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  color: gray;
+}
+.avatar:hover {
+  background: rgba(177, 177, 177, 0.542);
 }
 </style>
