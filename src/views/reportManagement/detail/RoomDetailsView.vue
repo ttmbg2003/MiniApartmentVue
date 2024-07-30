@@ -155,23 +155,23 @@
         <div class="table1">
           <table>
             <tr>
-              <th style="width: 1rem">No.</th>
-              <th style="width: 125.74px">Room No</th>
-              <th style="width: 197.03px">
+              <th style="width: 4rem">No.</th>
+              <th style="width: 7.8rem">Room No</th>
+              <th style="width: 12.3rem">
                 Rental Fee
                 <span
                   style="
                     font-family: Roboto;
                     font-size: 11px;
                     font-weight: 500;
-                    line-height: 12.89px;
+
                     letter-spacing: 0.01em;
                     text-align: left;
                   "
                   >(VND)</span
                 >
               </th>
-              <th style="width: 127.18px">Status</th>
+              <th style="width: 7.9rem">Status</th>
             </tr>
             <template v-if="roomListTable.length > 0">
               <tr v-for="index in 5" :key="index">
@@ -184,19 +184,19 @@
                 <td>{{ roomListTable[index - 1]?.fee }}</td>
                 <td v-if="roomListTable[index - 1]?.status === 'occupied'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/occupied.png"
                   />
                 </td>
                 <td v-else-if="roomListTable[index - 1]?.status === 'reserved'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/reserved.png"
                   />
                 </td>
                 <td v-else-if="roomListTable[index - 1]?.status === 'vacant'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/vacant.png"
                   />
                 </td>
@@ -213,28 +213,32 @@
           </table>
         </div>
         <div
-          style="width: 1px; height: 200px; background: rgba(176, 180, 205, 1)"
+          style="
+            width: 1px;
+            height: 12.5rem;
+            background: rgba(176, 180, 205, 1);
+          "
         ></div>
         <div class="table2">
           <table>
             <tr>
-              <th style="width: 64.06px">No.</th>
-              <th style="width: 125.74px">Room No</th>
-              <th style="width: 197.03px">
+              <th style="width: 4rem">No.</th>
+              <th style="width: 7.8rem">Room No</th>
+              <th style="width: 12.3rem">
                 Rental Fee
                 <span
                   style="
                     font-family: Roboto;
                     font-size: 11px;
                     font-weight: 500;
-                    line-height: 12.89px;
+
                     letter-spacing: 0.01em;
                     text-align: left;
                   "
                   >(VND)</span
                 >
               </th>
-              <th style="width: 127.18px">Status</th>
+              <th style="width: 7.9rem">Status</th>
             </tr>
             <template v-if="roomListTable.length >= 6">
               <tr v-for="index in 5" :key="index">
@@ -247,19 +251,19 @@
                 <td>{{ roomListTable[index + 4]?.fee }}</td>
                 <td v-if="roomListTable[index + 4]?.status === 'occupied'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/occupied.png"
                   />
                 </td>
                 <td v-else-if="roomListTable[index + 4]?.status === 'reserved'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/reserved.png"
                   />
                 </td>
                 <td v-else-if="roomListTable[index + 4]?.status === 'vacant'">
                   <img
-                    style="width: 60px; height: auto"
+                    style="width: 3.75rem; height: auto"
                     src="/src/components/icons/vacant.png"
                   />
                 </td>
@@ -415,13 +419,13 @@ td {
 .table2 {
   display: flex;
   justify-content: center;
-  height: 240px;
+  height: 15rem;
 }
 .table1 {
-  padding-right: 60px;
+  padding-right: 4rem;
 }
 .table2 {
-  padding-left: 60px;
+  padding-left: 4rem;
 }
 
 .listTable th {
