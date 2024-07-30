@@ -6,31 +6,30 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 12rem"
+          style="width: 10rem; margin-bottom: 6rem"
         />
       </div>
       <div class="illustration">
         <img
-          src="@/components/icons/login-illustration.png"
+          style="width: 450px"
+          src="@/components/icons/loginman.png"
           alt="Login Illustration"
         />
       </div>
+      <p class="sign-up-link">
+        Not a member?
+        <router-link to="/signup" class="link">Sign up now</router-link>
+      </p>
       <div class="login-form">
-        <p class="signup-link">
-          Not a member?
-          <router-link to="/signup" class="navbar-link"
-            >Sign up now</router-link
-          >
-        </p>
         <h2>Log in</h2>
         <form @submit.prevent="login">
           <div class="form-group">
-            <label for="email">Email Address*</label>
+            <div><img src="@/components/icons/EmailAddress.png" /></div>
             <input type="email" id="email" v-model="email" required />
             <span style="color: red" v-if="msg.email">{{ msg.email }}</span>
           </div>
           <div class="form-group">
-            <label for="password">Password*</label>
+            <div><img src="@/components/icons/Password.png" /></div>
             <div class="password-input">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -39,24 +38,33 @@
                 required
               />
               <span @click="togglePasswordVisibility">
-                <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
               </span>
             </div>
           </div>
           <div class="form-group remember-me">
             <div>
-              <input type="checkbox" id="rememberMe" v-model="rememberMe" />
-              <label for="rememberMe">Remember me</label>
+              <!-- <input type="checkbox" id="rememberMe" v-model="rememberMe" />
+              <label for="rememberMe">Remember me</label> -->
+              <img src="@/components/icons/rememberme.png" alt="" />
             </div>
             <router-link
               to="/forgetpassword"
               class="forgot-password"
-              style="text-decoration: none"
+              style="text-decoration: none; color: black"
               >Forgot Password?</router-link
             >
           </div>
           <button type="submit" class="login-button">Log in</button>
         </form>
+        <img
+          src="@/components/icons/or.png"
+          style="position: absolute; margin-top: 45px; margin-left: 10px"
+        />
+        <img
+          src="@/components/icons/fbig.png"
+          style="position: absolute; left: 53rem; top: 35rem; margin-left: 10px"
+        />
         <div v-if="error" class="error">{{ error }}</div>
       </div>
     </div>
@@ -414,9 +422,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 40rem;
   background-color: #b7dae8;
-  padding: 20px;
 }
 .login-container {
   display: flex;
@@ -428,6 +435,7 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 100%;
+  background-image: url(@/components/icons/Login.png);
 }
 .illustration {
   flex: 1;
@@ -601,5 +609,13 @@ export default {
 *::after {
   box-sizing: border-box;
   align-items: center;
+}
+.sign-up-link {
+  position: absolute;
+  top: 2rem;
+  right: 5rem;
+}
+.link {
+  text-decoration: none;
 }
 </style>

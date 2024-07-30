@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <div class="aboutUs">
+      <div id="aboutUs" class="aboutUs">
         <img
           style="margin-left: -80px"
           src="/src/components/icons/aboutUs.png"
@@ -135,7 +135,7 @@
         </div>
       </div>
 
-      <div>
+      <div id="info">
         <div class="news">
           <div style="position: absolute; bottom: 10px; right: 30%">
             <button id="slideBtn" @click="scrollLeft">
@@ -359,6 +359,24 @@ function scrollRight() {
 function scrollLeft() {
   document.getElementById("infoList")!.scrollLeft -= 100;
 }
+document.querySelector("#aboutLink")?.addEventListener("click", () => {
+  const element = document.getElementById("aboutUs");
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+});
+document.querySelector("#contactLink")?.addEventListener("click", () => {
+  const element = document.getElementById("footer");
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+});
+document.querySelector("#infoLink")?.addEventListener("click", () => {
+  const element = document.getElementById("info");
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+});
 </script>
 <style scoped>
 .home {

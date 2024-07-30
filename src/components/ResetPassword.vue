@@ -6,11 +6,12 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
+          style="width: 10rem; margin-bottom: 6rem"
         />
       </div>
       <div class="illustration">
         <img
-          src="@/components/icons/login-illustration.png"
+          src="@/components/icons/signupphoto.png"
           alt="Forget Password Illustration"
         />
       </div>
@@ -21,25 +22,35 @@
         </p>
         <h2>Reset Password</h2>
         <form @submit.prevent="resetPassword">
-          <div class="form-group">
-            <label for="password">New Password*</label>
-            <input
-              type="password"
-              id="password"
-              v-model="newPassword"
-              required
-            />
-            <span style="color: red" v-if="error">{{ error }}</span>
+          <div class="form-group half-width">
+            <div><img src="@/components/icons/newpassword.png" /></div>
+            <div class="password-input">
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                v-model="newPassword"
+                required
+              />
+              <span @click="togglePasswordVisibility">
+                <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+              </span>
+              <span style="color: red" v-if="error">{{ error }}</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="password">Confirm New Password*</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              v-model="confirmPassword"
-              required
-            />
-            <span style="color: red" v-if="error">{{ error }}</span>
+          <div class="form-group half-width">
+            <div class="password-input">
+              <div><img src="@/components/icons/cfnewpassword.png" /></div>
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="rePassword"
+                v-model="rePassword"
+                required
+              />
+              <span @click="togglePasswordVisibility">
+                <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+              </span>
+              <span style="color: red" v-if="error">{{ error }}</span>
+            </div>
           </div>
           <button type="submit" class="login-button">Reset Password</button>
         </form>
@@ -207,9 +218,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 40rem;
   background-color: #b7dae8;
-  padding: 20px;
 }
 .login-container {
   display: flex;
@@ -221,6 +231,7 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 100%;
+  background-image: url(@/components/icons/Signupbg.png);
 }
 .illustration {
   flex: 1;
@@ -262,6 +273,8 @@ export default {
 .password-input {
   display: flex;
   align-items: center;
+  position: relative;
+  flex-wrap: wrap;
 }
 .password-input span {
   margin-left: -30px;
@@ -300,7 +313,9 @@ export default {
 .signup-link {
   text-align: center;
   margin-left: 12rem;
-  text-decoration: none;
+  position: absolute;
+  bottom: 33rem;
+  right: 6rem;
 }
 .signup-link a {
   color: #007bff;

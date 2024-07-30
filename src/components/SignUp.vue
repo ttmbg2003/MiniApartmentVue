@@ -6,38 +6,39 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 12rem"
+          style="width: 10rem; margin-bottom: 6rem"
         />
       </div>
       <div class="illustration">
-        <img src="@/components/icons/signup.jpg" alt="Signup Illustration" />
+        <img
+          src="@/components/icons/signupphoto.png"
+          alt="Signup Illustration"
+        />
       </div>
       <div class="signup-form">
         <p class="signin-link">
-          Already have an account?
-          <router-link to="/login" class="navbar-link"
-            >Sign in here</router-link
-          >
+          Already a member?
+          <router-link to="/login" class="navbar-link">Log in</router-link>
         </p>
         <h2>Sign Up</h2>
         <form @submit.prevent="signUp">
           <div class="form-row">
             <div class="form-group half-width">
-              <label for="firstName">First Name*</label>
+              <div><img src="@/components/icons/fn.png" /></div>
               <input type="text" id="firstName" v-model="firstName" required />
             </div>
             <div class="form-group half-width">
-              <label for="lastName">Last Name*</label>
+              <div><img src="@/components/icons/ln.png" /></div>
               <input type="text" id="lastName" v-model="lastName" required />
             </div>
           </div>
           <div class="form-group">
-            <label for="email">Email Address*</label>
+            <div><img src="@/components/icons/EmailAddress.png" /></div>
             <input type="email" id="email" v-model="email" required />
             <span style="color: red" v-if="msg.email">{{ msg.email }}</span>
           </div>
           <div class="form-group">
-            <label for="password">Password*</label>
+            <div><img src="@/components/icons/Password.png" /></div>
             <div class="password-input">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -46,7 +47,7 @@
                 required
               />
               <span @click="togglePasswordVisibility">
-                <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
               </span>
             </div>
             <span v-if="msg.password" style="color: red">{{
@@ -54,7 +55,7 @@
             }}</span>
           </div>
           <div class="form-group">
-            <label for="rePassword">Confirm Password*</label>
+            <div><img src="@/components/icons/cf.png" /></div>
             <div class="password-input">
               <input
                 :type="showPassword ? 'text' : 'password'"
@@ -63,7 +64,7 @@
                 required
               />
               <span @click="togglePasswordVisibility">
-                <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                <i :class="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
               </span>
             </div>
             <span v-if="msg.rePassword" style="color: red">{{
@@ -525,9 +526,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 40rem;
   background-color: #b7dae8;
-  padding: 20px;
 }
 .signup-container {
   display: flex;
@@ -539,6 +539,7 @@ export default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 100%;
+  background-image: url(@/components/icons/Signupbg.png);
 }
 .illustration {
   flex: 1;
@@ -594,6 +595,9 @@ export default {
 .signin-link {
   text-align: center;
   margin-left: 12rem;
+  position: absolute;
+  bottom: 33rem;
+  right: 6rem;
 }
 .signin-link a {
   color: #007bff;

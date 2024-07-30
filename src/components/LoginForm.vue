@@ -2,10 +2,7 @@
   <div class="login-page">
     <div class="login-container">
       <div class="illustration">
-        <img
-          src="@/components/icons/login-illustration.png"
-          alt="Login Illustration"
-        />
+        <img src="@/components/icons/loginman.png" alt="Login Illustration" />
       </div>
       <div class="login-form">
         <h2>Log in</h2>
