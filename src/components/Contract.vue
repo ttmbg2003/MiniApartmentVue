@@ -39,28 +39,16 @@
         <p>
           ĐẠI DIỆN BÊN THUÊ (BÊN B):<br />
           Ông/bà:
-          <input type="text" v-model="contract.representative" required /><br />
+          <input type="text" v-model="contract.representative" /><br />
           CMND/CCCD:
-          <input type="tel" v-model="contract.citizenId" required /> Ngày cấp:
-          <input
-            type="date"
-            v-model="contract.createCitizenIdDate"
-            required
-          /><br />
+          <input type="tel" v-model="contract.citizenId" /> Ngày cấp:
+          <input type="date" v-model="contract.createCitizenIdDate" /><br />
           Nơi cấp:
-          <input
-            type="text"
-            v-model="contract.createCitizenIdPlace"
-            required
-          /><br />
+          <input type="text" v-model="contract.createCitizenIdPlace" /><br />
           Hộ khẩu:
-          <input
-            type="text"
-            v-model="contract.placeOfPermanet"
-            required
-          /><br />
+          <input type="text" v-model="contract.placeOfPermanet" /><br />
           Số điện thoại:
-          <input type="tel" v-model="contract.contact" required />
+          <input type="tel" v-model="contract.contact" />
         </p>
 
         <p>Hai bên cùng thỏa thuận ký hợp đồng với những nội dung sau:</p>
@@ -68,28 +56,28 @@
         <h3>ĐIỀU 1: ĐỐI TƯỢNG VÀ NỘI DUNG CỦA HỢP ĐỒNG</h3>
         <p>
           1.1. Bên A cho bên B thuê căn hộ số:
-          <input type="number" v-model="contract.roomId" required /><br />
+          <input type="number" v-model="contract.roomId" /><br />
           Tại: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
           Để sử dụng vào mục đích: để ở (không trái với quy định pháp luật)<br />
           1.2. Quyền sở hữu của bên A đối với căn hộ cụ thể như sau:<br />
           a) Địa chỉ căn hộ: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
           b) Căn hộ số:
-          <input type="number" v-model="contract.roomId" required /><br />
+          <input type="number" v-model="contract.roomId" /><br />
           d) Tổng diện tích sàn căn hộ là:
-          <input type="number" v-model="contract.totalArea" required /> m2; diện
-          tích đất gắn liền với căn hộ là:
-          <input type="number" v-model="contract.landArea" required /> m2<br />
+          <input type="number" v-model="contract.totalArea" /> m2; diện tích đất
+          gắn liền với căn hộ là:
+          <input type="number" v-model="contract.landArea" /> m2<br />
           (sử dụng chung là:
-          <input type="number" v-model="contract.publicArea" required /> m2; sử
-          dụng riêng là:
-          <input type="number" v-model="contract.privateArea" required />
+          <input type="number" v-model="contract.publicArea" /> m2; sử dụng
+          riêng là:
+          <input type="number" v-model="contract.privateArea" />
           m2).<br />
           e) Trang thiết bị gắn liền với căn hộ:
-          <input type="text" v-model="contract.device" required /><br />
+          <input type="text" v-model="contract.device" /><br />
           f) Nguồn gốc sở hữu:
-          <input type="text" v-model="contract.ownerOrigin" required /><br />
+          <input type="text" v-model="contract.ownerOrigin" /><br />
           g) Những hạn chế về quyền sở hữu căn hộ (nếu có):
-          <input type="text" v-model="contract.ownerLimit" required />
+          <input type="text" v-model="contract.ownerLimit" />
         </p>
 
         <h3>
@@ -101,7 +89,6 @@
             type="number"
             name="numberOfTenants"
             v-model="contract.numberOfTenant"
-            required
           />người
         </p>
         b) Dưới đây là thông tin chi tiết của khách thuê:
@@ -132,17 +119,16 @@
                 />
               </td>
               <td>
-                <select v-model="contract.gender" style="width: 100px" required>
-                  <option value="0">Male</option>
-                  <option value="1">Female</option>
+                <select v-model="contract.gender" style="width: 100px">
+                  <option value="true">Male</option>
+                  <option value="false">Female</option>
                 </select>
               </td>
               <td>
                 <input
                   type="date"
-                  v-model="contract.dob"
+                  v-model="contract.dateOfBirth"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -150,7 +136,6 @@
                   type="tel"
                   v-model="contract.contact"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -158,7 +143,6 @@
                   type="email"
                   v-model="contract.email"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -166,7 +150,6 @@
                   type="text"
                   v-model="contract.career"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -174,7 +157,6 @@
                   type="text"
                   v-model="contract.licensePlate"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -182,7 +164,6 @@
                   type="text"
                   v-model="contract.vehicleType"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
@@ -190,15 +171,10 @@
                   type="text"
                   v-model="contract.vehicleColor"
                   style="width: 100px"
-                  required
                 />
               </td>
               <td>
-                <select
-                  v-model="contract.relationship"
-                  style="width: 100px"
-                  required
-                >
+                <select v-model="contract.relationship" style="width: 100px">
                   <option value="Family">Family</option>
                   <option value="Friend">Friend</option>
                 </select>
@@ -216,7 +192,6 @@
           @input="(event) => (contract.securityDeposite = event.target.value)"
           name="rentalFee"
           v-model="contract.rentalFee"
-          required
         />
         đồng Việt Nam/01 th&aacute;ng.<br />(Bằng chữ:<br />2.2. C&aacute;c chi
         ph&iacute; sử dụng điện, nước, điện thoại v&agrave; c&aacute;c dịch vụ
@@ -234,7 +209,6 @@
           type="number"
           name="securityDeposite"
           v-model="contract.rentalFee"
-          required
         />VND (tương đương với 1 th&aacute;ng tiền thu&ecirc; ph&ograve;ng)<br />2.3.
         Phương thức thanh to&aacute;n: thanh to&aacute;n bằng tiền Việt Nam
         th&ocirc;ng qua h&igrave;nh thức: chuyển khoản<br />2.4. Thời hạn thanh
@@ -250,22 +224,11 @@
           type="date"
           name="moveIn"
           v-model="contract.moveinDate"
-          required
         /><br />3.2. Thời hạn cho thu&ecirc; nh&agrave; ở l&agrave; ..........
         năm (......... th&aacute;ng), kể từ
-        <input
-          required
-          type="date"
-          name="signinDate"
-          v-model="contract.signinDate"
-        />
+        <input type="date" name="signinDate" v-model="contract.signinDate" />
         đến
-        <input
-          required
-          type="date"
-          name="expireDate"
-          v-model="contract.expireDate"
-        />
+        <input type="date" name="expireDate" v-model="contract.expireDate" />
       </p>
 
       <p>
@@ -339,7 +302,7 @@
         b&aacute;o cho b&ecirc;n B biết trước theo thoả thuận;<br />- Khi quyền
         sử dụng căn hộ bị hạn chế do lợi &iacute;ch của người thứ ba.<br />g)
         C&aacute;c quyền kh&aacute;c do hai b&ecirc;n thỏa thuận
-        <input required type="text" name="rights" v-model="contract.rights" />
+        <input type="text" name="rights" v-model="contract.rights" />
         <br />5.2. Nghĩa vụ của b&ecirc;n B:
       </p>
 
@@ -369,7 +332,6 @@
         tr&aacute;ch nhiệm v&agrave; nghĩa vụ giống nhau trong việc thực hiện
         c&aacute;c điều khoản trong hợp đồng n&agrave;y.<br />k) C&aacute;c
         nghĩa vụ kh&aacute;c theo thỏa thuận của hai b&ecirc;n<input
-          required
           type="text"
           name="rights"
           v-model="contract.obligations"
@@ -440,7 +402,7 @@
         C&aacute;c cam kết kh&aacute;c (phải ph&ugrave; hợp với quy định của
         ph&aacute;p luật v&agrave; kh&ocirc;ng tr&aacute;i đạo đức x&atilde;
         hội):
-        <input required type="text" name="rights" v-model="contract.commit" />
+        <input type="text" name="rights" v-model="contract.commit" />
       </p>
 
       <p>
@@ -460,7 +422,7 @@
           name="signinDate"
           v-model="contract.signinDate"
         /><br />10.2. Hợp đồng n&agrave;y được lập th&agrave;nh
-        <input required type="text" name="rights" v-model="contract.copies" />
+        <input type="text" name="rights" v-model="contract.copies" />
         bản v&agrave; c&oacute; gi&aacute; trị như nhau. Mỗi b&ecirc;n giữ 1
         bản, 1 bản lưu tại cơ quan c&ocirc;ng chứng hoặc chứng thực (nếu
         c&oacute;) v&agrave; 1 bản lưu tại cơ quan thuế (c&aacute;c b&ecirc;n
@@ -498,6 +460,13 @@ export default {
   data() {
     return {
       contract: {
+        representative: "",
+        citizenId: "",
+        createCitizenIdDate: "",
+        createCitizenIdPlace: "",
+        placeOfPermanet: "",
+        contact: "",
+        roomId: "",
         totalArea: "",
         landArea: "",
         publicArea: "",
@@ -505,27 +474,20 @@ export default {
         device: "",
         ownerOrigin: "",
         ownerLimit: "",
+        numberOfTenant: "",
+        gender: "",
+        dateOfBirth: "",
+        email: "",
         rights: "",
         obligations: "",
         commit: "",
         copies: "",
         relationship: "",
-        email: "",
-        roomId: "",
-        representative: "",
-        gender: "",
-        dob: "",
-        contact: "",
-        citizenId: "",
-        createCitizenIdDate: "",
-        createCitizenIdPlace: "",
         career: "",
         licensePlate: "",
         vehicleType: "",
         vehicleColor: "",
         residenceStatus: "Fail",
-        placeOfPermanet: "",
-        numberOfTenant: "",
         rentalFee: "",
         securityDeposite: "",
         paymentCycle: 3,
@@ -538,10 +500,6 @@ export default {
     };
   },
   methods: {
-    formatDate: function (event) {
-      const date = new Date(event);
-      return date.toISOString().slice(0, 10); // YYYY-MM-DD
-    },
     getFormattedDate() {
       const today = new Date();
       const day = String(today.getDate()).padStart(2, "0");
@@ -575,69 +533,68 @@ export default {
         this.contract.expireDate
       );
     },
+     
     async submitForm() {
-      if (!this.validateForm()) {
-        this.error = "Please fill in all fields.";
-        return;
-      }
+      // if (!this.validateForm()) {
+      //   this.error = "Please fill in all fields.";
+      //   return;
+      // }
+      console.log("Bước 1.1");
       try {
-        this.contract.expireDate = this.formatDate(this.contract.expireDate);
-        this.contract.moveinDate = this.formatDate(this.contract.moveinDate);
-        this.contract.signinDate = this.formatDate(this.contract.signinDate);
-        this.contract.createCitizenIdPlace = this.formatDate(
-          this.contract.createCitizenIdPlace
-        );
         const response = await apiClient.post("contract/addNewContract", {
-          totalArea: this.totalArea,
-          landArea: this.landArea,
-          publicArea: this.publicArea,
-          privateArea: this.privateArea,
-          device: this.device,
-          ownerOrigin: this.ownerOrigin,
-          ownerLimit: this.ownerLimit,
-          rights: this.rights,
-          obligations: this.obligations,
-          commit: this.commit,
-          copies: this.copies,
-          relationship: this.relationship,
-          email: this.email,
-          roomId: this.roomId,
-          representative: this.representative,
-          gender: this.gender,
-          dob: this.dob,
-          contact: this.contact,
-          citizenId: this.citizenId,
-          createCitizenIdDate: this.createCitizenIdDate,
-          createCitizenIdPlace: this.createCitizenIdPlace,
-          career: this.career,
-          licensePlate: this.licensePlate,
-          vehicleType: this.vehicleType,
-          vehicleColor: this.vehicleColor,
-          residenceStatus: this.residenceStatus,
-          placeOfPermanet: this.placeOfPermanet,
-          id: this.id,
-          contractId: this.contractId,
-          numberOfTenant: this.numberOfTenant,
-          rentalFee: this.rentalFee,
-          securityDeposite: this.securityDeposite,
-          paymentCycle: this.paymentCycle,
-          signinDate: this.signinDate,
-          moveinDate: this.moveinDate,
-          expireDate: this.expireDate,
+          totalArea: this.contract.totalArea,
+          landArea: this.contract.landArea,
+          publicArea: this.contract.publicArea,
+          privateArea: this.contract.privateArea,
+          device: this.contract.device,
+          ownerOrigin: this.contract.ownerOrigin,
+          ownerLimit: this.contract.ownerLimit,
+          rights: this.contract.rights,
+          obligations: this.contract.obligations,
+          commit: this.contract.commit,
+          copies: this.contract.copies,
+          relationship: this.contract.relationship,
+          email: this.contract.email,
+          roomId: this.contract.roomId,
+          representative: this.contract.representative,
+          gender: this.contract.gender,
+          dateOfBirth: this.contract.dateOfBirth,
+          contact: this.contract.contact,
+          citizenId: this.contract.citizenId,
+          createCitizenIdDate: this.contract.createCitizenIdDate,
+          createCitizenIdPlace: this.contract.createCitizenIdPlace,
+          career: this.contract.career,
+          licensePlate: this.contract.licensePlate,
+          vehicleType: this.contract.vehicleType,
+          vehicleColor: this.contract.vehicleColor,
+          residenceStatus: this.contract.residenceStatus,
+          placeOfPermanet: this.contract.placeOfPermanet,
+          // id: this.contract.id,
+          // contractId: this.contract.contractId,
+          numberOfTenant: this.contract.numberOfTenant,
+          rentalFee: this.contract.rentalFee,
+          securityDeposite: this.contract.securityDeposite,
+          paymentCycle: this.contract.paymentCycle,
+          signinDate: this.contract.signinDate,
+          moveinDate: this.contract.moveinDate,
+          expireDate: this.contract.expireDate,
         });
+        console.log("Bước 2:", response.data);
         if (response.data.status === 200) {
           this.error = null;
           alert("Successfully add new contract");
           console.log("Dữ liệu hợp đồng:", this.contract);
         } else {
-          this.error = "Failed to create contract.";
-          console.log("Dữ liệu hợp đồng:", this.contract);
+          this.error = response.data.result;
+          console.log("Dữ liệu hợp đồng err:", this.contract);
         }
+        console.log("Sau bước 2 đến đây");
       } catch (error) {
-        this.error = "PHAC DIUUUUUUUUUUUUUUUUUU";
-        console.log(error);
+        // this.error = response.data;
+        console.log("Lỗi ở catch: ", error);
         console.log("Dữ liệu hợp đồng:", this.contract);
       }
+      console.log("Hết");
     },
   },
 };
