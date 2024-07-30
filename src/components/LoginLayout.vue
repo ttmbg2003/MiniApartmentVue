@@ -12,7 +12,7 @@
       <div class="illustration">
         <img
           style="width: 450px"
-          src="@/components/icons/loginman.png"
+          src="../components/icons/loginman.png"
           alt="Login Illustration"
         />
       </div>

@@ -106,11 +106,11 @@
             <div style="display: flex">
               <div class="form-group">
                 <label>Date Of Birth</label>
-                <input class="input-user-info" type="date" v-model="localUser.dateOfBirth" />
+                <input class="input-user-info" type="date" v-model="localUser.dateOfBirth" required/>
               </div>
               <div class="form-group">
                 <label>Id Number</label>
-                <input class="input-user-info" type="number" v-model="localUser.citizenId">
+                <input class="input-user-info" type="text" pattern="^[0-9]{12}$" v-model="localUser.citizenId">
               </div>
             </div>
             <div class="form-group">
@@ -125,8 +125,8 @@
               </div>
               <div class="form-group">
                 <label>Contact Number</label>
-                <input class="input-user-info" type="number" v-model="localUser.contact"
-                  placeholder="Your contact number" />
+
+                  <input type="text" name="phone"  class="input-user-info"  v-model="localUser.contact" pattern="^[0-9]{10}$" placeholder="Nhập số điện thoại của bạn">
               </div>
             </div>
             <div style="display: flex; justify-content: center; margin-right: 5%">
@@ -184,17 +184,29 @@ const timeFomat = (dateString: string) => {
 };
 const submitForm = () => {
   localUser.value.dateOfBirth = timeFomat(localUser.value.dateOfBirth);
-  userService.editProfile(localUser.value).then(() => {
-    Swal.fire({
-      title: "Success!",
-      text: "Save successfully.",
-      icon: "success",
-      showConfirmButton: false,
-      timer: 1500
-    });
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+  userService.editProfile(localUser.value).then((res) => {
+    console.log(res);
+    
+    if (res == "update success") {
+      Swal.fire({
+        title: "Success!",
+        text: "Save successfully.",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } else{
+      Swal.fire({
+        title: "Fail!",
+        text: "Save fail.",
+        icon: "error",
+        showConfirmButton: true,
+      });
+    }
+
   });
 };
 const cancelEdit = () => {
@@ -235,17 +247,27 @@ const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
 const submitFormChangePassword = () => {
   return userService.changePassword(emailRaw, currentPasswordChange, password.value).then((response) => {
-    Swal.fire({
-      title: "Success!",
-      text: "Save successfully.",
-      icon: "success",
-      showConfirmButton: false,
-      timer: 1500
-    });
+    if (response == "wrong password") {
+      Swal.fire({
+        icon: "error",
+        text: "Wrong password",
+        showConfirmButton: true,
+      });
+    }
+
+    if (response != "wrong password") {
+      Swal.fire({
+        icon: "success",
+        text: "Success",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+
   });
-  // userService.editProfile(localUser.value).then(() => {
-  //   window.location.reload();
-  // });
 };
 const showConfirmPassword = ref(false);
 const passwordRequirements = computed(() => [

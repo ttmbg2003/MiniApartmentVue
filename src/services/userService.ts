@@ -18,10 +18,10 @@ class UserService {
       .get(`/api/user/getUserByEmail?email=${email}`)
       .then((response) => response.data['result']);
   };
-  editProfile = (user: User): Promise<User> => {
+  editProfile = (user: User): Promise<any> => {
     return apiClient
       .post(`/api/user/editProfile`, user)
-      .then((response) => response.data);
+      .then((response) => response.data.result);
   };
   getTokenUser() {
     return localStorage.getItem("token");
@@ -78,7 +78,7 @@ class UserService {
           // 'x-access-token': token,
           // 'Token': 'Bearer ' + token
         }
-      }).then((response) => response.data);
+      }).then((response) => response.data.result);
       } catch (error) {
       console.error('Error change password:', error);
       throw error;
