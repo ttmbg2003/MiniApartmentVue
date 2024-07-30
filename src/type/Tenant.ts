@@ -11,7 +11,7 @@ export interface Tenant {
     userId: string;
     firstName: string;
     lastName: string;
-    gender: string;
+    gender: number;
     dateOfBirth: string;
     contact: string;
     citizenId: string;

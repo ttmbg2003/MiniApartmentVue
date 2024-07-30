@@ -97,9 +97,9 @@
                 <label>Gender</label>
                 <select class="input-user-info" name="gender" v-model="localUser.gender">
                   <option selected disabled value="">Select</option>
-                  <option value="true">Male</option>
-                  <option value="false">Female</option>
-                  <option>Other</option>
+                  <option value="1">Male</option>
+                  <option value="2">Female</option>
+                  <option value="3">Other</option>
                 </select>
               </div>
             </div>
@@ -152,7 +152,7 @@ const localUser = ref<User>({
   userId: "",
   firstName: "",
   lastName: "",
-  gender: "",
+  gender: 0,
   dateOfBirth: "",
   placeOfPermanet: "",
   email: "",
