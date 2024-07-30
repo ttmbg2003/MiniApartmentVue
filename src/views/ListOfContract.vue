@@ -172,18 +172,15 @@
                       "
                     >
                       <th>No.</th>
-                      <th>Full Name</th>
                       <th>Room No</th>
-                      <th>Gender</th>
-                      <th>D.O.B</th>
-                      <th>Mobile No</th>
-                      <th>Email ID</th>
-                      <th>Citizen ID</th>
-                      <th>Career</th>
-                      <th>License Plate</th>
-                      <th>Vehicle Type</th>
-                      <th>Vehicle Color</th>
-                      <th style="width: 7rem">Temporary Residence Status</th>
+                      <th>Number of Tenants</th>
+                      <th>Rental Fee(VND)</th>
+                      <th>Security Deposit(VND)</th>
+                      <th>Payment Cycle</th>
+                      <th>Contract</th>
+                      <th>Signing date</th>
+                      <th>Move-in date</th>
+                      <th>Contract Status</th>
                       <th>Action</th>
                     </thead>
                     <tbody>
@@ -192,10 +189,6 @@
                         style="height: 50px"
                       >
                         <td>{{ contractDetail.id }}</td>
-                        <td>
-                          {{ contractDetail.firstName }}
-                          {{ contractDetail.lastName }}
-                        </td>
                         <td>{{ contractDetail.roomId }}</td>
                         <td>
                           <div v-if="contractDetail.gender">Male</div>
