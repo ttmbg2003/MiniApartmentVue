@@ -1,6 +1,6 @@
 export interface Contract {
   id: number;
-  contractId: number;
+  contractId: string;
   roomId: number;
   numberOfTenant: number;
   rentalFee: number;
