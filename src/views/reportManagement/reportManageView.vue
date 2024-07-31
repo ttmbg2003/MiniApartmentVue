@@ -1,5 +1,7 @@
 <template>
-  <div style="display: flex; height: 100%; background-color: #f5f6f8">
+  <div
+    style="display: flex; height: 100%; width: 100%; background-color: #f5f6f8"
+  >
     <SideBar class="sidebar" />
     <div class="main-screen">
       <div style="font-weight: 600; font-size: 24px; margin-left: 36px">
@@ -9,7 +11,9 @@
         <div class="top-elements">
           <div>
             <div class="top-title">Total Rooms</div>
-            <div style="font-weight: 700; font-size: 28px">50</div>
+            <div style="font-weight: 700; font-size: 28px">
+              {{ totalRooms }}
+            </div>
           </div>
           <div class="top-icon-bg" style="background: #fff3d6">
             <svg
@@ -56,7 +60,9 @@
                 font-size: 28px;
               "
             >
-              <div style="font-weight: 700; font-size: 32px">120</div>
+              <div style="font-weight: 700; font-size: 32px">
+                {{ totalTenants }}
+              </div>
               /120
             </div>
 
@@ -213,6 +219,9 @@ import RoomDetailsView from "./detail/RoomDetailsView.vue";
 import TenantDetailsView from "./detail/TenantDetailsView.vue";
 import PaymentRateView from "./detail/PaymentRateView.vue";
 
+import reportService from "@/services/reportService";
+import tenantService from "@/services/tenantService";
+
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
@@ -237,6 +246,19 @@ function openDetailView() {
   }
   displayDetailView.value = true;
 }
+
+const totalRooms = ref(0);
+reportService.getRoomStatus().then((res) => {
+  totalRooms.value = res;
+});
+
+const totalTenants = ref(0);
+
+tenantService.getTenantCount().then((res) => {
+  totalTenants.value = res;
+});
+
+// console.log(totalRooms);
 </script>
 
 <style scoped>
@@ -244,7 +266,7 @@ function openDetailView() {
   width: 18%;
 }
 .main-screen {
-  width: 1200px;
+  flex-grow: 1;
 
   display: flex;
   flex-direction: column;
