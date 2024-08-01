@@ -248,7 +248,7 @@ function openDetailView() {
 }
 
 const totalRooms = ref(0);
-reportService.getRoomStatus().then((res) => {
+reportService.getTotalRooms().then((res) => {
   totalRooms.value = res;
 });
 
