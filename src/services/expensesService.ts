@@ -30,5 +30,13 @@ class ExpensesService{
         return apiClient.get(`/api/expenses/getExpensesByRoomAndMonth?roomId=${room}&year=${year}&month=${month}`)
         .then((response) => response.data['result'])        
     }
+    updateExpensesStatus = (expenses:any): Promise<any> =>{
+        return apiClient.post('/api/expenses/updateStatus',expenses)
+        .then((response) => response.data)
+    }
+    deleteExpenses = (year:any,month:number,room:number): Promise<any> => {
+        return apiClient.delete(`/api/expenses/deleteExpenses?roomId=${room}&year=${year}&month=${month}`)
+        .then((response) => response.data['result'])   
+    }
 }
 export default new ExpensesService();

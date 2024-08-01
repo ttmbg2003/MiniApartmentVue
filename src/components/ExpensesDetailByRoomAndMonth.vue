@@ -6,7 +6,7 @@
                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                          </div> -->
     <form @submit.prevent="submitStatus">
-        <div class="modal-body">
+        <div class="modal-body" style="padding-bottom: 0;">
             <div>
                 <div style="display: flex;">
                     <div style="    text-align: center;">
@@ -61,7 +61,33 @@
                                 <td>{{ fomatFee(expenses?.securityDeposite) }}</td>
                                 <td>{{ expenses?.debt }}</td>
                                 <td>{{ expenses?.fine }}</td>
-                                <td>{{ expenses?.status }}</td>
+                                <td>
+                                    <select v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status" v-model="expenses.status">
+                                        <option value="Paid" style="color: black;" >Paid</option>
+                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    </select>
+                                    <select v-if="expenses?.status == 'Partial Paid'" class="payment-status-partial payment-status"  v-model="expenses.status">
+                                        <option value="Paid" style="color: black;" >Paid</option>
+                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    </select>
+                                    <select v-if="expenses?.status == 'Unpaid'" class="payment-status-unpaid payment-status"  v-model="expenses.status">
+                                        <option value="Paid" style="color: black;" >Paid</option>
+                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    </select>
+                                    <!-- <div v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status">{{
+                                        expenses?.status }}</div>
+                                    <div v-if="expenses?.status == 'Partial Paid'"
+                                        class="payment-status-partial payment-status">{{
+                                            expenses?.status }}
+                                    </div>
+                                    <div v-if="expenses?.status == 'Unpaid'"
+                                        class="payment-status-unpaid payment-status">{{
+                                            expenses?.status }}</div> -->
+
+                                </td>
                                 <td><a><i><img src="../components/icons/eye.png" style="width: 23px;">
                                         </i></a>
                                     <a href="#"><i><img src="../components/icons/TrashIcon.png"
@@ -79,7 +105,7 @@
                         <div class="form-add">
                             <div style="    margin: 6px;">
 
-                                <h5 style="font-weight: 600;">Living Expenses</h5>
+                                <h6 style="font-weight: 600;">Living Expenses</h6>
                                 <form @submit.prevent="submitFormExpenses">
                                     <div class="input-group">
                                         <div class="form-group">
@@ -94,7 +120,7 @@
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Room No<span style="color: red;">*</span></label><br />
-                                            <input type="text" :value="selectedRoomId" class="input-add-new-expenses"
+                                            <input type="text" :value="props.roomId" class="input-add-new-expenses"
                                                 disabled>
                                         </div>
                                         <div class="form-group">
@@ -130,8 +156,7 @@
                                         <div class="form-group">
                                             <label>Previous Meter</label><br />
                                             <input type="text" class="input-add-new-expenses"
-                                                v-model="electricityPreviousMetter"
-                                                :disabled="securityDeposite != 0" />
+                                                v-model="electricityPreviousMetter" :disabled="securityDeposite != 0" />
                                         </div>
                                         <div class="form-group">
                                             <label>Current Meter</label><br />
@@ -149,8 +174,7 @@
                                         <div class="form-group">
                                             <label>Previous Meter</label><br />
                                             <input type="text" class="input-add-new-expenses"
-                                                v-model="waterPreviousMetter"
-                                                :disabled="securityDeposite != 0" />
+                                                v-model="waterPreviousMetter" :disabled="securityDeposite != 0" />
                                         </div>
                                         <div class="form-group">
                                             <label>Current Meter</label><br />
@@ -162,25 +186,23 @@
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Internet</label><br />
-                                            <input type="text" class="input-add-new-expenses"
-                                                v-model="internet" disabled />
+                                            <input type="text" class="input-add-new-expenses" v-model="internet"
+                                                disabled />
                                         </div>
                                         <div class="form-group">
                                             <label>Service</label><br />
-                                            <input type="text" class="input-add-new-expenses"
-                                                v-model="service" :disabled="securityDeposite != 0" />
+                                            <input type="text" class="input-add-new-expenses" v-model="service"
+                                                :disabled="securityDeposite != 0" />
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Debt</label><br />
-                                            <input type="text" class="input-add-new-expenses" disabled
-                                                v-model="debt" />
+                                            <input type="text" class="input-add-new-expenses" disabled v-model="debt" />
                                         </div>
                                         <div class="form-group">
                                             <label>Fine</label><br />
-                                            <input type="text" class="input-add-new-expenses"
-                                                v-model="fine" />
+                                            <input type="text" class="input-add-new-expenses" v-model="fine" />
                                         </div>
                                         <div class="form-group">
                                             <label>Fine Reason</label><br />
@@ -198,7 +220,7 @@
                     <div class="col" style="display: flex;margin-left: 20px;">
                         <div class="bill">
                             <div style="margin: 10px 25px 10px 20px;">
-                                <h4 style="font-weight: 600;">Living Expenses</h4>
+                                <h5 style="font-weight: 600;">Living Expenses</h5>
                                 <div style="display: flex;">
                                     <p class="col">Invoice Date</p>
                                     <p class="col">01 Feb,2021</p>
@@ -352,8 +374,7 @@ const inforOfContract = ref<IRentalFee>();
 const selectedRoomId = ref(0);
 const selectedRoom = async () => {
     if (props.roomId != 0) {
-
-        inforOfContract.value = await contractService.getRepesentativeByRoomId(props.roomId);
+        inforOfContract.value = await contractService.getRepesentativeByRoomId(props.roomId, props.month);
         representative.value = inforOfContract.value!.representative;
         rentalFee.value = inforOfContract.value!.rentalFee;
         securityDeposite.value = inforOfContract.value!.securityDeposite;
@@ -382,8 +403,15 @@ watch(() => [props.roomId, props.month, props.year], () => {
     selectedRoom(),
         getExpensesDetailByRoom()
 }, { immediate: true });
-const submitStatus = () => {
+const submitStatus = async() => {
     console.log("submit form status");
+    expenses.value.roomId = props.roomId;
+    expenses.value.year = expenses.value?.year.split("-")[0]
+    console.log(expenses.value);
+    await expensesService.updateExpensesStatus(expenses.value).then((res) => {
+        console.log(res);
+        
+    })
 }
 const submitFormExpenses = () => {
     console.log("submit form expenses");
@@ -508,8 +536,10 @@ const fomatFee = (fee: any) => {
 
 .modal-footer {
     display: flex;
-    align-items: center;
+    height: 45px;
     justify-content: center;
+    align-items: center;
+    align-content: center;
 }
 
 a {
@@ -585,13 +615,13 @@ a {
 
 .input-add-new-expenses {
     font-family: 'Poppins', sans-serif;
-    line-height: 24px;
+    /* line-height: 24px; */
     outline: none;
     border: none;
-    height: 43px;
+    height: 37px;
     border-radius: 8px;
     background-color: #F5F6F8;
-    width: 160px;
+    width: 153px;
 }
 
 .input-group {
@@ -612,7 +642,7 @@ a {
 
 .row-table-bill {
     border-bottom: 1px solid #9ea0a7;
-    height: 40px;
+    height: 30px;
 }
 
 p {

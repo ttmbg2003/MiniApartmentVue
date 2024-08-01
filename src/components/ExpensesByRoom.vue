@@ -32,7 +32,7 @@
         <div style="display: flex;justify-content: flex-end;">
             <p style="margin-right: 31px; margin-bottom: 0;">Total: {{ totalElement }}</p>
         </div>
-        <div style="margin: 12px;margin-top: 0; height: 14rem;">
+        <div style="margin: 12px;margin-top: 0; height: 15rem;">
             <table style="width: 100%;">
                 <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
                     <th style="padding-left: 10px;" class="header-table-add-new">Month</th>
@@ -56,7 +56,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="expenses in expensesDetail" :key="expenses.month"
-                        style="height: 35px;background-color: #9c9c9c17;">
+                        style="height: 40px;background-color: #9c9c9c17;">
                         <td style="padding-left: 10px;">{{ expenses.month }}</td>
                         <td>{{ fomatFee(expenses.rentalFee) }}</td>
                         <td>{{ fomatFee((expenses.electricCurrentMeter - expenses.electricPreviousMeter) * 3800) }}</td>
@@ -66,12 +66,21 @@
                         <td>{{ fomatFee(expenses.securityDeposite) }}</td>
                         <td>{{ fomatFee(expenses.debt) }}</td>
                         <td>{{ fomatFee(expenses.fine) }}</td>
-                        <td>{{ expenses.status }}</td>
+                        <td>
+                            <div v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status">{{
+                                expenses?.status }}</div>
+                            <div v-if="expenses?.status == 'Partial Paid'"
+                                class="payment-status-partial payment-status">{{
+                                    expenses?.status }}
+                            </div>
+                            <div v-if="expenses?.status == 'Unpaid'" class="payment-status-unpaid payment-status">{{
+                                expenses?.status }}</div>
+                        </td>
                         <td>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#viewExpensesDetailModal"
                                 @click="showExpensesDetail(expenses.roomId, expenses.month)"><i><img
                                         src="../components/icons/eye.png" style="width: 23px;"></i></a>
-                            <a href="#"><i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                            <a href="#" @click="deleteExpenses(expenses.roomId,expenses.month)"><i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
                         </td>
                     </tr>
                 </tbody>
@@ -81,7 +90,8 @@
                 aria-labelledby="viewExpensesDetailModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;justify-content: center;">
                     <div class="modal-content">
-                        <ShowExpensesDetail v-bind:month="monthShowDetail" v-bind:year="year" v-bind:room-id="roomIdShowDetail" />
+                        <ShowExpensesDetail v-bind:month="monthShowDetail" v-bind:year="year"
+                            v-bind:room-id="roomIdShowDetail" />
                     </div>
                 </div>
             </div>
@@ -113,7 +123,7 @@
 // import { defineProps } from 'vue';
 import expensesService from "@/services/expensesService";
 import ShowExpensesDetail from "@/components/ExpensesDetailByRoomAndMonth.vue";
-
+import Swal from 'sweetalert2'
 import type { Expenses } from "@/type/ExpenseDetail";
 import { ref } from "vue";
 const props = defineProps({
@@ -127,7 +137,7 @@ const props = defineProps({
 });
 const roomIdShowDetail = ref(0);
 const monthShowDetail = ref(0);
-const showExpensesDetail = (roomId: number, month: number) => {    
+const showExpensesDetail = (roomId: number, month: number) => {
     roomIdShowDetail.value = roomId;
     monthShowDetail.value = month;
 }
@@ -136,9 +146,29 @@ var currentPage = 0;
 const month = ref();
 const expensesDetail = ref<Expenses[]>([]);
 var totalElement = 0;
+const deleteExpenses = async(roomId:number,month:number) =>{
+    await expensesService.deleteExpenses(props.year,month,roomId).then((res) => {
+        if (res == "delete success") {
+                Swal.fire({
+                    text: "Delete success !",
+                    icon: "success",
+                    showConfirmButton:false,
+                })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                Swal.fire({
+                    text: "Delete fail !",
+                    icon: "error"
+                })
+            }
+        
+    })
+}
 const getExpensesByRoomId = async (pageNo: number) => {
     await expensesService.getExpensesByRoomId(props.year, props.roomId, pageNo).then(response => {
-        expensesDetail.value = response.content.map((expenses: {roomId:any, month: any; rentalFee: any; electricPreviousMeter: any; electricCurrentMeter: any; waterPreviousMeter: any; waterCurrentMeter: any; debt: any; fine: any; status: any; internet: any; service: any; securityDeposite: any; }) => ({
+        expensesDetail.value = response.content.map((expenses: { roomId: any, month: any; rentalFee: any; electricPreviousMeter: any; electricCurrentMeter: any; waterPreviousMeter: any; waterCurrentMeter: any; debt: any; fine: any; status: any; internet: any; service: any; securityDeposite: any; }) => ({
             roomId: expenses.roomId,
             month: expenses.month,
             rentalFee: expenses.rentalFee,
@@ -181,5 +211,40 @@ const fomatFee = (fee: number) => {
 
 .page-item {
     margin-right: 10px;
+}
+
+.current-page {
+    color: #000231;
+}
+
+.non-current-page {
+    color: #9b9b9b;
+    text-decoration: none;
+}
+.payment-status {
+    border-radius: 6px;
+    width: 94px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+}
+
+.payment-status-paid {
+    color: #009d3f;
+    border: solid 2px #00d656fe;
+    height: 27px;
+}
+
+.payment-status-partial {
+    color: #ffbd5a;
+    border: solid 2px #ffd79b;
+    height: 27px;
+}
+
+.payment-status-unpaid {
+    color: #fb2424;
+    border: solid 2px #ff7d7d;
+    height: 27px;
 }
 </style>

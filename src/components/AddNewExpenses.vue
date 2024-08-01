@@ -7,7 +7,7 @@
                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                          </div> -->
     <form @submit.prevent="submitStatus">
-        <div class="modal-body">
+        <div class="modal-body" style="padding-bottom: 0;">
             <div>
                 <p style="color: #0265FF;"><i><img src="../components/icons/circled-plusblue.png"
                             style="width: 23px; "></i>Add new</p>
@@ -84,8 +84,7 @@
                                 <td>0</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td><a><i><img
-                                                src="../components/icons/eye.png" style="width: 23px;">
+                                <td><a><i><img src="../components/icons/eye.png" style="width: 23px;">
                                         </i></a>
                                     <a href="#"><i><img src="../components/icons/TrashIcon.png"
                                                 style="width: 23px;"></i></a>
@@ -108,11 +107,11 @@
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Creation Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" />
+                                            <input type="date" class="input-add-new-expenses" v-model="createDate" />
                                         </div>
                                         <div class="form-group">
                                             <label>Due Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" />
+                                            <input type="date" class="input-add-new-expenses" v-model="dueDate" />
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -128,9 +127,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Total</label><br />
-                                            <input type="text" class="input-add-new-expenses" :value="fomatFee(rentalFee + securityDeposite +
-                                                electricityFee + waterFee + internetFee +
-                                                serviceFee)" disabled />
+                                            <input type="text" class="input-add-new-expenses"
+                                                :value="fomatFee(totalFee)" disabled />
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -190,7 +188,7 @@
                                         <div class="form-group">
                                             <label>Service</label><br />
                                             <input type="text" class="input-add-new-expenses" v-model="serviceFee"
-                                                :disabled="securityDeposite != 0" />
+                                                :disabled="securityDeposite != 0" @change="sumTotal" />
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -218,14 +216,14 @@
                     <div class="col" style="display: flex;margin-left: 20px;">
                         <div class="bill">
                             <div style="margin: 10px 25px 10px 20px;">
-                                <h4 style="font-weight: 600;">Living Expenses</h4>
+                                <h5 style="font-weight: 600;">Living Expenses</h5>
                                 <div style="display: flex;">
                                     <p class="col">Invoice Date</p>
-                                    <p class="col">01 Feb,2021</p>
+                                    <p class="col">{{ formatDate(createDate) }}</p>
                                 </div>
                                 <div style="display: flex;">
                                     <p class="col">Due Date</p>
-                                    <p class="col">01 Feb,2021</p>
+                                    <p class="col">{{ formatDate(dueDate) }}</p>
                                 </div>
                                 <p>Below is the detailed breakdown of living expenses for your
                                     room.
@@ -299,9 +297,7 @@
                                                     Total: </td>
                                                 <td style="font-style: italic;font-weight: 600;">
                                                     {{
-                                                        fomatFee(rentalFee + securityDeposite +
-                                                            electricityFee + waterFee + internetFee +
-                                                            serviceFee)
+                                                        fomatFee(totalFee)
                                                     }}</td>
                                             </tr>
                                         </tbody>
@@ -361,13 +357,52 @@ const internetFee = ref(100000);
 const serviceFee = ref(0);
 const inforOfContract = ref<IRentalFee>();
 const selectedRoomId = ref(0);
-const selectedRoom = async () => {    
-    inforOfContract.value = await contractService.getRepesentativeByRoomId(selectedRoomId.value,props.month);
+const totalFee = ref(0);
+const sumTotal = () => {
+    let service = Math.round(serviceFee.value)
+    totalFee.value = rentalFee.value + securityDeposite.value +
+        electricityFee.value + waterFee.value +
+        internetFee.value + service;
+}
+const createDate = ref('');
+const dueDate = ref('')
+const setTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+
+    createDate.value = `${year}-${month}-${day}`;
+};
+const setDueDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = (today.getDate() + 5).toString().padStart(2, '0');
+
+    dueDate.value = `${year}-${month}-${day}`;
+};
+setDueDate();
+setTodayDate();
+const formatDate = (dateString: string): string => {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month}, ${year}`;
+};
+const selectedRoom = async () => {
+    inforOfContract.value = await contractService.getRepesentativeByRoomId(selectedRoomId.value, props.month);
     representative.value = inforOfContract.value?.representative;
     rentalFee.value = inforOfContract.value!.rentalFee;
     securityDeposite.value = inforOfContract.value!.securityDeposite;
     numberOfTenant = inforOfContract.value!.numberOfTenant;
     serviceFee.value = numberOfTenant * 130000;
+    sumTotal();
 }
 const roomsAvailable = ref<Room[]>([]);
 const getRoomId = async () => {
@@ -424,6 +459,9 @@ const submitFormExpenses = () => {
                     text: "Save success !",
                     icon: "success"
                 })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             } else {
                 Swal.fire({
                     text: "Save fail !",
@@ -439,20 +477,20 @@ const submitFormExpenses = () => {
 const calculateWaterFee = () => {
     if (waterCurrentMetter != 0 && waterPreviousMetter != 0) {
         waterFee.value = Math.round((waterCurrentMetter - waterPreviousMetter) * 35000);
-        console.log(waterFee.value);
-
+        sumTotal();
     }
 }
 const calculatorElectricFee = () => {
     if (electricityPreviousMetter != 0 && electricityCurrentMetter != 0) {
         electricityFee.value = Math.round((electricityCurrentMetter - electricityPreviousMetter) * 3800);
+        sumTotal();
     }
 }
 const fomatFee = (fee: number) => {
     if (isNaN(fee)) {
         fee = 0;
     }
-    return new Intl.NumberFormat('vi-VN').format(fee);
+    return new Intl.NumberFormat('vi-VN').format(fee) + " VND";
 }
 </script>
 <style scoped>
@@ -504,8 +542,10 @@ const fomatFee = (fee: number) => {
 
 .modal-footer {
     display: flex;
-    align-items: center;
+    height: 45px;
     justify-content: center;
+    align-items: center;
+    align-content: center;
 }
 
 a {
@@ -581,13 +621,13 @@ a {
 
 .input-add-new-expenses {
     font-family: 'Poppins', sans-serif;
-    line-height: 24px;
+    /* line-height: 24px; */
     outline: none;
     border: none;
-    height: 43px;
+    height: 34px;
     border-radius: 8px;
     background-color: #F5F6F8;
-    width: 160px;
+    width: 153px;
 }
 
 .input-group {
@@ -608,7 +648,7 @@ a {
 
 .row-table-bill {
     border-bottom: 1px solid #9ea0a7;
-    height: 40px;
+    height: 30px;
 }
 
 p {
