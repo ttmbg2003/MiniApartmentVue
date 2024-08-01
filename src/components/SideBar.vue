@@ -58,6 +58,7 @@
 <style scoped>
 .side-bar {
   background: white;
+  width: 19.5rem;
   font-family: "Poppins", sans-serif;
   /* padding-right: 8rem; */
   margin-right: 20px;

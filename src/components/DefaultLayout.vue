@@ -1,13 +1,6 @@
 <template>
-  <div
-    style="
-      height: 100%;
-      background-color: #fff;
-      overflow-x: hidden;
-      overflow-y: auto;
-    "
-  >
-    <div class="navbar">
+  <div style="height: 100%; background-color: #fff; overflow-x: hidden">
+    <div id="navbar" class="navbar">
       <NavBar />
     </div>
     <div class="router">
@@ -46,6 +39,6 @@ watch(
   z-index: 1;
 }
 .router {
-height: 90%;
+  height: 90%;
 }
 </style>

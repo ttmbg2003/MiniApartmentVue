@@ -281,10 +281,10 @@
 <script lang="ts" setup>
 import SideBar from "@/components/SideBar.vue";
 import { ref, nextTick } from "vue";
-import type { Tenant } from '@/type/Tenant'
-import tenantService from '@/services/tenantService';
-import roomService from '@/services/roomService';
-import Swal from 'sweetalert2'
+import type { Tenant } from "@/type/Tenant";
+import tenantService from "@/services/tenantService";
+import roomService from "@/services/roomService";
+import Swal from "sweetalert2";
 import type { Room } from "@/type/Room";
 
 const tenants = ref<Tenant[]>([]);
@@ -295,7 +295,7 @@ var totalElement = 0;
 var totalPage = 0;
 var currentPage = 0;
 const timeFomat = (dateString: string) => {
-    return dateString + "T17:00:00.000+00:00";
+  return dateString + "T17:00:00.000+00:00";
 };
 const updateTenant = async () => {
     isEditing = false;
@@ -317,46 +317,66 @@ const updateTenant = async () => {
     });
 }
 const getTenantPanigation = (pageNo: number) => {
-    tenantService.getAllTenant(pageNo, searchValue).then((response) => {
-        tenants.value = response.content.map((tenants: { id: any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
-            id: tenants.id,
-            email: tenants.email,
-            roomId: tenants.roomId,
-            career: tenants.career,
-            licensePlate: tenants.licensePlate,
-            vehicleType: tenants.vehicleType,
-            vehicleColor: tenants.vehicleColor,
-            residenceStatus: tenants.residenceStatus,
-            contractId: tenants.contractId,
-            dateOfBirth: formatDate(tenants.dateOfBirth),
-            firstName: tenants.firstName,
-            lastName: tenants.lastName,
-            gender: tenants.gender,
-            userId: tenants.userId,
-            contact: tenants.contact,
-            citizenId: tenants.citizenId,
-        }));
-        totalElement = response.totalElements;
-        totalPage = response.totalPages;
-        currentPage = response.pageable.pageNumber;
-        console.log(response);
-
-    });
+  tenantService.getAllTenant(pageNo, searchValue).then((response) => {
+    tenants.value = response.content.map(
+      (tenants: {
+        id: any;
+        email: any;
+        roomId: any;
+        career: any;
+        licensePlate: any;
+        vehicleType: any;
+        vehicleColor: any;
+        residenceStatus: any;
+        contractId: any;
+        dateOfBirth: string;
+        firstName: any;
+        lastName: any;
+        gender: any;
+        userId: any;
+        contact: any;
+        citizenId: any;
+      }) => ({
+        id: tenants.id,
+        email: tenants.email,
+        roomId: tenants.roomId,
+        career: tenants.career,
+        licensePlate: tenants.licensePlate,
+        vehicleType: tenants.vehicleType,
+        vehicleColor: tenants.vehicleColor,
+        residenceStatus: tenants.residenceStatus,
+        contractId: tenants.contractId,
+        dateOfBirth: formatDate(tenants.dateOfBirth),
+        firstName: tenants.firstName,
+        lastName: tenants.lastName,
+        gender: tenants.gender,
+        userId: tenants.userId,
+        contact: tenants.contact,
+        citizenId: tenants.citizenId,
+      })
+    );
+    totalElement = response.totalElements;
+    totalPage = response.totalPages;
+    currentPage = response.pageable.pageNumber;
+    console.log(response);
+  });
 };
 getTenantPanigation();
-const rooms = ref<Room[]>([])
+const rooms = ref<Room[]>([]);
 const editTenant = async () => {
-    roomService.getAllRoomAvailable().then((response) => {
-        rooms.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
-            roomId: room.roomId,
-            roomStatus: room.roomStatus,
-            maxTenant: room.maxTenant
-        }));
-    })
-    await nextTick(() => {
-        isEditing = true;
-    });
-}
+  roomService.getAllRoomAvailable().then((response) => {
+    rooms.value = response.map(
+      (room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
+        roomId: room.roomId,
+        roomStatus: room.roomStatus,
+        maxTenant: room.maxTenant,
+      })
+    );
+  });
+  await nextTick(() => {
+    isEditing = true;
+  });
+};
 
 const deleteTenant = (email: string) => {
     Swal.fire({
@@ -408,7 +428,7 @@ const getTenantByRoom = async (roomId: number) => {
     }
 };
 const formatDate = (dateString: string) => {
-    return dateString.split("T")[0];
+  return dateString.split("T")[0];
 };
 </script>
 <style scoped>
@@ -423,7 +443,9 @@ const formatDate = (dateString: string) => {
     max-width: 97%;
     height: 95%;
 }
-
+.sidebar {
+  width: 18%;
+}
 .card {
     display: flex;
     justify-content: center;
@@ -433,18 +455,18 @@ const formatDate = (dateString: string) => {
 }
 
 .line-blue {
-    width: 4px;
-    background-color: #0064ff;
-    height: 73px;
-    margin-right: 12px;
+  width: 4px;
+  background-color: #0064ff;
+  height: 73px;
+  margin-right: 12px;
 }
 
 .input-search {
-    outline: none;
-    border: none;
-    border-radius: 17px;
-    background-color: #e9e9e9;
-    padding: 7px;
+  outline: none;
+  border: none;
+  border-radius: 17px;
+  background-color: #e9e9e9;
+  padding: 7px;
 }
 
 .btn {
@@ -457,100 +479,100 @@ const formatDate = (dateString: string) => {
 }
 
 .btn-save {
-    background-color: #0565f9;
-    color: white;
-    width: 68px;
+  background-color: #0565f9;
+  color: white;
+  width: 68px;
 }
 
 .btn-cancel {
-    background-color: #e8e7e7;
+  background-color: #e8e7e7;
 }
 
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .residence-status {
-    border-radius: 6px;
-    width: 94px;
-    font-weight: 600;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
+  border-radius: 6px;
+  width: 94px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
 }
 
 .residence-status-success {
-    color: #009d3f;
-    border: solid 2px #00d656fe;
-    height: 27px;
+  color: #009d3f;
+  border: solid 2px #00d656fe;
+  height: 27px;
 }
 
 .residence-status-progress {
-    color: #ffbd5a;
-    border: solid 2px #ffd79b;
-    height: 27px;
+  color: #ffbd5a;
+  border: solid 2px #ffd79b;
+  height: 27px;
 }
 
 .residence-status-fail {
-    color: #fb2424;
-    border: solid 2px #ff7d7d;
-    height: 27px;
+  color: #fb2424;
+  border: solid 2px #ff7d7d;
+  height: 27px;
 }
 
 .input-tenant-detail {
-    border: none;
-    border-radius: 5px;
+  border: none;
+  border-radius: 5px;
 }
 
 .current-page {
-    color: #000231;
+  color: #000231;
 }
 
 .non-current-page {
-    color: #9b9b9b;
-    text-decoration: none;
+  color: #9b9b9b;
+  text-decoration: none;
 }
 
 .page-item {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .disabled-a-tag {
-    pointer-events: none;
-    color: #9B9B9B;
+  pointer-events: none;
+  color: #9b9b9b;
 }
 
 .input-edit {
-    color: #8D8C8C;
-    border: none;
-    outline: none;
+  color: #8d8c8c;
+  border: none;
+  outline: none;
 }
 
 .residence-status {
-    border-radius: 6px;
-    width: 94px;
-    font-weight: 600;
-    font-size: 14px;
+  border-radius: 6px;
+  width: 94px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .residence-status-success {
-    border-color: #00d656fe;
-    color: #009d3f;
+  border-color: #00d656fe;
+  color: #009d3f;
 }
 
 .residence-status-progress {
-    border-color: #ffd79b;
-    color: #ffbd5a;
+  border-color: #ffd79b;
+  color: #ffbd5a;
 }
 
 .residence-status-fail {
-    border-color: #ff7d7d;
-    color: #fb2424;
+  border-color: #ff7d7d;
+  color: #fb2424;
 }
 </style>

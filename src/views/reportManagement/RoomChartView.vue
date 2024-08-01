@@ -16,21 +16,37 @@
 <script setup lang="ts">
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
+import reportService from "@/services/reportService";
 
+import { onMounted, watch, ref } from "vue";
+
+const occupiedCount = ref(0);
+const reservedCount = ref(0);
+const vacantCount = ref(0);
+
+reportService.getRoomByStatus().then((res) => {
+  occupiedCount.value = res.occupiedCount;
+  reservedCount.value = res.reservedCount;
+  vacantCount.value = res.vacantCount;
+
+  // Cập nhật dữ liệu biểu đồ
+  console.log(vacantCount.value);
+});
+console.log(vacantCount.value);
 ChartJS.register(Tooltip, Legend, ArcElement);
 // const loaded = ref(false);
 // const chartData = ref(null);
 
-const chartData = {
+const chartData = ref({
   labels: ["Vacant", "Reserved", "Occupied"],
   datasets: [
     {
-      data: [10, 5, 35],
+      data: [vacantCount.value, reservedCount.value, occupiedCount.value],
       backgroundColor: ["#3070f5", "#57beb5", "#ae59dc"],
     },
   ],
-};
-const total = chartData.datasets[0].data.reduce(
+});
+const total = chartData.value.datasets[0].data.reduce(
   (acc, currentValue) => acc + currentValue,
   0
 );
@@ -64,22 +80,6 @@ const chartOptions = {
     },
   },
 };
-
-// onMounted(async () => {
-//   loaded.value = true;
-//   try {
-//     const response = await fetch('/api/userlist');
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch');
-//     }
-//     const { userlist } = await response.json();
-//     loaded.value = true
-//     chartData.value = userlist;
-//   } catch (e) {
-//     console.error(e);
-//     // Xử lý lỗi, ví dụ: thông báo lỗi cho người dùng
-//   }
-//});
 </script>
 <style scoped>
 .container {

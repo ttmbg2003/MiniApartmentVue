@@ -1,5 +1,6 @@
 export interface ContractDetail {
-  contractId: number;
+  id: number;
+  contractId: string;
   totalArea: number;
   landArea: number;
   publicArea: number;

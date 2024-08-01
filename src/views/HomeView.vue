@@ -349,6 +349,9 @@
           </div>
         </div>
       </div>
+      <button @click="scrollToTop()" id="scrollToTop">
+        <font-awesome-icon :icon="['fas', 'arrow-up']" />
+      </button>
     </div>
   </div>
 </template>
@@ -377,6 +380,14 @@ document.querySelector("#infoLink")?.addEventListener("click", () => {
     element.scrollIntoView({ behavior: "smooth" });
   }
 });
+
+function scrollToTop() {
+  const element = document.getElementById("navbar");
+
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+}
 </script>
 <style scoped>
 .home {
@@ -558,5 +569,29 @@ document.querySelector("#infoLink")?.addEventListener("click", () => {
 }
 #foot4 p {
   margin: 0;
+}
+#scrollToTop {
+  position: fixed;
+  bottom: 3rem;
+
+  right: 3rem;
+
+  z-index: 10;
+  width: 2.5rem;
+  height: 2.5rem;
+
+  background-color: rgba(86, 86, 86, 0.521);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: bottom 0.4s, transform 0.4s;
+  border: none;
+  border-radius: 50%;
+}
+
+#scrollToTop:hover {
+  transform: translateY(-0.75rem);
 }
 </style>

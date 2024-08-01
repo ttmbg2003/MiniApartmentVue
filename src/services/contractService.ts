@@ -15,9 +15,14 @@ class ContractService {
       .get(`contract/getContractByRoom/${roomId}`)
       .then((response) => response.data);
   };
-  getContractByContractId = (contractId: number): Promise<any> => {
+  getContractByContractId = (contractId: string): Promise<any> => {
     return apiClient
       .get(`contract/getContractByContractId?contractId=${contractId}`)
+      .then((response) => response.data["result"]);
+  };
+  getContractById = (id: number): Promise<any> => {
+    return apiClient
+      .get(`contract/findContractById?id=${id}`)
       .then((response) => response.data["result"]);
   };
   updateContractStatus = (
@@ -30,12 +35,13 @@ class ContractService {
   };
   updateContract = (contractId: number): Promise<Contract> => {
     return apiClient
-    .put(`/contract/updateContract/${contractId}`)
-    .then((response) => response.data);
-  }
-  getRepesentativeByRoomId = (roomId:any, month:any) : any =>{
-    return apiClient.get(`/contract/getRepesentative?roomId=${roomId}&month=${month}`)
-    .then((response) => response.data['result'])
-  }
+      .put(`/contract/updateContract/${contractId}`)
+      .then((response) => response.data["result"]);
+  };
+  getRepesentativeByRoomId = (roomId: any, month: any): any => {
+    return apiClient
+      .get(`/contract/getRepesentative?roomId=${roomId}&month=${month}`)
+      .then((response) => response.data["result"]);
+  };
 }
 export default new ContractService();

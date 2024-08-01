@@ -335,7 +335,7 @@ import { ref, nextTick } from "vue";
 import type { IListPayment } from "@/type/IListPayment";
 import type { Expenses } from "@/type/ExpenseDetail";
 import paymentService from "@/services/paymentService";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import type { Room } from "@/type/Room";
 import roomService from "@/services/roomService";
 import expensesService from "@/services/expensesService";
@@ -348,6 +348,8 @@ var totalPage = 0;
 var currentPage = 0;
 const allRoom = ref<Room[]>([]);
 const currentMonth = new Date().getMonth() + 1;
+const totalFee = rentalFee.value + securityDeposite.value + electricityFee.value
+    + waterFee.value + internetFee.value + serviceFee.value;
 roomService.getAllRoom().then((response) => {
     allRoom.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
         roomId: room.roomId,
@@ -355,143 +357,114 @@ roomService.getAllRoom().then((response) => {
         maxTenant: room.maxTenant
     }));
 })
-const deleteExpenses = async(roomId:number) =>{
-    await expensesService.deleteExpenses(year.value,month.value,roomId).then((res) => {
-        if (res == "delete success") {
-                Swal.fire({
-                    text: "Delete success !",
-                    icon: "success",
-                    showConfirmButton:false,
-                })
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                Swal.fire({
-                    text: "Delete fail !",
-                    icon: "error"
-                })
-            }
-        
-    })
-}
 const expensesByMonth = ref<Expenses[]>([])
 const expensesByMonthAndRoom = ref<Expenses>()
 const getExpensesByMonth = async () => {
-    await expensesService.getExpensesByMonth(year.value, month.value).then((response) => {
-        expensesByMonth.value = response.content.map((expenses: { roomId: any, month: any; rentalFee: any; electricPreviousMeter: any; electricCurrentMeter: any; waterPreviousMeter: any; waterCurrentMeter: any; debt: any; fine: any; status: any; internet: any; service: any; securityDeposite: any; }) => ({
-            roomId: expenses.roomId,
-            month: expenses.month,
-            rentalFee: expenses.rentalFee,
-            electricPreviousMeter: expenses.electricPreviousMeter,
-            electricCurrentMeter: expenses.electricCurrentMeter,
-            waterPreviousMeter: expenses.waterPreviousMeter,
-            waterCurrentMeter: expenses.waterCurrentMeter,
-            debt: expenses.debt,
-            fine: expenses.fine,
-            status: expenses.status,
-            internet: expenses.internet,
-            service: expenses.service,
-            securityDeposite: expenses.securityDeposite
-        }))
-        totalElement = response.totalElements;
-        totalPage = response.totalPages;
-        currentPage = response.pageable.pageNumber;
-    })
-    console.log(expensesByMonth.value);
-
-}
+  await expensesService
+    .getExpensesByMonth(year.value, month.value)
+    .then((response) => {
+      expensesByMonth.value = response.content.map(
+        (expenses: {
+          roomId: any;
+          month: any;
+          rentalFee: any;
+          electricPreviousMeter: any;
+          electricCurrentMeter: any;
+          waterPreviousMeter: any;
+          waterCurrentMeter: any;
+          debt: any;
+          fine: any;
+          status: any;
+          internet: any;
+          service: any;
+          securityDeposite: any;
+        }) => ({
+          roomId: expenses.roomId,
+          month: expenses.month,
+          rentalFee: expenses.rentalFee,
+          electricPreviousMeter: expenses.electricPreviousMeter,
+          electricCurrentMeter: expenses.electricCurrentMeter,
+          waterPreviousMeter: expenses.waterPreviousMeter,
+          waterCurrentMeter: expenses.waterCurrentMeter,
+          debt: expenses.debt,
+          fine: expenses.fine,
+          status: expenses.status,
+          internet: expenses.internet,
+          service: expenses.service,
+          securityDeposite: expenses.securityDeposite,
+        })
+      );
+      totalElement = response.totalElements;
+      totalPage = response.totalPages;
+      currentPage = response.pageable.pageNumber;
+    });
+  console.log(expensesByMonth.value);
+};
 const selectedGetRoom = async () => {
     await expensesService.getExpensesByMonthAndRoom(year.value, month.value, selectedRoomIdByMonth.value).then((response) => {
         expensesByMonthAndRoom.value = response;
-        if (response == null) {
-            // expensesByMonthAndRoom.value = ;
-        }
     })
+    console.log(expensesByMonthAndRoom.value);
+
 }
 const isShowExpensesDetail = ref(false);
 const showExpensesDetail = async (roomId: number) => {
-    roomIdSelectDetail.value = roomId;
-    await nextTick(() => {
-        if (isShowExpensesDetail.value == false) {
-            getListPaymentByYearAndRoom(year.value, roomId);
-            isShowExpensesDetail.value = true;
-            return;
-        }
-        if (isShowExpensesDetail.value == true) {
-            isShowExpensesDetail.value = false;
-            getListPayment(year.value);
-            return;
-        }
-
-    });
-}
+  roomIdSelectDetail.value = roomId;
+  await nextTick(() => {
+    if (isShowExpensesDetail.value == false) {
+      getListPaymentByYearAndRoom(year.value, roomId);
+      isShowExpensesDetail.value = true;
+      return;
+    }
+    if (isShowExpensesDetail.value == true) {
+      isShowExpensesDetail.value = false;
+      getListPayment(year.value);
+      return;
+    }
+  });
+};
 const roomIdSelectDetail = ref(0);
 const fomatFee = (fee: any) => {
-    if (isNaN(fee)) {
-        fee = 0;
-    }
-    return new Intl.NumberFormat('vi-VN').format(fee);
-}
+  if (isNaN(fee)) {
+    fee = 0;
+  }
+  return new Intl.NumberFormat("vi-VN").format(fee);
+};
 
 const getRoomId = async () => {
-    await roomService.getAllRoomAvailable().then((response) => {
-        roomsAvailable.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
-            roomId: room.roomId,
-            roomStatus: room.roomStatus,
-            maxTenant: room.maxTenant
-        }));
-    })
-}
+  await roomService.getAllRoomAvailable().then((response) => {
+    roomsAvailable.value = response.map(
+      (room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
+        roomId: room.roomId,
+        roomStatus: room.roomStatus,
+        maxTenant: room.maxTenant,
+      })
+    );
+  });
+};
 const year = ref(new Date().getFullYear());
 const month = ref();
 var totalElement = 0;
 const getListPayment = (yearSelected: any) => {
-    year.value = yearSelected
-    paymentService.getListPaymentByYear(yearSelected).then((response) => {
-        payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
-            roomId: payment.roomId,
-            dec: payment.dec,
-            apr: payment.apr,
-            aug: payment.aug,
-            feb: payment.feb,
-            jan: payment.jan,
-            jul: payment.jul,
-            jun: payment.jun,
-            mar: payment.mar,
-            may: payment.may,
-            nov: payment.nov,
-            oct: payment.oct,
-            sep: payment.sep,
-            status: payment.status,
-        }));
-        totalElement = response.totalElements;
-    });
-}
-const getListPaymentByYearAndRoom = async (yearSelected: any, roomId: any) => {
-    year.value = yearSelected
-    await paymentService.getListPaymentByYearAndROom(yearSelected, roomId).then((response) => {
-        payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
-            roomId: payment.roomId,
-            dec: payment.dec,
-            apr: payment.apr,
-            aug: payment.aug,
-            feb: payment.feb,
-            jan: payment.jan,
-            jul: payment.jul,
-            jun: payment.jun,
-            mar: payment.mar,
-            may: payment.may,
-            nov: payment.nov,
-            oct: payment.oct,
-            sep: payment.sep,
-            status: payment.status,
-        }));
-        totalElement = response.totalElements;
-    });
-}
-paymentService.getListPaymentByYear(year.value).then((response) => {
-    payment.value = response.content.map((payment: { roomId: any; dec: any; apr: any; aug: any; feb: any; jan: any; jul: any; jun: any; mar: any; may: any; nov: any; oct: any; sep: any; status: any; }) => ({
+  year.value = yearSelected;
+  paymentService.getListPaymentByYear(yearSelected).then((response) => {
+    payment.value = response.content.map(
+      (payment: {
+        roomId: any;
+        dec: any;
+        apr: any;
+        aug: any;
+        feb: any;
+        jan: any;
+        jul: any;
+        jun: any;
+        mar: any;
+        may: any;
+        nov: any;
+        oct: any;
+        sep: any;
+        status: any;
+      }) => ({
         roomId: payment.roomId,
         dec: payment.dec,
         apr: payment.apr,
@@ -506,8 +479,87 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
         oct: payment.oct,
         sep: payment.sep,
         status: payment.status,
-    }));
+      })
+    );
     totalElement = response.totalElements;
+  });
+};
+const getListPaymentByYearAndRoom = async (yearSelected: any, roomId: any) => {
+  year.value = yearSelected;
+  await paymentService
+    .getListPaymentByYearAndROom(yearSelected, roomId)
+    .then((response) => {
+      payment.value = response.content.map(
+        (payment: {
+          roomId: any;
+          dec: any;
+          apr: any;
+          aug: any;
+          feb: any;
+          jan: any;
+          jul: any;
+          jun: any;
+          mar: any;
+          may: any;
+          nov: any;
+          oct: any;
+          sep: any;
+          status: any;
+        }) => ({
+          roomId: payment.roomId,
+          dec: payment.dec,
+          apr: payment.apr,
+          aug: payment.aug,
+          feb: payment.feb,
+          jan: payment.jan,
+          jul: payment.jul,
+          jun: payment.jun,
+          mar: payment.mar,
+          may: payment.may,
+          nov: payment.nov,
+          oct: payment.oct,
+          sep: payment.sep,
+          status: payment.status,
+        })
+      );
+      totalElement = response.totalElements;
+    });
+};
+paymentService.getListPaymentByYear(year.value).then((response) => {
+  payment.value = response.content.map(
+    (payment: {
+      roomId: any;
+      dec: any;
+      apr: any;
+      aug: any;
+      feb: any;
+      jan: any;
+      jul: any;
+      jun: any;
+      mar: any;
+      may: any;
+      nov: any;
+      oct: any;
+      sep: any;
+      status: any;
+    }) => ({
+      roomId: payment.roomId,
+      dec: payment.dec,
+      apr: payment.apr,
+      aug: payment.aug,
+      feb: payment.feb,
+      jan: payment.jan,
+      jul: payment.jul,
+      jun: payment.jun,
+      mar: payment.mar,
+      may: payment.may,
+      nov: payment.nov,
+      oct: payment.oct,
+      sep: payment.sep,
+      status: payment.status,
+    })
+  );
+  totalElement = response.totalElements;
 });
 </script>
 <style scoped>
@@ -519,181 +571,169 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
     box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
     font-family: 'Poppins', sans-serif;
     border-radius: 14px;
-    max-width: 97%;
-    height: 95%;
+    max-width: 83%;
 }
 
 .main-add-new {
-    background: white;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
+  background: white;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
 }
 
 .card {
     display: flex;
     justify-content: center;
-    padding-top: 16px;
-    /* margin-top: 3rem; */
+    margin-top: 3rem;
     border: none;
 }
 
 .line-blue {
-    width: 4px;
-    background-color: #0064FF;
-    margin-right: 12px;
+  width: 4px;
+  background-color: #0064ff;
+  margin-right: 12px;
 }
 
 .input-search {
-    outline: none;
-    border: none;
-    border-radius: 17px;
-    background-color: #e9e9e9;
-    padding: 7px;
+  outline: none;
+  border: none;
+  border-radius: 17px;
+  background-color: #e9e9e9;
+  padding: 7px;
 }
 
 .btn {
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
 }
 
 .btn-save {
-    background-color: #0565F9;
-    color: white;
-    width: 68px;
-    margin-right: 23px;
+  background-color: #0565f9;
+  color: white;
+  width: 68px;
+  margin-right: 23px;
 }
 
 .btn-cancel {
-    background-color: #e8e7e7;
+  background-color: #e8e7e7;
 }
 
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .payment-status {
-    border-radius: 6px;
-    width: 94px;
-    font-weight: 600;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
+  border-radius: 6px;
+  width: 94px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
 }
 
 .payment-status-paid {
-    color: #009d3f;
-    border: solid 2px #00d656fe;
-    height: 27px;
+  color: #009d3f;
+  border: solid 2px #00d656fe;
+  height: 27px;
 }
 
 .payment-status-partial {
-    color: #ffbd5a;
-    border: solid 2px #ffd79b;
-    height: 27px;
+  color: #ffbd5a;
+  border: solid 2px #ffd79b;
+  height: 27px;
 }
 
 .payment-status-unpaid {
-    color: #fb2424;
-    border: solid 2px #ff7d7d;
-    height: 27px;
+  color: #fb2424;
+  border: solid 2px #ff7d7d;
+  height: 27px;
 }
 
 .customize-table {
-    --easy-table-border: 0;
-    --easy-table-header-font-size: 15px;
-    --easy-table-header-height: 47px;
-    --easy-table-body-row-height: 43px;
-    --easy-table-header-font-color: #9b9b9b;
-    --easy-table-footer-height: 49px;
+  --easy-table-border: 0;
+  --easy-table-header-font-size: 15px;
+  --easy-table-header-height: 47px;
+  --easy-table-body-row-height: 43px;
+  --easy-table-header-font-color: #9b9b9b;
+  --easy-table-footer-height: 49px;
 }
 
 .input-tenant-detail {
-    border: none;
-    border-radius: 5px
+  border: none;
+  border-radius: 5px;
 }
 
 .btn {
-    height: 38px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
+  height: 38px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
 }
 
 .btn-add-new {
-    background-color: #0565F9;
-    color: white;
+  background-color: #0565f9;
+  color: white;
 }
 
 .form-add {
-    background: white;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 80%;
-    margin-bottom: 12px;
+  background: white;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  width: 80%;
+  margin-bottom: 12px;
 }
 
 .form-group {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    position: relative;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  position: relative;
 }
 
 .input-add-new-expenses {
-    font-family: 'Poppins', sans-serif;
-    line-height: 24px;
-    outline: none;
-    border: none;
-    height: 43px;
-    border-radius: 8px;
-    background-color: #F5F6F8;
-    width: 160px;
+  font-family: "Poppins", sans-serif;
+  line-height: 24px;
+  outline: none;
+  border: none;
+  height: 43px;
+  border-radius: 8px;
+  background-color: #f5f6f8;
+  width: 160px;
 }
 
 .input-group {
-    display: flex;
+  display: flex;
 }
 
 .header-table-add-new {
-    padding-bottom: 8px;
+  padding-bottom: 8px;
 }
 
 .bill {
-    background: white;
-    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25);
-    width: 80%;
-    margin-bottom: 12px;
-    border-radius: 20px;
+  background: white;
+  box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25);
+  width: 80%;
+  margin-bottom: 12px;
+  border-radius: 20px;
 }
 
 .row-table-bill {
-    border-bottom: 1px solid #9ea0a7;
-    height: 40px;
+  border-bottom: 1px solid #9ea0a7;
+  height: 40px;
 }
 
 p {
-    margin: 0;
+  margin: 0;
 }
 
 .dp__theme_light {
-    --dp-background-color: #cecece66;
-}
-
-td {
-    background-color: #f0f0f0e4;
-    padding: 0;
-}
-
-.back-ground-row-table {
-    background-color: white;
-    padding: 8px;
+    --dp-background-color: #E0DEDE66;
 }
 </style>
