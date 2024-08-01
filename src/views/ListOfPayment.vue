@@ -348,8 +348,6 @@ var totalPage = 0;
 var currentPage = 0;
 const allRoom = ref<Room[]>([]);
 const currentMonth = new Date().getMonth() + 1;
-const totalFee = rentalFee.value + securityDeposite.value + electricityFee.value
-    + waterFee.value + internetFee.value + serviceFee.value;
 roomService.getAllRoom().then((response) => {
     allRoom.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
         roomId: room.roomId,
@@ -571,7 +569,8 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
     box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
     font-family: 'Poppins', sans-serif;
     border-radius: 14px;
-    max-width: 83%;
+    max-width: 97%;
+    height: 95%;
 }
 
 .main-add-new {
@@ -583,7 +582,8 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 .card {
     display: flex;
     justify-content: center;
-    margin-top: 3rem;
+    padding-top: 16px;
+    /* margin-top: 3rem; */
     border: none;
 }
 
