@@ -3,22 +3,22 @@
   <form @submit.prevent="submitForm">
     <div class="contract-form">
       <div class="header">
-        <p class="centered-text">
+        <p class="centered-text" style="font-weight: bold">
           CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br />Độc lập – Tự do – Hạnh phúc<br />-o0o-
         </p>
-        <p class="centered-text">
+        <p class="centered-text" style="font-weight: bold">
           HỢP ĐỒNG THUÊ CĂN HỘ CHUNG CƯ MINI<br />(Số:
-          {{ contract.contractId }}./HĐTCHNCC)
+          {{ contract.id }}./HĐTCHNCC)
         </p>
       </div>
 
       <div class="content">
         <p>
-          Căn cứ Luật dân sự số 91/2015/QH13 và Luật nhà ở số 65/2014/QH13 của
+          - Căn cứ Luật dân sự số 91/2015/QH13 và Luật nhà ở số 65/2014/QH13 của
           nước Cộng hòa Xã hội Chủ nghĩa Việt Nam ban hành năm 2015;
         </p>
-        <p>Căn cứ vào pháp luật khác có liên quan;</p>
-        <p>Căn cứ vào nhu cầu và khả năng của các bên;</p>
+        <p>- Căn cứ vào pháp luật khác có liên quan;</p>
+        <p>- Căn cứ vào nhu cầu và khả năng của các bên;</p>
 
         <p>
           Hôm nay, {{ getFormattedDate() }}., tại địa chỉ số 1 đường Phú Mỹ, Mỹ
@@ -80,9 +80,9 @@
           <input type="text" v-model="contract.ownerLimit" />
         </p>
 
-        <h3>
+        <h5>
           1.3. Thông tin người thuê (bao gồm người đại diện và người ở cùng):
-        </h3>
+        </h5>
         <p>
           a) Số lượng khách thuê tối đa:
           <input
@@ -606,7 +606,7 @@ export default {
 </script>
 <style scoped>
 .contract-form {
-  width: 50%;
+  width: 85%;
   margin: auto;
 }
 

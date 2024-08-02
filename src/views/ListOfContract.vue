@@ -11,19 +11,19 @@
           </div>
 
           <div class="d-flex justify-content-end" style="width: 64rem">
-            <router-link to="/newContract">
-              <button
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#addNewExpensesModal"
-              >
-                <i style="margin-right: 10px">
-                  <img
-                    src="../components/icons/circled-plus.png"
-                    style="margin-bottom: 3px; width: 24px" /></i
-                >Add new
-              </button>
-            </router-link>
+            <button
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addNewExpensesModal"
+            >
+              <i style="margin-right: 10px">
+                <img
+                  src="../components/icons/circled-plus.png"
+                  style="margin-bottom: 3px; width: 24px"
+                />
+              </i>
+              Add new
+            </button>
           </div>
         </div>
         <div>
@@ -153,6 +153,22 @@
         <!-- Modal -->
         <div
           class="modal fade"
+          id="addNewExpensesModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <Contracts />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal fade"
           id="contractDetailModal"
           tabindex="-1"
           aria-labelledby="contractDetailModalLabel"
@@ -163,7 +179,7 @@
             style="max-width: 100%"
           >
             <div class="modal-content">
-              <form @submit.prevent="updateContract">
+              <form @submit.prevent="updateContract(contract?.roomId)">
                 <div class="modal-body" style="margin-left: 10px">
                   <p>
                     <i
@@ -367,7 +383,7 @@ import { ref, nextTick } from "vue";
 import type { Contract } from "@/type/Contract";
 import contractService from "@/services/contractService";
 import Swal from "sweetalert2";
-
+import Contracts from "@/components/Contract.vue";
 const contracts = ref<Contract[]>([]);
 const contractDetail = ref<Contract[]>([]);
 const contract = ref<Contract>() as any;
@@ -380,6 +396,7 @@ const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
 };
 const editContract = async (id: number) => {
+  console.log(id);
   contractService.getContractById(id).then((response) => {
     contract.value = response.map(
       (contract: {
@@ -482,40 +499,33 @@ const getContractByContractId = async (contractId: string) => {
   }
 };
 
-const updateContract = async () => {
-    isEditing = false;
-    contractService.updateContract(contract.value).then((response) => {
-        console.log(response);
-        Swal.fire({
-            title: "Success!",
-            text: "Updated successfully.",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1500
-        });
-        window.location.reload();
-    });
-}
-
-const deleteContract = (email: string) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      contractService.deleteContract(email).then(() => {
-        Swal.fire("Deleted!", "Contract has been deleted.", "success");
-        getContractPanigation(currentPage);
+const updateContract = async (roomId: number) => {
+  isEditing = false;
+  console.log("Payload:", contract.value);
+  contractService
+    .updateContract(roomId, contract.value)
+    .then((response) => {
+      console.log(response);
+      Swal.fire({
+        title: "Success!",
+        text: "Updated successfully.",
+        icon: "success",
+        showConfirmButton: false,
       });
-    }
-  });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error("Error updating contract:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to update contract.",
+        icon: "error",
+        showConfirmButton: true,
+      });
+    });
 };
-
 getContractPanigation(0);
 const formatDate = (dateString: string) => {
   return dateString.split("T")[0];
@@ -657,5 +667,41 @@ a {
   color: #8d8c8c;
   border: none;
   outline: none;
+}
+/* Đặt kích thước của modal gần với kích thước của trang A4 */
+.modal-dialog {
+  max-width: 210mm; /* Chiều rộng của trang A4 */
+  width: 100%;
+  height: 297mm; /* Chiều cao của trang A4 */
+  margin-top: 0;
+}
+
+.modal-content {
+  height: 100%; /* Đảm bảo nội dung lấp đầy chiều cao của modal */
+}
+
+/* Đảm bảo modal có khả năng cuộn nếu nội dung vượt quá kích thước trang A4 */
+.modal-body {
+  overflow-y: auto;
+}
+
+/* Điều chỉnh padding để tối ưu không gian */
+.modal-header,
+.modal-footer {
+  padding: 10px 15px;
+}
+
+/* Tùy chỉnh thanh cuộn nếu cần */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
 }
 </style>
