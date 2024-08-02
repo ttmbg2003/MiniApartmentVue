@@ -1,7 +1,14 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex; height: 89%">
-    <SideBar />
+  <div
+    style="
+      display: flex;
+      height: 89%;
+      width: 100%;
+      background: rgba(245, 246, 248, 1);
+    "
+  >
+    <SideBar class="sidebar" />
     <div class="container">
       <div class="card">
         <div style="display: flex">
@@ -543,7 +550,9 @@ const formatDate = (dateString: string) => {
   border-radius: 14px;
   max-width: 83%;
 }
-
+.sidebar {
+  width: 18%;
+}
 .card {
   display: flex;
   justify-content: center;

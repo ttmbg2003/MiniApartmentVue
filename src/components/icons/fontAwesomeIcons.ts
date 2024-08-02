@@ -22,6 +22,7 @@ import {
   faFaceMeh,
   faFaceSmile,
   faFaceLaughSquint,
+  faArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -46,5 +47,6 @@ library.add(
   faFaceFrown,
   faFaceMeh,
   faFaceSmile,
-  faFaceLaughSquint
+  faFaceLaughSquint,
+  faArrowUp
 );

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="dataLoaded == true">
     <div style="font-weight: 500; font-size: 16px">Room Status Overview</div>
     <div class="chart">
       <Doughnut :data="chartData" :options="chartOptions" />
@@ -16,24 +16,55 @@
 <script setup lang="ts">
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
+import reportService from "@/services/reportService";
 
+import { onMounted, watch, ref } from "vue";
+
+const occupiedCount = ref(null);
+const reservedCount = ref(null);
+const vacantCount = ref(null);
+const fetchData = async () => {
+  const res = await reportService.getRoomByStatus();
+  occupiedCount.value = res.occupiedCount;
+  reservedCount.value = res.reservedCount;
+  vacantCount.value = res.vacantCount;
+  dataLoaded.value = true;
+  chartData.value.datasets[0].data = [
+    vacantCount.value,
+    reservedCount.value,
+    occupiedCount.value,
+  ];
+};
+onMounted(fetchData);
+console.log(vacantCount.value);
 ChartJS.register(Tooltip, Legend, ArcElement);
 // const loaded = ref(false);
 // const chartData = ref(null);
 
-const chartData = {
+const chartData = ref({
   labels: ["Vacant", "Reserved", "Occupied"],
   datasets: [
     {
-      data: [10, 5, 35],
+      data: [vacantCount.value, reservedCount.value, occupiedCount.value],
       backgroundColor: ["#3070f5", "#57beb5", "#ae59dc"],
     },
   ],
-};
-const total = chartData.datasets[0].data.reduce(
-  (acc, currentValue) => acc + currentValue,
-  0
-);
+});
+
+// reportService.getRoomByStatus().then((res) => {
+//     occupiedCount.value = res.occupiedCount;
+//     reservedCount.value = res.reservedCount;
+//     vacantCount.value = res.vacantCount;
+//     console.log("-----------------");
+
+//     chartData.value.datasets[0].data = [10,10,10];
+
+//         // Cập nhật dữ liệu biểu đồ
+//     console.log(vacantCount.value);
+//   });
+const dataLoaded = ref(false);
+
+const total = ref(50);
 const chartOptions = {
   responsive: true,
   cutout: "70%",
@@ -64,22 +95,6 @@ const chartOptions = {
     },
   },
 };
-
-// onMounted(async () => {
-//   loaded.value = true;
-//   try {
-//     const response = await fetch('/api/userlist');
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch');
-//     }
-//     const { userlist } = await response.json();
-//     loaded.value = true
-//     chartData.value = userlist;
-//   } catch (e) {
-//     console.error(e);
-//     // Xử lý lỗi, ví dụ: thông báo lỗi cho người dùng
-//   }
-//});
 </script>
 <style scoped>
 .container {
@@ -89,12 +104,14 @@ const chartOptions = {
   width: 100%;
   height: 100%;
 }
+
 .chart {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 233px;
 }
+
 .total {
   display: flex;
   flex-direction: column;

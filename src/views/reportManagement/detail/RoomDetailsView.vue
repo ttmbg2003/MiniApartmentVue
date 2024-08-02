@@ -173,8 +173,8 @@
               </th>
               <th style="width: 7.9rem">Status</th>
             </tr>
-            <template v-if="roomListTable.length > 0">
-              <tr v-for="index in 5" :key="index">
+            <template v-if="checkData && roomListTable.length > 0">
+              <tr v-for="index in range" :key="index">
                 <td
                   v-if="index > roomListTable.length"
                   style="height: 40px"
@@ -240,8 +240,8 @@
               </th>
               <th style="width: 7.9rem">Status</th>
             </tr>
-            <template v-if="roomListTable.length >= 6">
-              <tr v-for="index in 5" :key="index">
+            <template v-if="checkData && roomListTable.length >= 6">
+              <tr v-for="index in range" :key="index">
                 <td
                   v-if="index + 5 > roomListTable.length"
                   style="height: 40px"
@@ -280,37 +280,86 @@
           </table>
         </div>
       </div>
+      <div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 5rem 0 1.8rem;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              font-size: 14px;
+              color: rgba(155, 155, 155, 1);
+            "
+          >
+            Showing&nbsp;
+            <div style="font-weight: bold; color: rgba(0, 2, 49, 1)">
+              {{ start }} to {{ start + 9 }} of 50
+            </div>
+            &nbsp;entries
+          </div>
+          <div style="display: flex">
+            (
+            <div
+              class="indexPage"
+              v-for="index in maxPage"
+              :key="index"
+              :style="{
+                color:
+                  clickedIndex === index
+                    ? 'rgba(0, 2, 49, 1)'
+                    : 'rgba(155, 155, 155, 1)',
+                marginLeft: '0.5rem',
+                textDecoration: clickedIndex === index ? 'underline' : 'none',
+              }"
+              @click="roomListPagination(index)"
+            >
+              {{ index }}
+            </div>
+            <div style="margin-left: 0.5rem">)</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import RoomChartView from "../RoomChartView.vue";
-import { ref, watch, onMounted } from "vue";
-const occupied = 35;
-const vacant = 10;
-const reserved = 5;
-const total = occupied + vacant + reserved;
-const roomStatusTable = [
-  { status: "Occupied", room: occupied, rate: (occupied / total) * 100 },
-  { status: "vacant", room: vacant, rate: (vacant / total) * 100 },
-  { status: "Reserved", room: reserved, rate: (reserved / total) * 100 },
-];
+import { ref, watch, onMounted, computed } from "vue";
+import reportService from "@/services/reportService";
+const occupied = ref(0);
+const vacant = ref(0);
+const reserved = ref(0);
+const total = 50;
+
+onMounted(() => {
+  reportService.getRoomByStatus().then((res) => {
+    occupied.value = res.occupiedCount;
+    vacant.value = res.vacantCount;
+    reserved.value = res.reservedCount;
+    roomStatusTable.value[0].rate = (occupied.value / total) * 100;
+    roomStatusTable.value[1].rate = (vacant.value / total) * 100;
+    roomStatusTable.value[2].rate = (reserved.value / total) * 100;
+  });
+});
+const roomStatusTable = ref([
+  { status: "Occupied", room: occupied, rate: (occupied.value / total) * 100 },
+  { status: "vacant", room: vacant, rate: (vacant.value / total) * 100 },
+  { status: "Reserved", room: reserved, rate: (reserved.value / total) * 100 },
+]);
+
 interface roomDetailItem {
   roomNo: number;
   fee: string;
   status: string;
 }
 const statusFilter = ref(["occupied"]);
-const roomDetailList = ref<roomDetailItem[]>([
-  { roomNo: 101, fee: "1.000.000", status: "occupied" },
-  { roomNo: 102, fee: "1.000.000", status: "occupied" },
-  { roomNo: 103, fee: "1.000.000", status: "vacant" },
-  { roomNo: 104, fee: "1.000.000", status: "occupied" },
-  { roomNo: 105, fee: "1.000.000", status: "reserved" },
-  { roomNo: 101, fee: "1.000.000", status: "occupied" },
-  { roomNo: 102, fee: "1.000.000", status: "occupied" },
-]);
+const roomDetailList = ref<roomDetailItem[]>([]);
+
 const roomListTable = ref<roomDetailItem[]>([]);
 const filterRoomList = () => {
   roomListTable.value = []; // Clear the table before pushing new items
@@ -320,9 +369,45 @@ const filterRoomList = () => {
       roomListTable.value.push(item);
     }
   }
-  console.log(roomListTable.value.length);
+  maxPage.value = Math.min(Math.ceil(roomListTable.value.length / 10), 5);
 };
 
+//số trang lớn nhất có thể hiển thị
+const maxPage = ref(1);
+const clickedIndex = ref(1);
+
+//thực hiện phân trang
+const roomListPagination = (index: number) => {
+  console.log(index);
+  start.value = (index - 1) * 10 + 1;
+  clickedIndex.value = index;
+};
+
+//tạo array để hiển thị các item theo index trong bảng roomListTable
+const start = ref(1);
+const range = computed(() => {
+  const rangeArray = [];
+  for (let i = start.value; i <= start.value + 4; i++) {
+    rangeArray.push(i);
+  }
+  return rangeArray;
+});
+
+reportService.getRoomDetailList().then((res) => {
+  for (let i = 0; i < res.length; i++) {
+    const item: roomDetailItem = {
+      roomNo: res[i].roomId,
+      fee: res[i].rentalFee,
+      status: res[i].roomStatus,
+    };
+    roomDetailList.value.push(item);
+  }
+  filterRoomList();
+  checkData.value = true;
+  console.log(roomListTable);
+});
+
+const checkData = ref(false);
 // Watch for changes in statusFilter
 watch(statusFilter, filterRoomList);
 
@@ -441,5 +526,8 @@ td {
 }
 .listTable td {
   border: none;
+}
+.indexPage:hover {
+  cursor: pointer;
 }
 </style>
