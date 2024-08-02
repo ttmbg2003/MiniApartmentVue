@@ -24,12 +24,16 @@ const occupiedCount = ref(null);
 const reservedCount = ref(null);
 const vacantCount = ref(null);
 const fetchData = async () => {
-    const res = await reportService.getRoomByStatus();
-    occupiedCount.value = res.occupiedCount;
-    reservedCount.value = res.reservedCount;
-    vacantCount.value = res.vacantCount;
-    dataLoaded.value = true;
-    chartData.value.datasets[0].data =[vacantCount.value,reservedCount.value,occupiedCount.value]
+  const res = await reportService.getRoomByStatus();
+  occupiedCount.value = res.occupiedCount;
+  reservedCount.value = res.reservedCount;
+  vacantCount.value = res.vacantCount;
+  dataLoaded.value = true;
+  chartData.value.datasets[0].data = [
+    vacantCount.value,
+    reservedCount.value,
+    occupiedCount.value,
+  ];
 };
 onMounted(fetchData);
 console.log(vacantCount.value);
@@ -41,19 +45,18 @@ const chartData = ref({
   labels: ["Vacant", "Reserved", "Occupied"],
   datasets: [
     {
-      data: [vacantCount.value,reservedCount.value,occupiedCount.value],
+      data: [vacantCount.value, reservedCount.value, occupiedCount.value],
       backgroundColor: ["#3070f5", "#57beb5", "#ae59dc"],
     },
   ],
 });
-
 
 // reportService.getRoomByStatus().then((res) => {
 //     occupiedCount.value = res.occupiedCount;
 //     reservedCount.value = res.reservedCount;
 //     vacantCount.value = res.vacantCount;
 //     console.log("-----------------");
-    
+
 //     chartData.value.datasets[0].data = [10,10,10];
 
 //         // Cập nhật dữ liệu biểu đồ
@@ -61,11 +64,7 @@ const chartData = ref({
 //   });
 const dataLoaded = ref(false);
 
-
-const total = chartData.value.datasets[0].data.reduce(
-  (acc, currentValue) => acc + currentValue,
-  0
-);
+const total = ref(50);
 const chartOptions = {
   responsive: true,
   cutout: "70%",
