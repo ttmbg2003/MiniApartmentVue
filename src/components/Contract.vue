@@ -617,6 +617,7 @@ export default {
           citizenId: "",
           createCitizenIdDate: "",
           createCitizenIdPlace: "",
+          placeOfPermanet: "",
         });
       }
       return tenants;
@@ -633,9 +634,35 @@ export default {
       return `${month}-${day}-${year}`;
     },
     generateTenantsArray() {
-      let tenants = this.generateTenants;
-      for (let index = 1; index < this.contract.numberOfTenant; index++) {
-        var tenant = this.generateTenants[index - 1];
+      let tenants = [];
+
+      // Lấy thông tin của tenant đầu tiên (đại diện)
+      if (this.contract.representative) {
+        var nameParts = this.contract.representative.split(" ");
+        var firstName = nameParts[0];
+        var lastName = nameParts.slice(1).join(" ");
+        tenants.push({
+          firstName: firstName,
+          lastName: lastName,
+          gender: this.contract.gender,
+          dateOfBirth: this.contract.dateOfBirth,
+          contact: this.contract.contact,
+          email: this.contract.email,
+          career: this.contract.career,
+          licensePlate: this.contract.licensePlate,
+          vehicleType: this.contract.vehicleType,
+          vehicleColor: this.contract.vehicleColor,
+          relationship: this.contract.relationship,
+          citizenId: this.contract.citizenId,
+          createCitizenIdDate: this.contract.createCitizenIdDate,
+          createCitizenIdPlace: this.contract.createCitizenIdPlace,
+          placeOfPermanet: this.contract.placeOfPermanet,
+        });
+      }
+
+      // Lặp qua các tenant còn lại từ index 0
+      for (let index = 0; index < this.contract.numberOfTenant - 1; index++) {
+        var tenant = this.generateTenants[index];
         if (tenant.fullName) {
           var namePartsTenant = tenant.fullName.split(" ");
           var firstNameTenant = namePartsTenant[0];
@@ -643,22 +670,22 @@ export default {
           tenants.push({
             firstName: firstNameTenant,
             lastName: lastNameTenant,
-            gender: this.contract.gender,
-            dateOfBirth: this.contract.dateOfBirth,
-            contact: this.contract.contact,
-            email: this.contract.email,
-            career: this.contract.career,
-            licensePlate: this.contract.licensePlate,
-            vehicleType: this.contract.vehicleType,
-            vehicleColor: this.contract.vehicleColor,
-            relationship: this.contract.relationship,
-            citizenId: this.contract.citizenId,
-            createCitizenIdDate: this.contract.createCitizenIdDate,
-            createCitizenIdPlace: this.contract.createCitizenIdPlace,
+            gender: tenant.gender,
+            dateOfBirth: tenant.dateOfBirth,
+            contact: tenant.contact,
+            email: tenant.email,
+            career: tenant.career,
+            licensePlate: tenant.licensePlate,
+            vehicleType: tenant.vehicleType,
+            vehicleColor: tenant.vehicleColor,
+            relationship: tenant.relationship,
+            citizenId: tenant.citizenId,
+            createCitizenIdDate: tenant.createCitizenIdDate,
+            createCitizenIdPlace: tenant.createCitizenIdPlace,
           });
         }
       }
-      console.log("value la: " + tenants.values);
+
       return tenants;
     },
 
@@ -689,10 +716,10 @@ export default {
     },
 
     async submitForm() {
-      // if (!this.validateForm()) {
-      //   this.error = "Please fill in all fields.";
-      //   return;
-      // }
+      if (!this.validateForm()) {
+        this.error = "Please fill in all fields.";
+        return;
+      }
       try {
         this.contract.tenants = this.generateTenantsArray();
         console.log(this.generateTenants);
@@ -709,10 +736,10 @@ export default {
             icon: "success",
             timer: 2000,
           });
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 2000);
-          // this.$router.push("/ListOfContract");
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+          this.$router.push("/ListOfContract");
         } else {
           console.log("Message là: ", response.data.result, this.contract);
           Swal.fire({
