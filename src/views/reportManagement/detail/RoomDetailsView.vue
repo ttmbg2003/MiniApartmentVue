@@ -25,10 +25,10 @@
         </div>
       </div>
       <select disabled>
-        <option value="0">December</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
+        <option value="0">August</option>
+        <option value="1">September</option>
+        <option value="2">October</option>
+        <option value="3">November</option>
       </select>
     </div>
     <div class="mid" style="max-height: fit-content">
