@@ -165,9 +165,9 @@
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-body">
+          <div class="modal-dialog modal-a4">
+            <div class="modal-content modal-c">
+              <div class="modal-body modal-b">
                 <Contracts />
               </div>
             </div>
@@ -402,6 +402,7 @@ var currentPage = 0;
 const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
 };
+
 const editContract = async (id: number) => {
   console.log(id);
   contractService.getContractById(id).then((response) => {
@@ -678,39 +679,18 @@ a {
   outline: none;
 }
 /* Đặt kích thước của modal gần với kích thước của trang A4 */
-.modal-dialog {
-  max-width: 210mm; /* Chiều rộng của trang A4 */
-  width: 100%;
-  height: 297mm; /* Chiều cao của trang A4 */
+.modal-dialog.modal-a4 {
+  max-width: 26cm; /* Chiều rộng của khổ A4 */
+  min-height: 29.7cm; /* Chiều cao của khổ A4 */
   margin-top: 0;
 }
 
 .modal-content {
-  height: 100%; /* Đảm bảo nội dung lấp đầy chiều cao của modal */
+  height: 100%;
 }
 
-/* Đảm bảo modal có khả năng cuộn nếu nội dung vượt quá kích thước trang A4 */
 .modal-body {
-  overflow-y: auto;
-}
-
-/* Điều chỉnh padding để tối ưu không gian */
-.modal-header,
-.modal-footer {
-  padding: 10px 15px;
-}
-
-/* Tùy chỉnh thanh cuộn nếu cần */
-.modal-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  height: calc(100% - 2rem);
+  padding: 1rem;
 }
 </style>
