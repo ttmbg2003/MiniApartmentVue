@@ -335,12 +335,16 @@ tenantService.getTenantCount().then((res) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.33);
-
   margin-top: -90px;
+  overflow-y: scroll; /* hoặc auto */
+  scrollbar-width: none;
+}
+.detailView::-webkit-scrollbar {
+  display: none; /* Safari và Chrome */
 }
 .bottom1 {
   background: white;

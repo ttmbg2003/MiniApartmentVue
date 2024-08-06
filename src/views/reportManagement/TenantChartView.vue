@@ -2,12 +2,14 @@
   <div class="container">
     <h6>Tenant Changes month by month (%)</h6>
     <div class="chart">
-      <Line :options="chartOptions" :data="chartData" />
+      <Line v-if="checkData" :options="chartOptions" :data="chartData" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import reportService from "@/services/reportService";
+import { ref } from "vue";
 import { Line } from "vue-chartjs";
 
 import gradient from "chartjs-plugin-gradient";
@@ -35,7 +37,7 @@ ChartJS.register(
   Filler,
   gradient
 );
-const chartData = {
+const chartData = ref({
   labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   datasets: [
     {
@@ -57,7 +59,7 @@ const chartData = {
       pointRadius: 0,
     },
   ],
-};
+});
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -84,12 +86,32 @@ const chartOptions = {
     },
     y: {
       beginAtZero: true,
+      max: 100,
       ticks: {
         stepSize: 20,
       },
     },
   },
 };
+
+interface tenantsEachMonth {
+  month: number;
+  tenants: number;
+}
+const checkData = ref(false);
+const tenantByMonths = ref<tenantsEachMonth[]>([]);
+reportService.getTenantByMonths().then((res) => {
+  tenantByMonths.value = res;
+  chartData.value.datasets[0].data = res.map((item: tenantsEachMonth) =>
+    parseFloat(formatPercentage(item.tenants))
+  );
+  checkData.value = true;
+  console.log(chartData.value.datasets[0].data);
+});
+function formatPercentage(tenant: number) {
+  const percent = (tenant / 120) * 100;
+  return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
+}
 </script>
 
 <style scoped>
