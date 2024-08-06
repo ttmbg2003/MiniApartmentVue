@@ -194,26 +194,44 @@
                 </div>
               </th>
             </tr>
-            <template v-if="checkData && roomTenantList.length > 0">
+            <template v-if="checkData">
               <tr v-for="index in range" :key="index">
-                <td
-                  v-if="index > roomTenantList.length"
-                  style="height: 40px"
-                ></td>
-                <td v-else>{{ index }}</td>
-                <td>{{ roomTenantList[index - 1]?.roomId }}</td>
-                <td>{{ roomTenantList[index - 1]?.maxTenant }}</td>
-                <td>
-                  {{ roomTenantList[index - 1]?.numberOfTenantLastMonth }}
-                </td>
-                <td>
-                  {{ roomTenantList[index - 1]?.numberOfTenantThisMonth }}
+                <td colspan="5">
+                  <div
+                    style="
+                      box-shadow: 0px 1px 13px 0px rgba(0, 0, 0, 0.08);
+                      display: flex;
+                      margin-left: -5px;
+                      height: 2rem;
+                      align-items: center;
+                    "
+                  >
+                    <div
+                      v-if="index > roomTenantList.length"
+                      style="height: 40px; width: 4rem; margin-left: 5px"
+                    ></div>
+                    <div v-else style="width: 4rem; margin-left: 5px">
+                      {{ index }}
+                    </div>
+                    <div style="width: 5rem">
+                      {{ roomTenantList[index - 1]?.roomId }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index - 1]?.maxTenant }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index - 1]?.numberOfTenantLastMonth }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index - 1]?.numberOfTenantThisMonth }}
+                    </div>
+                  </div>
                 </td>
               </tr>
             </template>
             <template v-else>
               <tr v-for="index in 3" :key="index">
-                <td v-if="index == 1" colspan="5" style="text-align: center">
+                <td v-if="index == 2" colspan="5" style="text-align: center">
                   No data available
                 </td>
                 <td v-else style="height: 40px"></td>
@@ -280,26 +298,44 @@
                 </div>
               </th>
             </tr>
-            <template v-if="checkData && roomTenantList.length >= 4">
+            <template v-if="checkData && start <= 48">
               <tr v-for="index in range" :key="index">
-                <td
-                  v-if="index + 3 > roomTenantList.length"
-                  style="height: 40px"
-                ></td>
-                <td v-else>{{ index + 3 }}</td>
-                <td>{{ roomTenantList[index + 2]?.roomId }}</td>
-                <td>{{ roomTenantList[index + 2]?.maxTenant }}</td>
-                <td>
-                  {{ roomTenantList[index + 2]?.numberOfTenantLastMonth }}
-                </td>
-                <td>
-                  {{ roomTenantList[index + 2]?.numberOfTenantThisMonth }}
+                <td colspan="5">
+                  <div
+                    style="
+                      box-shadow: 0px 1px 13px 0px rgba(0, 0, 0, 0.08);
+                      display: flex;
+                      margin-left: -5px;
+                      height: 2rem;
+                      align-items: center;
+                    "
+                  >
+                    <div
+                      v-if="index + 3 > roomTenantList.length"
+                      style="height: 40px; width: 4rem; margin-left: 5px"
+                    ></div>
+                    <div v-else style="width: 4rem; margin-left: 5px">
+                      {{ index + 3 }}
+                    </div>
+                    <div style="width: 5rem">
+                      {{ roomTenantList[index + 2]?.roomId }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index + 2]?.maxTenant }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index + 2]?.numberOfTenantLastMonth }}
+                    </div>
+                    <div style="width: 7rem">
+                      {{ roomTenantList[index + 2]?.numberOfTenantThisMonth }}
+                    </div>
+                  </div>
                 </td>
               </tr>
             </template>
             <template v-else>
               <tr v-for="index in 3" :key="index">
-                <td v-if="index == 1" colspan="5" style="text-align: center">
+                <td v-if="index == 2" colspan="5" style="text-align: center">
                   No data available
                 </td>
                 <td v-else style="height: 40px"></td>
@@ -325,7 +361,7 @@
           >
             Showing&nbsp;
             <div style="font-weight: bold; color: rgba(0, 2, 49, 1)">
-              {{ start }} to {{ start + 5 }} of 50
+              {{ start }} to {{ start + 5 > 50 ? 50 : start + 5 }} of 50
             </div>
             &nbsp;entries
           </div>
@@ -524,6 +560,7 @@ const start = ref(1);
 const range = computed(() => {
   const rangeArray = [];
   for (let i = start.value; i <= start.value + 2; i++) {
+    if (i > roomTenantList.value.length) break;
     rangeArray.push(i);
   }
   return rangeArray;
