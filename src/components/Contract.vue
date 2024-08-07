@@ -1,24 +1,24 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <form @submit.prevent="submitForm">
+  <form>
     <div class="contract-form">
       <div class="header">
-        <p class="centered-text">
+        <p class="centered-text" style="font-weight: bold">
           CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br />Độc lập – Tự do – Hạnh phúc<br />-o0o-
         </p>
-        <p class="centered-text">
+        <p class="centered-text" style="font-weight: bold">
           HỢP ĐỒNG THUÊ CĂN HỘ CHUNG CƯ MINI<br />(Số:
-          {{ contract.contractId }}./HĐTCHNCC)
+          {{ contract.id }}./HĐTCHNCC)
         </p>
       </div>
 
       <div class="content">
         <p>
-          Căn cứ Luật dân sự số 91/2015/QH13 và Luật nhà ở số 65/2014/QH13 của
+          - Căn cứ Luật dân sự số 91/2015/QH13 và Luật nhà ở số 65/2014/QH13 của
           nước Cộng hòa Xã hội Chủ nghĩa Việt Nam ban hành năm 2015;
         </p>
-        <p>Căn cứ vào pháp luật khác có liên quan;</p>
-        <p>Căn cứ vào nhu cầu và khả năng của các bên;</p>
+        <p>- Căn cứ vào pháp luật khác có liên quan;</p>
+        <p>- Căn cứ vào nhu cầu và khả năng của các bên;</p>
 
         <p>
           Hôm nay, {{ getFormattedDate() }}., tại địa chỉ số 1 đường Phú Mỹ, Mỹ
@@ -80,14 +80,14 @@
           <input type="text" v-model="contract.ownerLimit" />
         </p>
 
-        <h3>
+        <h5>
           1.3. Thông tin người thuê (bao gồm người đại diện và người ở cùng):
-        </h3>
+        </h5>
         <p>
           a) Số lượng khách thuê tối đa:
           <input
             type="number"
-            name="numberOfTenants"
+            name="numberOfTenant"
             v-model="contract.numberOfTenant"
           />người
         </p>
@@ -101,6 +101,7 @@
               <th>D.O.B</th>
               <th>Mobile No</th>
               <th>Email ID</th>
+              <th>Citizen ID</th>
               <th>Career</th>
               <th>License plate</th>
               <th>Vehicle Type</th>
@@ -119,7 +120,7 @@
                 />
               </td>
               <td>
-                <select v-model="contract.gender" style="width: 100px">
+                <select v-model="contract.gender" style="width: 100px" readonly>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -143,6 +144,13 @@
                 <input
                   type="email"
                   v-model="contract.email"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="tel"
+                  v-model="contract.citizenId"
                   style="width: 100px"
                 />
               </td>
@@ -175,10 +183,92 @@
                 />
               </td>
               <td>
-                <select v-model="contract.relationship" style="width: 100px">
-                  <option value="Family">Family</option>
-                  <option value="Friend">Friend</option>
+                <input
+                  type="text"
+                  v-model="contract.relationship"
+                  style="width: 100px"
+                  readonly
+                />
+              </td>
+            </tr>
+            <tr v-for="(tenant, index) in generateTenants" :key="index">
+              <td>{{ index + 2 }}</td>
+              <td>
+                <input
+                  style="width: 60px"
+                  type="text"
+                  v-model="tenant.fullName"
+                />
+              </td>
+              <td>
+                <select v-model="tenant.gender" style="width: 100px">
+                  <option value="1">Male</option>
+                  <option value="2">Female</option>
+                  <option value="3">Others</option>
                 </select>
+              </td>
+              <td>
+                <input
+                  type="date"
+                  v-model="tenant.dateOfBirth"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="tel"
+                  v-model="tenant.contact"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="email"
+                  v-model="tenant.email"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="tel"
+                  v-model="tenant.citizenId"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="tenant.career"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="tenant.licensePlate"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="tenant.vehicleType"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="tenant.vehicleColor"
+                  style="width: 100px"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  v-model="tenant.relationship"
+                  style="width: 100px"
+                />
               </td>
             </tr>
           </tbody>
@@ -444,12 +534,13 @@
         <router-link to="/ListOfContract" class="btn btn-secondary"
           >Cancel</router-link
         >
-        <input
-          type="submit"
-          value="Save"
+        <button
+          @click.prevent="submitForm"
           class="btn btn-primary"
           style="margin-right: 10rem"
-        />
+        >
+          Save
+        </button>
       </div>
     </div>
   </form>
@@ -496,11 +587,43 @@ export default {
         signinDate: "",
         moveinDate: "",
         expireDate: "",
-        error: null,
+        fullName: "",
+        tenants: [],
+        firstName: "",
+        lastName: "",
       },
+      error: null,
       date: this.getFormattedDate(),
+      tenantsArr: [],
     };
   },
+
+  computed: {
+    generateTenants() {
+      let tenants = [];
+      for (let i = 1; i < this.contract.numberOfTenant; i++) {
+        tenants.push({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          dateOfBirth: "",
+          contact: "",
+          email: "",
+          career: "",
+          licensePlate: "",
+          vehicleType: "",
+          vehicleColor: "",
+          relationship: "",
+          citizenId: "",
+          createCitizenIdDate: "",
+          createCitizenIdPlace: "",
+          placeOfPermanet: "",
+        });
+      }
+      return tenants;
+    },
+  },
+
   methods: {
     getFormattedDate() {
       const today = new Date();
@@ -510,6 +633,62 @@ export default {
 
       return `${month}-${day}-${year}`;
     },
+    generateTenantsArray() {
+      let tenants = [];
+
+      // Lấy thông tin của tenant đầu tiên (đại diện)
+      if (this.contract.representative) {
+        var nameParts = this.contract.representative.split(" ");
+        var firstName = nameParts[0];
+        var lastName = nameParts.slice(1).join(" ");
+        tenants.push({
+          firstName: firstName,
+          lastName: lastName,
+          gender: this.contract.gender,
+          dateOfBirth: this.contract.dateOfBirth,
+          contact: this.contract.contact,
+          email: this.contract.email,
+          career: this.contract.career,
+          licensePlate: this.contract.licensePlate,
+          vehicleType: this.contract.vehicleType,
+          vehicleColor: this.contract.vehicleColor,
+          relationship: this.contract.relationship,
+          citizenId: this.contract.citizenId,
+          createCitizenIdDate: this.contract.createCitizenIdDate,
+          createCitizenIdPlace: this.contract.createCitizenIdPlace,
+          placeOfPermanet: this.contract.placeOfPermanet,
+        });
+      }
+
+      // Lặp qua các tenant còn lại từ index 0
+      for (let index = 0; index < this.contract.numberOfTenant - 1; index++) {
+        var tenant = this.generateTenants[index];
+        if (tenant.fullName) {
+          var namePartsTenant = tenant.fullName.split(" ");
+          var firstNameTenant = namePartsTenant[0];
+          var lastNameTenant = namePartsTenant.slice(1).join(" ");
+          tenants.push({
+            firstName: firstNameTenant,
+            lastName: lastNameTenant,
+            gender: tenant.gender,
+            dateOfBirth: tenant.dateOfBirth,
+            contact: tenant.contact,
+            email: tenant.email,
+            career: tenant.career,
+            licensePlate: tenant.licensePlate,
+            vehicleType: tenant.vehicleType,
+            vehicleColor: tenant.vehicleColor,
+            relationship: tenant.relationship,
+            citizenId: tenant.citizenId,
+            createCitizenIdDate: tenant.createCitizenIdDate,
+            createCitizenIdPlace: tenant.createCitizenIdPlace,
+          });
+        }
+      }
+
+      return tenants;
+    },
+
     validateForm() {
       // Kiểm tra tất cả các trường bắt buộc
       return (
@@ -542,44 +721,13 @@ export default {
         return;
       }
       try {
-        const response = await apiClient.post("contract/addNewContract", {
-          totalArea: this.contract.totalArea,
-          landArea: this.contract.landArea,
-          publicArea: this.contract.publicArea,
-          privateArea: this.contract.privateArea,
-          device: this.contract.device,
-          ownerOrigin: this.contract.ownerOrigin,
-          ownerLimit: this.contract.ownerLimit,
-          rights: this.contract.rights,
-          obligations: this.contract.obligations,
-          commit: this.contract.commit,
-          copies: this.contract.copies,
-          relationship: this.contract.relationship,
-          email: this.contract.email,
-          roomId: this.contract.roomId,
-          representative: this.contract.representative,
-          gender: this.contract.gender,
-          dateOfBirth: this.contract.dateOfBirth,
-          contact: this.contract.contact,
-          citizenId: this.contract.citizenId,
-          createCitizenIdDate: this.contract.createCitizenIdDate,
-          createCitizenIdPlace: this.contract.createCitizenIdPlace,
-          career: this.contract.career,
-          licensePlate: this.contract.licensePlate,
-          vehicleType: this.contract.vehicleType,
-          vehicleColor: this.contract.vehicleColor,
-          residenceStatus: this.contract.residenceStatus,
-          placeOfPermanet: this.contract.placeOfPermanet,
-          // id: this.contract.id,
-          // contractId: this.contract.contractId,
-          numberOfTenant: this.contract.numberOfTenant,
-          rentalFee: this.contract.rentalFee,
-          securityDeposite: this.contract.securityDeposite,
-          paymentCycle: this.contract.paymentCycle,
-          signinDate: this.contract.signinDate,
-          moveinDate: this.contract.moveinDate,
-          expireDate: this.contract.expireDate,
-        });
+        this.contract.tenants = this.generateTenantsArray();
+        console.log(this.generateTenants);
+        const response = await apiClient.post(
+          "contract/addNewContract",
+          this.contract
+        );
+
         if (response.data.status === 200) {
           this.error = null;
           Swal.fire({
@@ -591,8 +739,14 @@ export default {
           setTimeout(() => {
             window.location.reload();
           }, 2000);
-          this.$router.push("/tenants");
+          this.$router.push("/ListOfContract");
         } else {
+          console.log("Message là: ", response.data.result, this.contract);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: this.error,
+          });
           this.error = response.data.result;
         }
       } catch (error) {
@@ -606,7 +760,7 @@ export default {
 </script>
 <style scoped>
 .contract-form {
-  width: 50%;
+  width: 85%;
   margin: auto;
 }
 
@@ -643,6 +797,7 @@ select {
   width: 140px;
   box-sizing: border-box;
 }
+
 .footer {
   margin-left: 10rem;
   display: flex;
@@ -650,6 +805,7 @@ select {
   flex-direction: row;
   flex-wrap: nowrap;
 }
+
 .error {
   color: red;
   text-align: center;

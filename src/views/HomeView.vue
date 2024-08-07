@@ -210,6 +210,28 @@
                   <div class="itemBg"></div>
                 </div>
                 <div class="infoItems">
+                  <img src="/src/components/icons/shakeHand.png" />
+                  <div class="content">
+                    <div style="margin-top: 35px">
+                      Pellentesque ac bibendum tortor, vel blandit nulla. Nulla
+                      eget lobortis lacus. Eu aliquam nibh tempus at
+                    </div>
+                    <button class="detailBtn">SEE DETAIL</button>
+                  </div>
+                  <div class="itemBg"></div>
+                </div>
+                <div class="infoItems">
+                  <img src="/src/components/icons/shakeHand.png" />
+                  <div class="content">
+                    <div style="margin-top: 35px">
+                      Pellentesque ac bibendum tortor, vel blandit nulla. Nulla
+                      eget lobortis lacus. Eu aliquam nibh tempus at
+                    </div>
+                    <button class="detailBtn">SEE DETAIL</button>
+                  </div>
+                  <div class="itemBg"></div>
+                </div>
+                <div class="infoItems">
                   <img src="/src/components/icons/Connectivity01.png" />
                   <div class="content">
                     <div style="margin-top: 35px">
@@ -487,7 +509,7 @@ function scrollToTop() {
 }
 
 #infoList {
-  width: 900px;
+  width: 65%;
 
   overflow-x: scroll;
 

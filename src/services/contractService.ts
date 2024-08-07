@@ -33,10 +33,17 @@ class ContractService {
       .put(`/contract/updateStatus/${contractId}/${contractStatus}`)
       .then((response) => response.data);
   };
-  updateContract = (contractId: number): Promise<Contract> => {
+  updateContract = (
+    roomId: number,
+    updateContractDTO: Contract
+  ): Promise<Contract> => {
     return apiClient
-      .put(`/contract/updateContract/${contractId}`)
-      .then((response) => response.data["result"]);
+      .put(`/contract/updateContract?id=${roomId}`, updateContractDTO)
+      .then((response) => response.data["result"])
+      .catch((error) => {
+        console.error("Error updating contract:", error);
+        throw error;
+      });
   };
   getRepesentativeByRoomId = (roomId: any, month: any): any => {
     return apiClient
