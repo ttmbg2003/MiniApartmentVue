@@ -24,12 +24,12 @@ class UserService {
       .then((response) => response.data.result);
   };
   getTokenUser() {
-    return localStorage.getItem("token");
+    return localStorage.getItem("accessToken");
   }
   getEmailCurrentUser() {
     const token = this.getTokenUser();
     if (token) {
-      const decoded = jwtDecode(token);      
+      const decoded = jwtDecode(token);            
       return decoded.sub;
     } else {
       return null;

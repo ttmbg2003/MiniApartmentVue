@@ -80,7 +80,8 @@
                             <a href="#" data-bs-toggle="modal" data-bs-target="#viewExpensesDetailModal"
                                 @click="showExpensesDetail(expenses.roomId, expenses.month)"><i><img
                                         src="../components/icons/eye.png" style="width: 23px;"></i></a>
-                            <a href="#" @click="deleteExpenses(expenses.roomId,expenses.month)"><i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                            <a href="#" @click="deleteExpenses(expenses.roomId, expenses.month)"><i><img
+                                        src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
                         </td>
                     </tr>
                 </tbody>
@@ -146,26 +147,37 @@ var currentPage = 0;
 const month = ref();
 const expensesDetail = ref<Expenses[]>([]);
 var totalElement = 0;
-const deleteExpenses = async(roomId:number,month:number) =>{
-    await expensesService.deleteExpenses(props.year,month,roomId).then((res) => {
-        if (res == "delete success") {
-                Swal.fire({
-                    text: "Delete success !",
-                    icon: "success",
-                    showConfirmButton:false,
-                })
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                Swal.fire({
-                    text: "Delete fail !",
-                    icon: "error"
-                })
-            }
-        
-    })
-}
+const deleteExpenses = async (roomId: number, month: number) => {
+    Swal.fire({
+        text: "Are you sure want to delete?",
+        showCancelButton: true,
+        confirmButtonColor: "#0565F9",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#E8E7E7",
+        denyButtonColor: "#3333"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await expensesService.deleteExpenses(props.year, month, roomId).then((res) => {
+                if (res == "delete success") {
+                    Swal.fire({
+                        text: "Delete success !",
+                        icon: "success",
+                        showConfirmButton: false,
+                    })
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    Swal.fire({
+                        text: "Delete fail !",
+                        icon: "error"
+                    })
+                }
+
+            })
+        }
+    });
+};
 const getExpensesByRoomId = async (pageNo: number) => {
     await expensesService.getExpensesByRoomId(props.year, props.roomId, pageNo).then(response => {
         expensesDetail.value = response.content.map((expenses: { roomId: any, month: any; rentalFee: any; electricPreviousMeter: any; electricCurrentMeter: any; waterPreviousMeter: any; waterCurrentMeter: any; debt: any; fine: any; status: any; internet: any; service: any; securityDeposite: any; }) => ({
@@ -221,6 +233,7 @@ const fomatFee = (fee: number) => {
     color: #9b9b9b;
     text-decoration: none;
 }
+
 .payment-status {
     border-radius: 6px;
     width: 94px;
