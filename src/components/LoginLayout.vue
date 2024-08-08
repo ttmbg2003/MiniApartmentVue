@@ -191,8 +191,9 @@
 </template>
 
 <script>
-import apiClient from "@/utils/apiClient";
+
 import { login as loginAuth } from "@/type/auth";
+import axios from "axios";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -235,7 +236,7 @@ export default {
     },
     async login() {
       try {
-        const response = await apiClient.post("/auth/login", {
+        const response = await axios.post("http://localhost:8080/auth/login", {
           email: this.email,
           password: this.password,
         });
@@ -258,12 +259,13 @@ export default {
       try {
         const otp =
           this.otp1 + this.otp2 + this.otp3 + this.otp4 + this.otp5 + this.otp6;
-        const response = await apiClient.post("/auth/verifyOtpLogin", {
+        const response = await axios.post("http://localhost:8080/auth/verifyOtpLogin", {
           email: this.email,
           otp: otp,
         });
-        const token = response.data;
-        loginAuth(token);
+        const accessToken = response.data['result']['accessToken'];
+        const refreshToken = response.data['result']['refreshToken'];
+        loginAuth(accessToken,refreshToken);
         this.showSuccessModal = true;
         this.error = null; // Clear any previous errors
         console.log("OTP verified successfully. Token:", token);
@@ -277,7 +279,7 @@ export default {
     },
     async resendOtp() {
       try {
-        await apiClient.post("/auth/resendOtpLogin", {
+        await axios.post("http://localhost:8080/auth/resendOtpLogin", {
           email: this.email,
         });
         this.error = null;
