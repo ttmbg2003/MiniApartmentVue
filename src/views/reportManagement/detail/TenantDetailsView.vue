@@ -24,11 +24,19 @@
           Tenant Details
         </div>
       </div>
-      <select disabled>
-        <option value="0">August</option>
-        <option value="1">September</option>
-        <option value="2">October</option>
-        <option value="3">November</option>
+      <select @change="getDataFromBE" v-model="month">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
       </select>
     </div>
     <div class="mid">
@@ -51,12 +59,23 @@
               /120
             </div>
 
-            <div style="display: flex; align-items: baseline">
+            <div
+              v-if="rateDiff > 0"
+              style="display: flex; align-items: baseline"
+            >
               <font-awesome-icon
                 :icon="['fas', 'arrow-trend-up']"
                 style="color: #5ddf95"
               />
-              <p style="color: #5ddf95; margin-left: 5px">7.2%</p>
+              <p style="color: #5ddf95; margin-left: 5px">{{ rateDiff }}%</p>
+            </div>
+            <div v-else-if="rateDiff == 0" style="height: 2.5rem"></div>
+            <div v-else style="display: flex; align-items: baseline">
+              <font-awesome-icon
+                :icon="['fas', 'arrow-trend-down']"
+                style="color: #ff0000"
+              />
+              <p style="color: #ff0000; margin-left: 5px">{{ -rateDiff }}%</p>
             </div>
           </div>
           <div class="top-icon-bg">
@@ -133,7 +152,7 @@
             v-if="checkdata"
             :options="chartOptions"
             :data="chartData"
-            style="width: 96%"
+            style="width: 92%"
           />
         </div>
       </div>
@@ -148,7 +167,7 @@
             <tr>
               <th style="width: 4rem">No.</th>
               <th style="width: 7.8rem">Room No</th>
-              <th style="width: 9rem">
+              <th style="width: 7rem">
                 <div style="display: flex; flex-direction: column">
                   Maximum
                   <span
@@ -163,7 +182,7 @@
                   >
                 </div>
               </th>
-              <th style="width: 9rem">
+              <th style="width: 6rem">
                 <div style="display: flex; flex-direction: column">
                   Last month
                   <span
@@ -178,7 +197,7 @@
                   >
                 </div>
               </th>
-              <th style="width: 9rem">
+              <th style="width: 5rem">
                 <div style="display: flex; flex-direction: column">
                   This month
                   <span
@@ -196,7 +215,7 @@
             </tr>
             <template v-if="checkData">
               <tr v-for="index in range" :key="index">
-                <td colspan="5">
+                <td v-if="index - 1 < roomTenantList.length" colspan="5">
                   <div
                     style="
                       box-shadow: 0px 1px 13px 0px rgba(0, 0, 0, 0.08);
@@ -213,20 +232,21 @@
                     <div v-else style="width: 4rem; margin-left: 5px">
                       {{ index }}
                     </div>
-                    <div style="width: 5rem">
+                    <div style="width: 7.8rem">
                       {{ roomTenantList[index - 1]?.roomId }}
                     </div>
                     <div style="width: 7rem">
                       {{ roomTenantList[index - 1]?.maxTenant }}
                     </div>
-                    <div style="width: 7rem">
+                    <div style="width: 6rem">
                       {{ roomTenantList[index - 1]?.numberOfTenantLastMonth }}
                     </div>
-                    <div style="width: 7rem">
+                    <div style="width: 5rem">
                       {{ roomTenantList[index - 1]?.numberOfTenantThisMonth }}
                     </div>
                   </div>
                 </td>
+                <td v-else colspan="5" style="height: 3.1rem"></td>
               </tr>
             </template>
             <template v-else>
@@ -252,7 +272,7 @@
             <tr>
               <th style="width: 4rem">No.</th>
               <th style="width: 7.8rem">Room No</th>
-              <th style="width: 9rem">
+              <th style="width: 7rem">
                 <div style="display: flex; flex-direction: column">
                   Maximum
                   <span
@@ -267,7 +287,7 @@
                   >
                 </div>
               </th>
-              <th style="width: 9rem">
+              <th style="width: 6rem">
                 <div style="display: flex; flex-direction: column">
                   Last month
                   <span
@@ -282,7 +302,7 @@
                   >
                 </div>
               </th>
-              <th style="width: 9rem">
+              <th style="width: 5rem">
                 <div style="display: flex; flex-direction: column">
                   This month
                   <span
@@ -317,16 +337,16 @@
                     <div v-else style="width: 4rem; margin-left: 5px">
                       {{ index + 3 }}
                     </div>
-                    <div style="width: 5rem">
+                    <div style="width: 7.8rem">
                       {{ roomTenantList[index + 2]?.roomId }}
                     </div>
                     <div style="width: 7rem">
                       {{ roomTenantList[index + 2]?.maxTenant }}
                     </div>
-                    <div style="width: 7rem">
+                    <div style="width: 6rem">
                       {{ roomTenantList[index + 2]?.numberOfTenantLastMonth }}
                     </div>
-                    <div style="width: 7rem">
+                    <div style="width: 5rem">
                       {{ roomTenantList[index + 2]?.numberOfTenantThisMonth }}
                     </div>
                   </div>
@@ -365,7 +385,7 @@
             </div>
             &nbsp;entries
           </div>
-          <div style="display: flex">
+          <div style="display: flex; font-size: small">
             (
             <div
               class="indexPage"
@@ -424,6 +444,10 @@ reportService.getTenantByMonths().then((res) => {
   );
   checkdata.value = true;
   console.log(chartData.value.datasets[0].data);
+
+  rateByMonth.value = res.map((item: tenantsEachMonth) =>
+    parseFloat(formatPercentage(item.tenants))
+  );
 });
 function formatPercentage(tenant: number) {
   const percent = (tenant / 120) * 100;
@@ -512,6 +536,9 @@ interface roomTenantItem {
 const roomTenantList = ref<roomTenantItem[]>([]);
 const checkData = ref(false);
 
+const rateByMonth = ref([]);
+const rateDiff = ref(0);
+
 //số trang lớn nhất có thể hiển thị
 const maxPage = ref(9);
 const clickedIndex = ref(1);
@@ -560,26 +587,34 @@ const start = ref(1);
 const range = computed(() => {
   const rangeArray = [];
   for (let i = start.value; i <= start.value + 2; i++) {
-    if (i > roomTenantList.value.length) break;
     rangeArray.push(i);
   }
   return rangeArray;
 });
-reportService.getRoomTenantThisMonth(8).then((res) => {
-  for (let i = 0; i < res.length; i++) {
-    const item: roomTenantItem = {
-      roomId: res[i].roomId,
-      maxTenant: res[i].maxTenant,
-      numberOfTenantLastMonth: res[i].numberOfTenantLastMonth,
-      numberOfTenantThisMonth: res[i].numberOfTenantThisMonth,
-    };
-    roomTenantList.value.push(item);
-  }
+const month = ref(1);
+const getDataFromBE = () => {
+  reportService.getRoomTenantThisMonth(month.value).then((res) => {
+    for (let i = 0; i < res.length; i++) {
+      const item: roomTenantItem = {
+        roomId: res[i].roomId,
+        maxTenant: res[i].maxTenant,
+        numberOfTenantLastMonth: res[i].numberOfTenantLastMonth,
+        numberOfTenantThisMonth: res[i].numberOfTenantThisMonth,
+      };
+      roomTenantList.value.push(item);
+    }
 
-  checkData.value = true;
-  maxPage.value = 9;
-  console.log(roomTenantList);
-});
+    checkData.value = true;
+    maxPage.value = 9;
+    console.log(roomTenantList);
+
+    //change rate difference
+    rateDiff.value =
+      rateByMonth.value[month.value - 1] -
+      (month.value - 2 == -1 ? 0 : rateByMonth.value[month.value - 2]);
+  });
+};
+getDataFromBE();
 </script>
 
 <style scoped>
@@ -602,16 +637,16 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
   height: 2.5rem;
 }
 .header select {
+  padding-left: 1rem;
   position: absolute;
   bottom: -1rem;
   right: 0;
   width: 119px;
   height: 37px;
   border-radius: 12px;
+  border: none;
 }
-.header select:disabled {
-  background: #dddddd;
-}
+
 .mid {
   margin-left: 2.5rem;
   margin-right: 2.5rem;
@@ -691,7 +726,7 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
 .table2 {
   display: flex;
   justify-content: center;
-  flex-grow: 1;
+
   height: 11rem;
 }
 .table1 {

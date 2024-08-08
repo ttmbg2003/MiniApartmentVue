@@ -26,6 +26,16 @@ class ReportService {
       .get(`/contract/getRoomTenantThisMonth?currentMonth=${currentMonth}`)
       .then((res) => res.data["result"]);
   };
+  getOntimePaymentMonths = (): Promise<any> => {
+    return apiClient
+      .get("/api/payment/getOnTimePaymentMonths")
+      .then((res) => res.data["result"]);
+  };
+  getPaymentStatusRoom = (month: number): Promise<any> => {
+    return apiClient
+      .get(`/api/payment/getPaymentStatusRoom?month=${month}`)
+      .then((res) => res.data["result"]);
+  };
 }
 
 export default new ReportService();

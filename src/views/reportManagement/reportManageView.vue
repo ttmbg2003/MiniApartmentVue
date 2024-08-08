@@ -66,12 +66,27 @@
               /120
             </div>
 
-            <div style="display: flex; align-items: baseline">
+            <div
+              v-if="tenantRateDiff > 0"
+              style="display: flex; align-items: baseline"
+            >
               <font-awesome-icon
                 :icon="['fas', 'arrow-trend-up']"
                 style="color: #5ddf95"
               />
-              <p style="color: #5ddf95; margin-left: 5px">7.2%</p>
+              <p style="color: #5ddf95; margin-left: 5px">
+                {{ tenantRateDiff }}%
+              </p>
+            </div>
+            <div v-else-if="tenantRateDiff == 0" style="height: 2.5rem"></div>
+            <div v-else style="display: flex; align-items: baseline">
+              <font-awesome-icon
+                :icon="['fas', 'arrow-trend-down']"
+                style="color: #ff0000"
+              />
+              <p style="color: #ff0000; margin-left: 5px">
+                {{ -tenantRateDiff }}%
+              </p>
             </div>
           </div>
           <div class="top-icon-bg">
@@ -107,14 +122,31 @@
               On-time payment Rate
             </div>
 
-            <div style="font-weight: 700; font-size: 28px">92.5%</div>
+            <div style="font-weight: 700; font-size: 28px">
+              {{ paymentRate }}%
+            </div>
 
-            <div style="display: flex; align-items: baseline">
+            <div
+              v-if="paymentRateDiff > 0"
+              style="display: flex; align-items: baseline"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'arrow-trend-up']"
+                style="color: #5ddf95"
+              />
+              <p style="color: #5ddf95; margin-left: 5px">
+                {{ paymentRateDiff }}%
+              </p>
+            </div>
+            <div v-else-if="paymentRateDiff == 0" style="height: 2.5rem"></div>
+            <div v-else style="display: flex; align-items: baseline">
               <font-awesome-icon
                 :icon="['fas', 'arrow-trend-down']"
                 style="color: #ff0000"
               />
-              <p style="color: #ff0000; margin-left: 5px">5.2%</p>
+              <p style="color: #ff0000; margin-left: 5px">
+                {{ -paymentRateDiff }}%
+              </p>
             </div>
           </div>
           <div class="top-icon-bg">
@@ -257,8 +289,63 @@ const totalTenants = ref(0);
 tenantService.getTenantCount().then((res) => {
   totalTenants.value = res;
 });
+const currentDate = new Date();
+//get tenant data
+const tenantRateByMonth = ref([]);
+const tenantRateDiff = ref(0);
+interface tenantsEachMonth {
+  month: number;
+  tenants: number;
+}
+reportService.getTenantByMonths().then((res) => {
+  tenantRateByMonth.value = res.map((item: tenantsEachMonth) =>
+    parseFloat(formatPercentageForTenant(item.tenants))
+  );
 
-// console.log(totalRooms);
+  //change rate difference
+  tenantRateDiff.value =
+    tenantRateByMonth.value[currentDate.getMonth()] -
+    (currentDate.getMonth() - 1 == -1
+      ? 0
+      : tenantRateByMonth.value[currentDate.getMonth() - 1]);
+
+  console.log(currentDate.getMonth());
+  console.log(tenantRateDiff.value);
+});
+function formatPercentageForTenant(tenant: number) {
+  const percent = (tenant / 120) * 100;
+  return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
+}
+
+//get on-time rate data
+const paymentRate = ref(0);
+const rateByMonth = ref([]);
+const paymentRateDiff = ref(0);
+
+interface onTimePaymentRate {
+  month: number;
+  rooms: number;
+  onTimeRooms: number;
+}
+reportService.getOntimePaymentMonths().then((res) => {
+  //sort theo month sau đó đưa vào list
+  res.sort((a: onTimePaymentRate, b: onTimePaymentRate) => a.month - b.month);
+  rateByMonth.value = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.onTimeRooms))
+  );
+
+  //update on-time rate in top title
+  paymentRate.value = rateByMonth.value[currentDate.getMonth()];
+  paymentRateDiff.value =
+    rateByMonth.value[currentDate.getMonth()] -
+    (currentDate.getMonth() - 1 == -1
+      ? 0
+      : rateByMonth.value[currentDate.getMonth() - 1]);
+});
+function formatPercentage(room: number, onTimeRoom: number) {
+  const percent = (onTimeRoom / room) * 100;
+  return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
+}
 </script>
 
 <style scoped>

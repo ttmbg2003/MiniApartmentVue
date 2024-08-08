@@ -434,6 +434,8 @@ onMounted(filterRoomList);
   height: 4rem;
 }
 .header select {
+  padding-left: 0.5rem;
+  border: none !important;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -441,9 +443,7 @@ onMounted(filterRoomList);
   height: 37px;
   border-radius: 12px;
 }
-.header select:disabled {
-  background: #dddddd;
-}
+
 .mid {
   display: flex;
 

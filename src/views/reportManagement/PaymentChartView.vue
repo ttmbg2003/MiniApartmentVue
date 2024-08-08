@@ -2,13 +2,14 @@
   <div class="container">
     <div style="font-weight: 500">On - time payment month by month</div>
     <div class="chart">
-      <Line :options="chartOptions" :data="chartData" />
+      <Line v-if="checkdata" :options="chartOptions" :data="chartData" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Line } from "vue-chartjs";
+import reportService from "@/services/reportService";
 
 import {
   Chart as ChartJS,
@@ -21,6 +22,7 @@ import {
   PointElement,
   Filler,
 } from "chart.js";
+import { ref } from "vue";
 
 ChartJS.register(
   Title,
@@ -33,7 +35,7 @@ ChartJS.register(
   PointElement,
   Filler
 );
-const chartData = {
+const chartData = ref({
   labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   datasets: [
     {
@@ -58,7 +60,7 @@ const chartData = {
       pointRadius: 0,
     },
   ],
-};
+});
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -101,6 +103,28 @@ const chartOptions = {
     },
   },
 };
+interface onTimePaymentRate {
+  month: number;
+  rooms: number;
+  onTimeRooms: number;
+}
+const checkdata = ref(false);
+reportService.getOntimePaymentMonths().then((res) => {
+  //sort theo month sau đó đưa vào list
+  res.sort((a: onTimePaymentRate, b: onTimePaymentRate) => a.month - b.month);
+  chartData.value.datasets[1].data = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.onTimeRooms))
+  );
+  chartData.value.datasets[0].data = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.rooms - item.onTimeRooms))
+  );
+
+  checkdata.value = true;
+});
+function formatPercentage(room: number, onTimeRoom: number) {
+  const percent = (onTimeRoom / room) * 100;
+  return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
+}
 </script>
 
 <style scoped>
