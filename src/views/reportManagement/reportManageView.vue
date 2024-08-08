@@ -252,7 +252,6 @@ import TenantDetailsView from "./detail/TenantDetailsView.vue";
 import PaymentRateView from "./detail/PaymentRateView.vue";
 
 import reportService from "@/services/reportService";
-import tenantService from "@/services/tenantService";
 
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
@@ -285,11 +284,11 @@ reportService.getTotalRooms().then((res) => {
 });
 
 const totalTenants = ref(0);
-
-tenantService.getTenantCount().then((res) => {
+const currentDate = new Date();
+reportService.getTotaltenant(currentDate.getMonth() + 1).then((res) => {
   totalTenants.value = res;
 });
-const currentDate = new Date();
+
 //get tenant data
 const tenantRateByMonth = ref([]);
 const tenantRateDiff = ref(0);

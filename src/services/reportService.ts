@@ -36,6 +36,11 @@ class ReportService {
       .get(`/api/payment/getPaymentStatusRoom?month=${month}`)
       .then((res) => res.data["result"]);
   };
+  getTotaltenant = (month: number): Promise<any> => {
+    return apiClient
+      .get(`/contract/tenantCount?month=${month}`)
+      .then((res) => res.data["result"]);
+  };
 }
 
 export default new ReportService();

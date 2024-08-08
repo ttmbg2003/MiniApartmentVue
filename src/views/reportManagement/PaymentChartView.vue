@@ -97,6 +97,7 @@ const chartOptions = {
     },
     y: {
       beginAtZero: true,
+      max: 100,
       ticks: {
         stepSize: 20,
       },

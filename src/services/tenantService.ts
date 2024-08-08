@@ -2,11 +2,6 @@ import type { Tenant } from "@/type/Tenant";
 import apiClient from "@/utils/apiClient";
 
 class TenantService {
-  getTenantCount = (): Promise<any> => {
-    return apiClient
-      .get("/api/tenants/tenantCount")
-      .then((response) => response.data["result"]);
-  };
   getAllTenant = (pageNo: number, keySearch: string): Promise<any> => {
     if (pageNo == null) {
       pageNo = 0;

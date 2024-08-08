@@ -454,7 +454,8 @@ function formatPercentage(tenant: number) {
   return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
 }
 const totalTenants = ref(0);
-tenantService.getTenantCount().then((res) => {
+const currentDate = new Date();
+reportService.getTotaltenant(currentDate.getMonth() + 1).then((res) => {
   totalTenants.value = res;
 });
 
