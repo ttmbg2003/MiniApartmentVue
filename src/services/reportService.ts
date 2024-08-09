@@ -6,15 +6,17 @@ class ReportService {
       .get("/api/room/roomCount")
       .then((res) => res.data["result"]);
   };
-  getRoomByStatus = (): Promise<any> => {
-    return apiClient
-      .get(`/api/room/countRoomByStatus`)
-      .then((res) => res.data["result"]);
+  getRoomByStatus = async (month: number, year: number): Promise<any> => {
+    const response = await apiClient.get(
+      `/api/roomStatus/countRoomByStatus?month=${month}&year=${year}`
+    );
+    return response.data["result"];
   };
-  getRoomDetailList = (): Promise<any> => {
-    return apiClient
-      .get("/api/room/getRoomDetail")
-      .then((res) => res.data["result"]);
+  getRoomDetailList = async (month: number, year: number): Promise<any> => {
+    const response = await apiClient.get(
+      `/api/roomStatus/getRoomDetail?month=${month}&year=${year}`
+    );
+    return response.data["result"];
   };
   getTenantByMonths = (): Promise<any> => {
     return apiClient

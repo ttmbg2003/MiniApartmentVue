@@ -178,7 +178,10 @@
       </div>
       <div class="container" style="margin-top: 0">
         <div class="mid-elements">
-          <RoomChartView />
+          <RoomChartView
+            :month="currentDate.getMonth() + 1"
+            :year="currentDate.getFullYear()"
+          />
           <div
             class="detailBtn"
             @click="openDetailView(), (selectedView = 'room')"
@@ -288,7 +291,6 @@ const currentDate = new Date();
 reportService.getTotaltenant(currentDate.getMonth() + 1).then((res) => {
   totalTenants.value = res;
 });
-
 //get tenant data
 const tenantRateByMonth = ref([]);
 const tenantRateDiff = ref(0);
