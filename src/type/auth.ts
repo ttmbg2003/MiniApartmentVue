@@ -3,7 +3,7 @@ import axios from "axios";
 import { reactive } from "vue";
 
 export const authState = reactive({
-  isAuthenticated: !!localStorage.getItem("accessToken"),
+  isAuthenticated: !!(localStorage.getItem("accessToken") && localStorage.getItem("accessToken") != 'undefined'),
 });
 
 export const login = (accessToken: any, refreshToken: any) => {

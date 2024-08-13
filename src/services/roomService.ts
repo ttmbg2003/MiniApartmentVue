@@ -3,7 +3,7 @@ import apiClient from "@/utils/apiClient";
 
 class RoomService {
   getAllRoomAvailable = async (): Promise<any> => {
-    const response = await apiClient.get(`/api/room/getRoomAvailable`);
+    const response = await apiClient.get(`/api/roomStatus/getRoomAvailable`);
     return response.data["result"];
   };
   getAllRoom = async (): Promise<any> => {

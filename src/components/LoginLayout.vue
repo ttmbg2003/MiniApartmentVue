@@ -247,8 +247,6 @@ export default {
           this.otpSent = true;
           this.error = null;
         } else {
-          const token = response.data;
-          loginAuth(token);
           this.$router.push("/home");
         }
       } catch (error) {
