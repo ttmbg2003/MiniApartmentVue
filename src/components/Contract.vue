@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <form>
-    <div class="contract-form">
+  <form id="form" ref="document">
+    <div class="contract-form" id="element-to-convert">
       <div class="header">
         <p class="centered-text" style="font-weight: bold">
           CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br />Độc lập – Tự do – Hạnh phúc<br />-o0o-
@@ -39,16 +39,28 @@
         <p>
           ĐẠI DIỆN BÊN THUÊ (BÊN B):<br />
           Ông/bà:
-          <input type="text" v-model="contract.representative" /><br />
+          <input type="text" v-model="contract.representative" required /><br />
           CMND/CCCD:
-          <input type="tel" v-model="contract.citizenId" /> Ngày cấp:
-          <input type="date" v-model="contract.createCitizenIdDate" /><br />
+          <input type="tel" v-model="contract.citizenId" required /> Ngày cấp:
+          <input
+            type="date"
+            v-model="contract.createCitizenIdDate"
+            required
+          /><br />
           Nơi cấp:
-          <input type="text" v-model="contract.createCitizenIdPlace" /><br />
+          <input
+            type="text"
+            v-model="contract.createCitizenIdPlace"
+            required
+          /><br />
           Hộ khẩu:
-          <input type="text" v-model="contract.placeOfPermanet" /><br />
+          <input
+            type="text"
+            v-model="contract.placeOfPermanet"
+            required
+          /><br />
           Số điện thoại:
-          <input type="tel" v-model="contract.contact" />
+          <input type="tel" v-model="contract.contact" required />
         </p>
 
         <p>Hai bên cùng thỏa thuận ký hợp đồng với những nội dung sau:</p>
@@ -56,28 +68,28 @@
         <h3>ĐIỀU 1: ĐỐI TƯỢNG VÀ NỘI DUNG CỦA HỢP ĐỒNG</h3>
         <p>
           1.1. Bên A cho bên B thuê căn hộ số:
-          <input type="number" v-model="contract.roomId" /><br />
+          <input type="number" v-model="contract.roomId" required /><br />
           Tại: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
           Để sử dụng vào mục đích: để ở (không trái với quy định pháp luật)<br />
           1.2. Quyền sở hữu của bên A đối với căn hộ cụ thể như sau:<br />
           a) Địa chỉ căn hộ: số 1 đường Phú Mỹ, Mỹ Đình, Nam Từ Liêm, Hà Nội<br />
           b) Căn hộ số:
-          <input type="number" v-model="contract.roomId" /><br />
+          <input type="number" v-model="contract.roomId" required /><br />
           d) Tổng diện tích sàn căn hộ là:
-          <input type="number" v-model="contract.totalArea" /> m2; diện tích đất
-          gắn liền với căn hộ là:
-          <input type="number" v-model="contract.landArea" /> m2<br />
+          <input type="number" v-model="contract.totalArea" required /> m2; diện
+          tích đất gắn liền với căn hộ là:
+          <input type="number" v-model="contract.landArea" required /> m2<br />
           (sử dụng chung là:
-          <input type="number" v-model="contract.publicArea" /> m2; sử dụng
-          riêng là:
-          <input type="number" v-model="contract.privateArea" />
+          <input type="number" v-model="contract.publicArea" required /> m2; sử
+          dụng riêng là:
+          <input type="number" v-model="contract.privateArea" required />
           m2).<br />
           e) Trang thiết bị gắn liền với căn hộ:
-          <input type="text" v-model="contract.device" /><br />
+          <input type="text" v-model="contract.device" required /><br />
           f) Nguồn gốc sở hữu:
-          <input type="text" v-model="contract.ownerOrigin" /><br />
+          <input type="text" v-model="contract.ownerOrigin" required /><br />
           g) Những hạn chế về quyền sở hữu căn hộ (nếu có):
-          <input type="text" v-model="contract.ownerLimit" />
+          <input type="text" v-model="contract.ownerLimit" required />
         </p>
 
         <h5>
@@ -89,10 +101,11 @@
             type="number"
             name="numberOfTenant"
             v-model="contract.numberOfTenant"
+            required
           />người
         </p>
         b) Dưới đây là thông tin chi tiết của khách thuê:
-        <table style="margin-left: -13rem">
+        <table style="margin-left: -7rem">
           <thead>
             <tr>
               <th>No</th>
@@ -114,13 +127,13 @@
               <td>1</td>
               <td>
                 <input
-                  style="width: 60px"
+                  style="width: 97px"
                   type="text"
                   v-model="contract.representative"
                 />
               </td>
               <td>
-                <select v-model="contract.gender" style="width: 100px" readonly>
+                <select v-model="contract.gender" style="width: 85px" required>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -131,6 +144,7 @@
                   type="date"
                   v-model="contract.dateOfBirth"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -138,13 +152,15 @@
                   type="tel"
                   v-model="contract.contact"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="email"
                   v-model="contract.email"
-                  style="width: 100px"
+                  style="width: 110px"
+                  required
                 />
               </td>
               <td>
@@ -152,6 +168,7 @@
                   type="tel"
                   v-model="contract.citizenId"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -159,6 +176,7 @@
                   type="text"
                   v-model="contract.career"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -166,27 +184,30 @@
                   type="text"
                   v-model="contract.licensePlate"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="contract.vehicleType"
-                  style="width: 100px"
+                  style="width: 90px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="contract.vehicleColor"
-                  style="width: 100px"
+                  style="width: 90px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="contract.relationship"
-                  style="width: 100px"
+                  style="width: 90px"
                   readonly
                 />
               </td>
@@ -195,13 +216,14 @@
               <td>{{ index + 2 }}</td>
               <td>
                 <input
-                  style="width: 60px"
+                  style="width: 97px"
                   type="text"
                   v-model="tenant.fullName"
+                  required
                 />
               </td>
               <td>
-                <select v-model="tenant.gender" style="width: 100px">
+                <select v-model="tenant.gender" style="width: 85px" required>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -212,6 +234,7 @@
                   type="date"
                   v-model="tenant.dateOfBirth"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -219,13 +242,15 @@
                   type="tel"
                   v-model="tenant.contact"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="email"
                   v-model="tenant.email"
-                  style="width: 100px"
+                  style="width: 110px"
+                  required
                 />
               </td>
               <td>
@@ -233,6 +258,7 @@
                   type="tel"
                   v-model="tenant.citizenId"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -240,6 +266,7 @@
                   type="text"
                   v-model="tenant.career"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
@@ -247,27 +274,31 @@
                   type="text"
                   v-model="tenant.licensePlate"
                   style="width: 100px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="tenant.vehicleType"
-                  style="width: 100px"
+                  style="width: 90px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="tenant.vehicleColor"
-                  style="width: 100px"
+                  style="width: 90px"
+                  required
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="tenant.relationship"
-                  style="width: 100px"
+                  style="width: 90px"
+                  required
                 />
               </td>
             </tr>
@@ -283,6 +314,7 @@
           @input="(event) => (contract.securityDeposite = event.target.value)"
           name="rentalFee"
           v-model="contract.rentalFee"
+          required
         />
         đồng Việt Nam/01 th&aacute;ng.<br />(Bằng chữ:<br />2.2. C&aacute;c chi
         ph&iacute; sử dụng điện, nước, điện thoại v&agrave; c&aacute;c dịch vụ
@@ -300,6 +332,7 @@
           type="number"
           name="securityDeposite"
           v-model="contract.rentalFee"
+          required
         />VND (tương đương với 1 th&aacute;ng tiền thu&ecirc; ph&ograve;ng)<br />2.3.
         Phương thức thanh to&aacute;n: thanh to&aacute;n bằng tiền Việt Nam
         th&ocirc;ng qua h&igrave;nh thức: chuyển khoản<br />2.4. Thời hạn thanh
@@ -315,11 +348,22 @@
           type="date"
           name="moveIn"
           v-model="contract.moveinDate"
+          required
         /><br />3.2. Thời hạn cho thu&ecirc; nh&agrave; ở l&agrave; ..........
         năm (......... th&aacute;ng), kể từ
-        <input type="date" name="signinDate" v-model="contract.signinDate" />
+        <input
+          type="date"
+          name="signinDate"
+          v-model="contract.signinDate"
+          required
+        />
         đến
-        <input type="date" name="expireDate" v-model="contract.expireDate" />
+        <input
+          type="date"
+          name="expireDate"
+          v-model="contract.expireDate"
+          required
+        />
       </p>
 
       <p>
@@ -393,7 +437,7 @@
         b&aacute;o cho b&ecirc;n B biết trước theo thoả thuận;<br />- Khi quyền
         sử dụng căn hộ bị hạn chế do lợi &iacute;ch của người thứ ba.<br />g)
         C&aacute;c quyền kh&aacute;c do hai b&ecirc;n thỏa thuận
-        <input type="text" name="rights" v-model="contract.rights" />
+        <input type="text" name="rights" v-model="contract.rights" required />
         <br />5.2. Nghĩa vụ của b&ecirc;n B:
       </p>
 
@@ -426,6 +470,7 @@
           type="text"
           name="rights"
           v-model="contract.obligations"
+          required
         />
       </p>
 
@@ -493,7 +538,7 @@
         C&aacute;c cam kết kh&aacute;c (phải ph&ugrave; hợp với quy định của
         ph&aacute;p luật v&agrave; kh&ocirc;ng tr&aacute;i đạo đức x&atilde;
         hội):
-        <input type="text" name="rights" v-model="contract.commit" />
+        <input type="text" name="rights" v-model="contract.commit" required />
       </p>
 
       <p>
@@ -512,8 +557,9 @@
           type="date"
           name="signinDate"
           v-model="contract.signinDate"
+          required
         /><br />10.2. Hợp đồng n&agrave;y được lập th&agrave;nh
-        <input type="text" name="rights" v-model="contract.copies" />
+        <input type="text" name="rights" v-model="contract.copies" required />
         bản v&agrave; c&oacute; gi&aacute; trị như nhau. Mỗi b&ecirc;n giữ 1
         bản, 1 bản lưu tại cơ quan c&ocirc;ng chứng hoặc chứng thực (nếu
         c&oacute;) v&agrave; 1 bản lưu tại cơ quan thuế (c&aacute;c b&ecirc;n
@@ -531,9 +577,9 @@
         &nbsp;&nbsp; (K&yacute; t&ecirc;n, họ t&ecirc;n)
       </p>
       <div class="footer">
-        <router-link to="/ListOfContract" class="btn btn-secondary"
-          >Cancel</router-link
-        >
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
         <button
           @click.prevent="submitForm"
           class="btn btn-primary"
@@ -545,10 +591,12 @@
     </div>
   </form>
   <div v-if="error" class="error">{{ error }}</div>
+  <button @click="exportToPDF">Export to PDF</button>
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
 import Swal from "sweetalert2";
+import html2pdf from "html2pdf.js";
 export default {
   data() {
     return {
@@ -561,6 +609,8 @@ export default {
         contact: "",
         roomId: "",
         totalArea: "",
+        month: "",
+        year: "",
         landArea: "",
         publicArea: "",
         privateArea: "",
@@ -689,59 +739,51 @@ export default {
       return tenants;
     },
 
-    validateForm() {
-      // Kiểm tra tất cả các trường bắt buộc
-      return (
-        this.contract.representative ||
-        this.contract.citizenId ||
-        this.contract.createCitizenIdDate ||
-        this.contract.createCitizenIdPlace ||
-        this.contract.placeOfPermanet ||
-        this.contract.contact ||
-        this.contract.roomId ||
-        this.contract.totalArea ||
-        this.contract.landArea ||
-        this.contract.publicArea ||
-        this.contract.privateArea ||
-        this.contract.device ||
-        this.contract.ownerOrigin ||
-        this.contract.ownerLimit ||
-        this.contract.numberOfTenant ||
-        this.contract.rentalFee ||
-        this.contract.securityDeposite ||
-        this.contract.signinDate ||
-        this.contract.moveinDate ||
-        this.contract.expireDate
-      );
-    },
-
     async submitForm() {
-      if (!this.validateForm()) {
-        this.error = "Please fill in all fields.";
-        return;
-      }
       try {
         this.contract.tenants = this.generateTenantsArray();
-        console.log(this.generateTenants);
+        const part = this.contract.signinDate.split("-");
+        const year = part[0];
+        const month = part[1];
+        this.contract.month = month;
+        this.contract.year = year;
         const response = await apiClient.post(
           "contract/addNewContract",
           this.contract
         );
 
-        if (response.data.status === 200) {
-          this.error = null;
-          Swal.fire({
-            title: "Success!",
-            text: "Contract is created successfully.",
-            icon: "success",
-            timer: 2000,
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-          this.$router.push("/ListOfContract");
+        if (response.data.status == 200) {
+          const roomId = this.contract.roomId; // Assume response has contractId
+
+          // Generate PDF as Blob
+          const pdfBlob = await html2pdf()
+            .from(document.getElementById("element-to-convert"))
+            .output("blob");
+
+          // Upload PDF to backend
+          const formData = new FormData();
+          formData.append("file", pdfBlob, `contract_${roomId}.pdf`);
+
+          const uploadResponse = await apiClient.post(
+            `contract/uploadContractPdf/${roomId}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+
+          if (uploadResponse.data.status == 200) {
+            Swal.fire({
+              title: "Success!",
+              text: "Contract is created and PDF uploaded successfully.",
+              icon: "success",
+              timer: 2000,
+            });
+            setTimeout(() => {
+              this.$router.push("/ListOfContract");
+            }, 2000);
+          } else {
+            throw new Error("Failed to upload PDF");
+          }
         } else {
-          console.log("Message là: ", response.data.result, this.contract);
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -750,9 +792,12 @@ export default {
           this.error = response.data.result;
         }
       } catch (error) {
-        // this.error = response.data;
-        console.log("Lỗi ở catch: ", error);
-        console.log("Dữ liệu hợp đồng:", this.contract);
+        console.error("Error in form submission:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "There was an issue submitting the form.",
+        });
       }
     },
   },
@@ -810,5 +855,8 @@ select {
   color: red;
   text-align: center;
   margin-top: 10px;
+}
+#form {
+  font-size: small;
 }
 </style>

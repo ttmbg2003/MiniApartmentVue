@@ -191,7 +191,6 @@
 </template>
 
 <script>
-
 import { login as loginAuth } from "@/type/auth";
 import axios from "axios";
 
@@ -240,14 +239,11 @@ export default {
           email: this.email,
           password: this.password,
         });
-        if (
-          response.data ===
-          "Otp is sent successfully, please check the OTP to verify"
-        ) {
+        if (response.data.status == 200) {
           this.otpSent = true;
           this.error = null;
         } else {
-          this.$router.push("/home");
+          this.error = response.data.result;
         }
       } catch (error) {
         this.error = "This Email Address or Password is not incorrect. Retry!";
@@ -257,16 +253,22 @@ export default {
       try {
         const otp =
           this.otp1 + this.otp2 + this.otp3 + this.otp4 + this.otp5 + this.otp6;
-        const response = await axios.post("http://localhost:8080/auth/verifyOtpLogin", {
-          email: this.email,
-          otp: otp,
-        });
-        const accessToken = response.data['result']['accessToken'];
-        const refreshToken = response.data['result']['refreshToken'];
-        loginAuth(accessToken,refreshToken);
-        this.showSuccessModal = true;
-        this.error = null; // Clear any previous errors
-        console.log("OTP verified successfully. Token:", token);
+        const response = await axios.post(
+          "http://localhost:8080/auth/verifyOtpLogin",
+          {
+            email: this.email,
+            otp: otp,
+          }
+        );
+        if(response.data.status == 200) {
+          this.error = null; // Clear any previous errors
+          const accessToken = response.data["result"]["accessToken"];
+          const refreshToken = response.data["result"]["refreshToken"];
+          loginAuth(accessToken, refreshToken);
+          this.showSuccessModal = true;
+        }else {
+          this.error = response.data.result;
+        }
       } catch (error) {
         this.error = "Incorrect OTP provided. Retry!";
       }

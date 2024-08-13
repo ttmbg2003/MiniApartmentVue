@@ -19,23 +19,30 @@ import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import reportService from "@/services/reportService";
 
 import { onMounted, watch, ref } from "vue";
-
+const prop = defineProps({
+  month: Number,
+  year: Number,
+});
 const occupiedCount = ref(null);
 const reservedCount = ref(null);
 const vacantCount = ref(null);
+
 const fetchData = async () => {
-  const res = await reportService.getRoomByStatus();
-  occupiedCount.value = res.occupiedCount;
-  reservedCount.value = res.reservedCount;
-  vacantCount.value = res.vacantCount;
-  dataLoaded.value = true;
-  chartData.value.datasets[0].data = [
-    vacantCount.value,
-    reservedCount.value,
-    occupiedCount.value,
-  ];
+  if (prop.month !== undefined && prop.year !== undefined) {
+    const res = await reportService.getRoomByStatus(prop.month, prop.year);
+    occupiedCount.value = res.occupiedCount;
+    reservedCount.value = res.reservedCount;
+    vacantCount.value = res.vacantCount;
+    dataLoaded.value = true;
+    chartData.value.datasets[0].data = [
+      vacantCount.value,
+      reservedCount.value,
+      occupiedCount.value,
+    ];
+  }
 };
 onMounted(fetchData);
+
 console.log(vacantCount.value);
 ChartJS.register(Tooltip, Legend, ArcElement);
 // const loaded = ref(false);

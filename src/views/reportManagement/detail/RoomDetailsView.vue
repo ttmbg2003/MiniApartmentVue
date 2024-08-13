@@ -24,11 +24,16 @@
           Room Status Details
         </div>
       </div>
-      <select disabled>
-        <option value="0">August</option>
-        <option value="1">September</option>
-        <option value="2">October</option>
-        <option value="3">November</option>
+
+      <select @change="getDataFromBE" v-model="month">
+        <option
+          @change="getDataFromBE"
+          v-for="item in months"
+          :key="item.value"
+          :value="item.value"
+        >
+          {{ item.text }}
+        </option>
       </select>
     </div>
     <div class="mid" style="max-height: fit-content">
@@ -135,7 +140,7 @@
       </div>
       <div id="mid3" style="width: 26rem; margin-top: 1.8rem">
         <div class="midItems" style="padding-top: 14px; padding-bottom: 14px">
-          <RoomChartView />
+          <RoomChartView :key="month" :month="month" :year="2024" />
         </div>
       </div>
     </div>
@@ -336,22 +341,68 @@ const vacant = ref(0);
 const reserved = ref(0);
 const total = 50;
 
-onMounted(() => {
-  reportService.getRoomByStatus().then((res) => {
+const month = ref(1);
+const months = [
+  { value: 1, text: "January" },
+  { value: 2, text: "February" },
+  { value: 3, text: "March" },
+  { value: 4, text: "April" },
+  { value: 5, text: "May" },
+  { value: 6, text: "June" },
+  { value: 7, text: "July" },
+  { value: 8, text: "August" },
+  { value: 9, text: "September" },
+  { value: 10, text: "October" },
+  { value: 11, text: "November" },
+  { value: 12, text: "December" },
+];
+
+const getDataFromBE = () => {
+  reportService.getRoomByStatus(month.value, 2024).then((res) => {
     occupied.value = res.occupiedCount;
     vacant.value = res.vacantCount;
     reserved.value = res.reservedCount;
-    roomStatusTable.value[0].rate = (occupied.value / total) * 100;
-    roomStatusTable.value[1].rate = (vacant.value / total) * 100;
-    roomStatusTable.value[2].rate = (reserved.value / total) * 100;
+    roomStatusTable.value[0].rate = formatPercentage(occupied.value);
+    roomStatusTable.value[1].rate = formatPercentage(vacant.value);
+    roomStatusTable.value[2].rate = formatPercentage(reserved.value);
   });
-});
+  reportService.getRoomDetailList(month.value, 2024).then((res) => {
+    roomDetailList.value = [];
+    for (let i = 0; i < res.length; i++) {
+      const item: roomDetailItem = {
+        roomNo: res[i].roomId,
+        fee: res[i].rentalFee,
+        status: res[i].roomStatus,
+      };
+      roomDetailList.value.push(item);
+    }
+    console.log(roomDetailList.value);
+    roomListTable.value = [];
+    filterRoomList();
+    checkData.value = true;
+    console.log(roomListTable);
+    clickedIndex.value = 1;
+    start.value = 1;
+  });
+};
+getDataFromBE();
 const roomStatusTable = ref([
-  { status: "Occupied", room: occupied, rate: (occupied.value / total) * 100 },
-  { status: "vacant", room: vacant, rate: (vacant.value / total) * 100 },
-  { status: "Reserved", room: reserved, rate: (reserved.value / total) * 100 },
+  {
+    status: "Occupied",
+    room: occupied,
+    rate: formatPercentage(occupied.value),
+  },
+  { status: "vacant", room: vacant, rate: formatPercentage(vacant.value) },
+  {
+    status: "Reserved",
+    room: reserved,
+    rate: formatPercentage(reserved.value),
+  },
 ]);
-
+function formatPercentage(rate: number) {
+  const percent = (rate / 50) * 100;
+  return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
+}
 interface roomDetailItem {
   roomNo: number;
   fee: string;
@@ -393,20 +444,6 @@ const range = computed(() => {
   return rangeArray;
 });
 
-reportService.getRoomDetailList().then((res) => {
-  for (let i = 0; i < res.length; i++) {
-    const item: roomDetailItem = {
-      roomNo: res[i].roomId,
-      fee: res[i].rentalFee,
-      status: res[i].roomStatus,
-    };
-    roomDetailList.value.push(item);
-  }
-  filterRoomList();
-  checkData.value = true;
-  console.log(roomListTable);
-});
-
 const checkData = ref(false);
 // Watch for changes in statusFilter
 watch(statusFilter, filterRoomList);
@@ -434,6 +471,8 @@ onMounted(filterRoomList);
   height: 4rem;
 }
 .header select {
+  padding-left: 0.5rem;
+  border: none !important;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -441,9 +480,7 @@ onMounted(filterRoomList);
   height: 37px;
   border-radius: 12px;
 }
-.header select:disabled {
-  background: #dddddd;
-}
+
 .mid {
   display: flex;
 
