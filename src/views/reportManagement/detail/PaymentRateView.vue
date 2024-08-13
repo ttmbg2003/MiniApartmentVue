@@ -24,11 +24,19 @@
           On-time Payment Rate Details
         </div>
       </div>
-      <select disabled>
-        <option value="0">August</option>
-        <option value="1">September</option>
-        <option value="2">October</option>
-        <option value="3">November</option>
+      <select @change="getDataFromBE" v-model="month">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
       </select>
     </div>
     <div class="mid">
@@ -43,45 +51,34 @@
               {{ paymentRate }}%
             </div>
 
-            <div style="display: flex; align-items: baseline">
+            <div
+              v-if="rateDiff > 0"
+              style="display: flex; align-items: baseline"
+            >
               <font-awesome-icon
                 :icon="['fas', 'arrow-trend-up']"
                 style="color: #5ddf95"
               />
-              <p style="color: #5ddf95; margin-left: 5px">7.2%</p>
+              <p style="color: #5ddf95; margin-left: 5px">{{ rateDiff }}%</p>
+            </div>
+            <div v-else-if="rateDiff == 0" style="height: 2.5rem"></div>
+            <div v-else style="display: flex; align-items: baseline">
+              <font-awesome-icon
+                :icon="['fas', 'arrow-trend-down']"
+                style="color: #ff0000"
+              />
+              <p style="color: #ff0000; margin-left: 5px">{{ -rateDiff }}%</p>
             </div>
           </div>
           <div class="top-icon-bg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xml:space="preserve"
-              id="Layer_1"
-              x="0"
-              y="0"
-              version="1.1"
-              viewBox="0 0 34 35"
-            >
-              <circle cx="17" cy="17" r="17" fill="#e7f5f0" />
-              <path
-                d="m10.3 13.2.2.1.1.1v.2l-.1.2-.2.1h-.2l-.1-.1v-.3l.1-.2.2-.1zm10.8 4.4.2.1.1.1v.2l-.1.2-.2.1h-.2l-.1-.1-.1-.2.1-.2.3-.2z"
-                class="st1"
-              />
-              <path
-                d="M22.7 10.7h-14c-.7 0-1.3.6-1.3 1.3v7.6c0 .7.6 1.3 1.3 1.3h14c.7 0 1.3-.6 1.3-1.3V12c0-.8-.6-1.3-1.3-1.3z"
-                class="st1"
-              />
-              <path
-                d="M15.7 18.3c1.4 0 2.5-1.1 2.5-2.5s-1.1-2.5-2.5-2.5-2.5 1.1-2.5 2.5c0 1.3 1.1 2.5 2.5 2.5zm10.8-3.8v7.6c0 .3-.1.7-.4.9-.2.2-.6.4-.9.4h-14"
-                class="st1"
-              />
-            </svg>
+            <img src="/src/components/icons/ontimeRate.png" />
           </div>
         </div>
         <div class="mid-elements">
           <div style="font-weight: 700; font-size: 16px; margin-left: 0.7rem">
             On-time payment month by month (rooms)
           </div>
-          <table class="payment-months">
+          <table v-if="checkdata" class="payment-months">
             <tr>
               <th style="width: 15%; padding-left: 0.7rem">No.</th>
               <th style="width: 20%">Month</th>
@@ -103,12 +100,12 @@
               <th style="width: 20%">On-time</th>
               <th style="width: 25%">Rate</th>
             </tr>
-            <tr v-for="(items, index) in tenantByMonths" :key="index">
+            <tr v-for="(items, index) in rateList" :key="index">
               <td style="padding-left: 0.7rem">{{ index + 1 }}</td>
               <td>{{ items.month }}</td>
-              <td>{{ items.tenants }}</td>
-              <td></td>
-              <td>{{ formatPercentage(items.tenants) }}</td>
+              <td>{{ items.rooms }}</td>
+              <td>{{ items.onTimeRooms }}</td>
+              <td>{{ formatPercentage(items.rooms, items.onTimeRooms) }}</td>
             </tr>
           </table>
           <div
@@ -149,23 +146,36 @@
           On - time payment month by month (%)
         </div>
         <div class="chart">
-          <Line :options="chartOptions" :data="chartData" style="width: 92%" />
+          <Line
+            v-if="checkloadedChart"
+            :options="chartOptions"
+            :data="chartData"
+            style="width: 90%"
+          />
         </div>
       </div>
     </div>
     <div class="bottom">
-      <div style="margin: 0.5rem 0 0 1.8rem; font-size: 14px">
-        Number of tenants in this month
+      <div class="filter">
+        <img
+          style="width: 56px; height: 15px; margin-right: 10px"
+          src="/src/components/icons/filter.png"
+        />
+        <el-checkbox-group v-model="statusFilter" size="small">
+          <el-checkbox label="On-time" value="on-time" border />
+          <el-checkbox label="Overdue" value="overdue" border />
+        </el-checkbox-group>
       </div>
       <div class="listTable">
         <div class="table1">
           <table>
             <tr>
-              <th style="width: 4rem">No.</th>
-              <th style="width: 7.8rem">Room No</th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  Maximum
+              <th style="width: 3rem">No.</th>
+              <th style="width: 5rem">Room No</th>
+
+              <th style="width: 5rem">
+                <div style="display: flex">
+                  Fee
                   <span
                     style="
                       font-family: Roboto;
@@ -174,44 +184,17 @@
 
                       text-align: left;
                     "
-                    >(Tenants)</span
-                  >
+                    >(VND)
+                  </span>
                 </div>
               </th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  Last month
-                  <span
-                    style="
-                      font-family: Roboto;
-                      font-size: 10px;
-                      font-weight: 500;
-
-                      text-align: left;
-                    "
-                    >(Tenants)</span
-                  >
-                </div>
-              </th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  This month
-                  <span
-                    style="
-                      font-family: Roboto;
-                      font-size: 10px;
-                      font-weight: 500;
-
-                      text-align: left;
-                    "
-                    >(Tenants)</span
-                  >
-                </div>
-              </th>
+              <th style="width: 6.5rem">Due Date</th>
+              <th style="width: 7rem">Payment Date</th>
+              <th style="width: 5rem">Status</th>
             </tr>
-            <template v-if="checkData">
+            <template v-if="checkData && listToDisplay.length > 0">
               <tr v-for="index in range" :key="index">
-                <td colspan="5">
+                <td v-if="listToDisplay[index] != null" colspan="6">
                   <div
                     style="
                       box-shadow: 0px 1px 13px 0px rgba(0, 0, 0, 0.08);
@@ -222,34 +205,53 @@
                     "
                   >
                     <div
-                      v-if="index > roomTenantList.length"
+                      v-if="index > listToDisplay.length"
                       style="height: 40px; width: 4rem; margin-left: 5px"
                     ></div>
-                    <div v-else style="width: 4rem; margin-left: 5px">
+                    <div v-else style="width: 3rem; margin-left: 5px">
                       {{ index }}
                     </div>
                     <div style="width: 5rem">
-                      {{ roomTenantList[index - 1]?.roomId }}
+                      {{ listToDisplay[index - 1]?.roomId }}
+                    </div>
+                    <div style="width: 5rem">
+                      {{ listToDisplay[index - 1]?.totalFee }}
+                    </div>
+                    <div style="width: 6.5rem">
+                      {{ listToDisplay[index - 1]?.dueDate }}
                     </div>
                     <div style="width: 7rem">
-                      {{ roomTenantList[index - 1]?.maxTenant }}
+                      {{ listToDisplay[index - 1]?.paymentDate }}
                     </div>
-                    <div style="width: 7rem">
-                      {{ roomTenantList[index - 1]?.numberOfTenantLastMonth }}
+                    <div
+                      v-if="listToDisplay[index - 1]?.status == 'overdue'"
+                      style="width: 5rem"
+                    >
+                      <img
+                        style="width: 3.75rem; height: auto"
+                        src="/src/components/icons/overdue.png"
+                      />
                     </div>
-                    <div style="width: 7rem">
-                      {{ roomTenantList[index - 1]?.numberOfTenantThisMonth }}
+                    <div
+                      v-else-if="listToDisplay[index - 1]?.status === 'on-time'"
+                    >
+                      <img
+                        style="width: 3.75rem; height: auto"
+                        src="/src/components/icons/ontime.png"
+                      />
                     </div>
+                    <div v-else></div>
                   </div>
                 </td>
+                <td v-else colspan="6" style="height: 3.1rem"></td>
               </tr>
             </template>
             <template v-else>
               <tr v-for="index in 3" :key="index">
-                <td v-if="index == 2" colspan="5" style="text-align: center">
+                <td v-if="index == 2" colspan="6" style="text-align: center">
                   No data available
                 </td>
-                <td v-else style="height: 40px"></td>
+                <td v-else style="height: 3.1rem"></td>
               </tr>
             </template>
           </table>
@@ -259,17 +261,19 @@
             width: 1px;
             height: 9.5rem;
             background: rgba(176, 180, 205, 1);
+            margin: 0;
             margin-top: 0px;
           "
         ></div>
         <div class="table2">
           <table>
             <tr>
-              <th style="width: 4rem">No.</th>
-              <th style="width: 7.8rem">Room No</th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  Maximum
+              <th style="width: 3rem">No.</th>
+              <th style="width: 5rem">Room No</th>
+
+              <th style="width: 5rem">
+                <div style="display: flex">
+                  Fee
                   <span
                     style="
                       font-family: Roboto;
@@ -278,44 +282,19 @@
 
                       text-align: left;
                     "
-                    >(Tenants)</span
-                  >
+                    >(VND)
+                  </span>
                 </div>
               </th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  Last month
-                  <span
-                    style="
-                      font-family: Roboto;
-                      font-size: 10px;
-                      font-weight: 500;
-
-                      text-align: left;
-                    "
-                    >(Tenants)</span
-                  >
-                </div>
-              </th>
-              <th style="width: 9rem">
-                <div style="display: flex; flex-direction: column">
-                  This month
-                  <span
-                    style="
-                      font-family: Roboto;
-                      font-size: 10px;
-                      font-weight: 500;
-
-                      text-align: left;
-                    "
-                    >(Tenants)</span
-                  >
-                </div>
-              </th>
+              <th style="width: 6.5rem">Due Date</th>
+              <th style="width: 7rem">Payment Date</th>
+              <th style="width: 5rem">Status</th>
             </tr>
-            <template v-if="checkData && start <= 48">
+            <template
+              v-if="checkData && checkDisplayTable2 && listToDisplay.length > 0"
+            >
               <tr v-for="index in range" :key="index">
-                <td colspan="5">
+                <td v-if="listToDisplay[index + 2] != null" colspan="6">
                   <div
                     style="
                       box-shadow: 0px 1px 13px 0px rgba(0, 0, 0, 0.08);
@@ -326,34 +305,53 @@
                     "
                   >
                     <div
-                      v-if="index + 3 > roomTenantList.length"
-                      style="height: 40px; width: 4rem; margin-left: 5px"
+                      v-if="index + 3 > listToDisplay.length"
+                      style="height: 40px; width: 3rem; margin-left: 5px"
                     ></div>
-                    <div v-else style="width: 4rem; margin-left: 5px">
+                    <div v-else style="width: 3rem; margin-left: 5px">
                       {{ index + 3 }}
                     </div>
                     <div style="width: 5rem">
-                      {{ roomTenantList[index + 2]?.roomId }}
+                      {{ listToDisplay[index + 2]?.roomId }}
+                    </div>
+                    <div style="width: 5rem">
+                      {{ listToDisplay[index + 2]?.totalFee }}
+                    </div>
+                    <div style="width: 6.5rem">
+                      {{ listToDisplay[index + 2]?.dueDate }}
                     </div>
                     <div style="width: 7rem">
-                      {{ roomTenantList[index + 2]?.maxTenant }}
+                      {{ listToDisplay[index + 2]?.paymentDate }}
                     </div>
-                    <div style="width: 7rem">
-                      {{ roomTenantList[index + 2]?.numberOfTenantLastMonth }}
+                    <div v-if="index - 1 >= listToDisplay.length"></div>
+                    <div
+                      v-else-if="listToDisplay[index - 1]?.status == 'overdue'"
+                      style="width: 5rem"
+                    >
+                      <img
+                        style="width: 3.75rem; height: auto"
+                        src="/src/components/icons/overdue.png"
+                      />
                     </div>
-                    <div style="width: 7rem">
-                      {{ roomTenantList[index + 2]?.numberOfTenantThisMonth }}
+                    <div
+                      v-else-if="listToDisplay[index - 1]?.status == 'on-time'"
+                    >
+                      <img
+                        style="width: 3.75rem; height: auto"
+                        src="/src/components/icons/ontime.png"
+                      />
                     </div>
                   </div>
                 </td>
+                <td v-else colspan="6" style="height: 3.1rem"></td>
               </tr>
             </template>
             <template v-else>
               <tr v-for="index in 3" :key="index">
-                <td v-if="index == 2" colspan="5" style="text-align: center">
+                <td v-if="index == 2" colspan="6" style="text-align: center">
                   No data available
                 </td>
-                <td v-else style="height: 40px"></td>
+                <td v-else style="height: 3.1rem"></td>
               </tr>
             </template>
           </table>
@@ -376,11 +374,17 @@
           >
             Showing&nbsp;
             <div style="font-weight: bold; color: rgba(0, 2, 49, 1)">
-              {{ start }} to {{ start + 5 > 50 ? 50 : start + 5 }} of 50
+              {{ start }} to
+              {{
+                start + 5 > listToDisplay.length
+                  ? listToDisplay.length
+                  : start + 5
+              }}
+              of {{ listToDisplay.length }}
             </div>
             &nbsp;entries
           </div>
-          <div style="display: flex">
+          <div style="display: flex; font-size: small">
             (
             <div
               class="indexPage"
@@ -408,7 +412,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { watch, ref, computed } from "vue";
 import reportService from "@/services/reportService";
 import tenantService from "@/services/tenantService";
 
@@ -437,9 +441,20 @@ ChartJS.register(
   PointElement,
   Filler
 );
-const chartData = {
+const checkloadedChart = ref(false);
+const chartData = ref({
   labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   datasets: [
+    {
+      label: "Overdue",
+      borderColor: "blue",
+      backgroundColor: "blue",
+      borderWidth: 2,
+      data: [10, 20, 35, 20, 15, 25, 10, 15, 20, 16, 20, 25],
+
+      tension: 0.3,
+      pointRadius: 0,
+    },
     {
       label: "On-time",
       borderColor: "#5CC8BE",
@@ -451,18 +466,8 @@ const chartData = {
       tension: 0.3,
       pointRadius: 0,
     },
-    {
-      label: "Overdue",
-      borderColor: "blue",
-      backgroundColor: "blue",
-      borderWidth: 2,
-      data: [10, 20, 35, 20, 15, 25, 10, 15, 20, 16, 20, 25],
-
-      tension: 0.3,
-      pointRadius: 0,
-    },
   ],
-};
+});
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -501,43 +506,70 @@ const chartOptions = {
     },
     y: {
       beginAtZero: true,
+      max: 100,
       ticks: {
         stepSize: 20,
       },
     },
   },
 };
-interface tenantsEachMonth {
+interface onTimePaymentRate {
   month: number;
-  tenants: number;
+  rooms: number;
+  onTimeRooms: number;
 }
 const checkdata = ref(false);
-const tenantByMonths = ref<tenantsEachMonth[]>([]);
-reportService.getTenantByMonths().then((res) => {
-  tenantByMonths.value = res;
+const rateList = ref<onTimePaymentRate[]>([]);
+reportService.getOntimePaymentMonths().then((res) => {
+  //sort theo month sau đó đưa vào list
+  rateList.value = res.sort(
+    (a: onTimePaymentRate, b: onTimePaymentRate) => a.month - b.month
+  );
+  chartData.value.datasets[1].data = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.onTimeRooms))
+  );
+  chartData.value.datasets[0].data = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.rooms - item.onTimeRooms))
+  );
+  checkloadedChart.value = true;
+  console.log(rateList.value);
+  checkdata.value = true;
+
+  rateByMonth.value = res.map((item: onTimePaymentRate) =>
+    parseFloat(formatPercentage(item.rooms, item.onTimeRooms))
+  );
 });
-function formatPercentage(tenant: number) {
-  const percent = (tenant / 120) * 100;
+function formatPercentage(room: number, onTimeRoom: number) {
+  const percent = (onTimeRoom / room) * 100;
   return percent % 1 === 0 ? percent.toFixed(0) : percent.toFixed(1);
 }
 const paymentRate = ref(0);
-tenantService.getTenantCount().then((res) => {
-  paymentRate.value = res;
-});
+const rateByMonth = ref([]);
+const rateDiff = ref(0);
 
-interface roomTenantItem {
+interface StatusPaymentItem {
   roomId: number;
-  maxTenant: number;
-  numberOfTenantLastMonth: number;
-  numberOfTenantThisMonth: number;
+  totalFee: number;
+  dueDate: string;
+  paymentDate: string;
+  status: string;
 }
-const roomTenantList = ref<roomTenantItem[]>([]);
+const statusFilter = ref(["on-time"]);
+const month = ref(1);
+
+const statusPaymentList = ref<StatusPaymentItem[]>([]);
+const listToDisplay = ref<StatusPaymentItem[]>([]);
 const checkData = ref(false);
 
 //số trang lớn nhất có thể hiển thị
 const maxPage = ref(9);
 const clickedIndex = ref(1);
-
+const checkDisplayTable2 = ref(false);
+const displayTable2 = () => {
+  if (range.value[0] + 3 > listToDisplay.value.length) {
+    checkDisplayTable2.value = false;
+  } else checkDisplayTable2.value = true;
+};
 //thực hiện phân trang
 const roomListPagination = (index: any) => {
   if (typeof index === "number") {
@@ -578,30 +610,64 @@ const displayedPages = computed(() => {
 });
 
 //tạo array để hiển thị các item theo index trong bảng roomListTable
-const start = ref(1);
+const start = ref(0);
 const range = computed(() => {
   const rangeArray = [];
   for (let i = start.value; i <= start.value + 2; i++) {
-    if (i > roomTenantList.value.length) break;
+    if (i > listToDisplay.value.length) break;
     rangeArray.push(i);
   }
   return rangeArray;
 });
-reportService.getRoomTenantThisMonth(8).then((res) => {
-  for (let i = 0; i < res.length; i++) {
-    const item: roomTenantItem = {
-      roomId: res[i].roomId,
-      maxTenant: res[i].maxTenant,
-      numberOfTenantLastMonth: res[i].numberOfTenantLastMonth,
-      numberOfTenantThisMonth: res[i].numberOfTenantThisMonth,
-    };
-    roomTenantList.value.push(item);
+const formatDate = (date: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("en-GB", options);
+};
+const filterRoomList = () => {
+  listToDisplay.value = []; // Clear the table before pushing new items
+  for (let i = 0; i < statusPaymentList.value.length; i++) {
+    const item = statusPaymentList.value[i];
+    if (statusFilter.value.includes(item.status)) {
+      listToDisplay.value.push(item);
+    }
   }
+  clickedIndex.value = 1;
+  start.value = listToDisplay.value.length > 0 ? 1 : 0;
+  maxPage.value = Math.min(Math.ceil(listToDisplay.value.length / 6), 9);
+};
+const getDataFromBE = () => {
+  reportService.getPaymentStatusRoom(month.value).then((res) => {
+    statusPaymentList.value = [];
+    for (let i = 0; i < res.length; i++) {
+      const item: StatusPaymentItem = {
+        roomId: res[i].roomId,
+        totalFee: res[i].totalFee,
+        dueDate: formatDate(new Date(res[i].dueDate)),
+        paymentDate: formatDate(new Date(res[i].paymentDate)),
+        status: res[i].status,
+      };
+      statusPaymentList.value.push(item);
+    }
 
-  checkData.value = true;
-  maxPage.value = 9;
-  console.log(roomTenantList);
-});
+    checkData.value = true;
+    maxPage.value = 9;
+    console.log(statusPaymentList);
+    filterRoomList();
+
+    //update on-time rate in top title
+    paymentRate.value = rateByMonth.value[month.value - 1];
+    rateDiff.value =
+      rateByMonth.value[month.value - 1] -
+      (month.value - 2 == -1 ? 0 : rateByMonth.value[month.value - 2]);
+  });
+};
+getDataFromBE();
+watch([listToDisplay, range], displayTable2);
+watch(statusFilter, filterRoomList);
 </script>
 
 <style scoped>
@@ -624,16 +690,16 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
   height: 2.5rem;
 }
 .header select {
+  padding-left: 1rem;
   position: absolute;
   bottom: -1rem;
   right: 0;
   width: 119px;
   height: 37px;
   border-radius: 12px;
+  border: none;
 }
-.header select:disabled {
-  background: #dddddd;
-}
+
 .mid {
   margin-left: 2.5rem;
   margin-right: 2.5rem;
@@ -655,6 +721,14 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
 .top-title {
   color: #6d6d6d;
   font-size: 16px;
+}
+.top-icon-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 22px;
 }
 .mid-elements {
   width: 100%;
@@ -702,6 +776,19 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
 
   padding: 0px 30px 10px 30px;
 }
+.filter {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 0.3rem;
+  padding-bottom: 5px;
+
+  border-bottom: 1px solid rgba(176, 180, 205, 1);
+}
+.el-checkbox {
+  width: 87px;
+  height: 27px;
+}
 .listTable {
   display: flex;
   justify-content: center;
@@ -713,14 +800,14 @@ reportService.getRoomTenantThisMonth(8).then((res) => {
 .table2 {
   display: flex;
   justify-content: center;
-  flex-grow: 1;
+
   height: 11rem;
 }
 .table1 {
-  padding-right: 4rem;
+  margin-right: 2rem;
 }
 .table2 {
-  padding-left: 4rem;
+  margin-left: 2rem;
 }
 
 .listTable th {

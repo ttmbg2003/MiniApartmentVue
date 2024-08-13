@@ -440,6 +440,37 @@ const getRoomId = async () => {
     );
   });
 };
+const deleteExpenses = async (roomId: number) => {
+    Swal.fire({
+        text: "Are you sure want to delete?",
+        showCancelButton: true,
+        confirmButtonColor: "#0565F9",
+        confirmButtonText: "Delete",
+        cancelButtonColor: "#E8E7E7",
+        denyButtonColor: "#3333"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await expensesService.deleteExpenses(year.value, month.value, roomId).then((res) => {
+                if (res == "delete success") {  
+                    Swal.fire({
+                        text: "Delete success !",
+                        icon: "success",
+                        showConfirmButton: false,
+                    })
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    Swal.fire({
+                        text: "Delete fail !",
+                        icon: "error"
+                    })
+                }
+
+            })
+        }
+    });
+};
 const year = ref(new Date().getFullYear());
 const month = ref();
 var totalElement = 0;
