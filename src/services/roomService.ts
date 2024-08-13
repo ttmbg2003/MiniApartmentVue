@@ -2,10 +2,8 @@ import type { Room } from "@/type/Room";
 import apiClient from "@/utils/apiClient";
 
 class RoomService {
-  getAllRoomAvailable = async (month: number, year: number): Promise<any> => {
-    const response = await apiClient.get(
-      `/api/room/getRoomAvailable?month=${month}&year=${year}`
-    );
+  getAllRoomAvailable = async (): Promise<any> => {
+    const response = await apiClient.get(`/api/roomStatus/getRoomAvailable`);
     return response.data["result"];
   };
   getAllRoom = async (): Promise<any> => {

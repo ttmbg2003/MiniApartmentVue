@@ -62,20 +62,23 @@
                                 <td>{{ expenses?.debt }}</td>
                                 <td>{{ expenses?.fine }}</td>
                                 <td>
-                                    <select v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status" v-model="expenses.status">
-                                        <option value="Paid" style="color: black;" >Paid</option>
-                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
-                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    <select v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status"
+                                        v-model="expenses.status">
+                                        <option value="Paid" style="color: black;">Paid</option>
+                                        <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;">Unpaid</option>
                                     </select>
-                                    <select v-if="expenses?.status == 'Partial Paid'" class="payment-status-partial payment-status"  v-model="expenses.status">
-                                        <option value="Paid" style="color: black;" >Paid</option>
-                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
-                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    <select v-if="expenses?.status == 'Partial Paid'"
+                                        class="payment-status-partial payment-status" v-model="expenses.status">
+                                        <option value="Paid" style="color: black;">Paid</option>
+                                        <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;">Unpaid</option>
                                     </select>
-                                    <select v-if="expenses?.status == 'Unpaid'" class="payment-status-unpaid payment-status"  v-model="expenses.status">
-                                        <option value="Paid" style="color: black;" >Paid</option>
-                                        <option value="Partial Paid" style="color: black;" >Partial Paid</option>
-                                        <option value="Unpaid" style="color: black;" >Unpaid</option>
+                                    <select v-if="expenses?.status == 'Unpaid'"
+                                        class="payment-status-unpaid payment-status" v-model="expenses.status">
+                                        <option value="Paid" style="color: black;">Paid</option>
+                                        <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                                        <option value="Unpaid" style="color: black;">Unpaid</option>
                                     </select>
                                     <!-- <div v-if="expenses?.status == 'Paid'" class="payment-status-paid payment-status">{{
                                         expenses?.status }}</div>
@@ -90,8 +93,6 @@
                                 </td>
                                 <td><a><i><img src="../components/icons/eye.png" style="width: 23px;">
                                         </i></a>
-                                    <a href="#"><i><img src="../components/icons/TrashIcon.png"
-                                                style="width: 23px;"></i></a>
                                 </td>
                             </tr>
                         </tbody>
@@ -403,14 +404,14 @@ watch(() => [props.roomId, props.month, props.year], () => {
     selectedRoom(),
         getExpensesDetailByRoom()
 }, { immediate: true });
-const submitStatus = async() => {
+const submitStatus = async () => {
     console.log("submit form status");
     expenses.value.roomId = props.roomId;
     expenses.value.year = expenses.value?.year.split("-")[0]
     console.log(expenses.value);
     await expensesService.updateExpensesStatus(expenses.value).then((res) => {
         console.log(res);
-        
+
     })
 }
 const submitFormExpenses = () => {

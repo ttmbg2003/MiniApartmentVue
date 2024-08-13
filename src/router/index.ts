@@ -4,9 +4,11 @@ import ProfileView from "@/views/ProfileView.vue";
 import Login from "@/components/LoginForm.vue";
 import Signup from "@/components/SignUp.vue";
 import ListTenant from "@/views/ListOfTenantView.vue";
+import ListTenantCitizen from "@/views/ListOfTenantViewCitizen.vue";
 import ForgetPassword from "@/components/ForgetPassword.vue";
 import ResetPassword from "@/components/ResetPassword.vue";
 import ListOfPayment from "@/views/ListOfPayment.vue";
+import ListOfPaymentCitizen from "@/views/ListOfPaymentCitizen.vue";
 import ListOfContract from "@/views/ListOfContract.vue";
 import ReporManageView from "@/views/reportManagement/reportManageView.vue";
 import Contract from "@/components/Contract.vue";
@@ -38,6 +40,18 @@ const routes = [
     name: "ListTenant",
     component: ListTenant,
     meta: { roles: ["admin"] },
+  },
+  {
+    path: "/tenantscitizen",
+    name: "ListTenantCitizen",
+    component: ListTenantCitizen,
+    meta: { roles: ["citizen"] },
+  },
+  {
+    path: "/paymentcitizen",
+    name: "ListPaymentCitizen",
+    component: ListOfPaymentCitizen,
+    meta: { roles: ["citizen"] },
   },
   {
     path: "/payment",

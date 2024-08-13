@@ -13,8 +13,8 @@
       <div class="card">
         <div style="display: flex">
           <div class="line-blue"></div>
-          <div>
-            <h3>List of Lease Contracts</h3>
+          <div style="font-weight: bold; font-size: 1.8rem">
+            List of Lease Contracts
           </div>
 
           <div class="d-flex justify-content-end" style="width: 64rem">
@@ -45,7 +45,7 @@
               v-model="searchValue"
               @change="getContractPanigation()"
               class="input-search"
-              placeholder="Please enter a full name"
+              placeholder="Please enter Room No or full name"
             />
           </div>
           <div
@@ -74,15 +74,15 @@
                     height: 45px;
                   "
                 >
-                  <th>No.</th>
-                  <th>Room No</th>
-                  <th>Representative</th>
-                  <th>Number of Tenants</th>
-                  <th>Rental Fee (VND)</th>
-                  <th>Security Deposit (VND)</th>
-                  <th>Payment Cycle</th>
+                  <th style="width: 2rem">No.</th>
+                  <th style="width: 6rem">Room No</th>
+                  <th style="width: 10rem">Representative</th>
+                  <th style="width: 7rem">Number of Tenants</th>
+                  <th style="width: 7rem">Rental Fee (VND)</th>
+                  <th style="width: 10rem">Security Deposit (VND)</th>
+                  <th style="width: 9rem">Payment Cycle</th>
                   <th>Contract</th>
-                  <th>Contract Status</th>
+                  <th style="width: 9rem">Contract Status</th>
                   <th>Action</th>
                 </thead>
                 <tbody>
@@ -98,7 +98,13 @@
                     <td>{{ contract.rentalFee }}</td>
                     <td>{{ contract.securityDeposite }}</td>
                     <td>{{ contract.paymentCycle }}</td>
-                    <td>{{ contract.contract }}</td>
+                    <td>
+                      {{
+                        contract.contract.substring(
+                          contract.contract.lastIndexOf("/") + 1
+                        )
+                      }}
+                    </td>
                     <td>
                       <div v-if="contract.contractStatus == 1">
                         <img src="@/components/icons/inleaseterm.png" />
@@ -257,7 +263,13 @@
                           /><span>month</span>
                         </td>
                         <td v-else>{{ contract?.paymentCycle }} month</td>
-                        <td>{{ contract?.contract }}</td>
+                        <td>
+                          {{
+                            contract?.contract.substring(
+                              contract.contract.lastIndexOf("/") + 1
+                            )
+                          }}
+                        </td>
                         <td v-if="isEditing">
                           <input
                             type="date"
@@ -574,6 +586,7 @@ const formatDate = (dateString: string) => {
   border-radius: 17px;
   background-color: #e9e9e9;
   padding: 7px;
+  width: 22rem;
 }
 .payment-status {
   border-radius: 6px;
@@ -680,7 +693,7 @@ a {
 }
 /* Đặt kích thước của modal gần với kích thước của trang A4 */
 .modal-dialog.modal-a4 {
-  max-width: 26cm; /* Chiều rộng của khổ A4 */
+  max-width: 35cm; /* Chiều rộng của khổ A4 */
   min-height: 29.7cm; /* Chiều cao của khổ A4 */
   margin-top: 0;
 }

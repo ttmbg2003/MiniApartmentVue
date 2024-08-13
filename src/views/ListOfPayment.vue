@@ -593,6 +593,7 @@ import Swal from "sweetalert2";
 import type { Room } from "@/type/Room";
 import roomService from "@/services/roomService";
 import expensesService from "@/services/expensesService";
+import ShowExpensesDetail from "@/components/ExpensesByRoomAndMonth.vue";
 
 const payment = ref<IListPayment[]>([]);
 const roomsAvailable = ref<Room[]>([]);
@@ -873,6 +874,11 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 }
 
 .card {
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  /* margin-top: 3rem; */
+  border: none;
   display: flex;
   justify-content: center;
   padding-top: 16px;
