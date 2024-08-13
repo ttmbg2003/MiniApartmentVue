@@ -1,33 +1,47 @@
 <template>
-  <div style="    height: 100%;
-    background: #F5F6F8;
-    padding-top: 28px;">
+  <div style="height: 100%; background: #f5f6f8; padding-top: 28px">
     <div class="container">
-      <div style="
-        display: flex;
-        padding-top: 20px;
-        padding-left: 5rem;
-        align-items: center;
-        height: 20%;
-      ">
+      <div
+        style="
+          display: flex;
+          padding-top: 20px;
+          padding-left: 5rem;
+          align-items: center;
+          height: 20%;
+        "
+      >
         <!-- <spam><input type="file"><img class="avartar-img" src="../components/icons/minh.jpg"></spam> -->
         <input type="file" id="fileInput" style="display: none" />
-        <img v-bind:src="localUser.image" class="avartar-img" alt="Click to upload" id="image"
-          style="cursor: pointer" />
+        <img
+          v-bind:src="localUser.image"
+          class="avartar-img"
+          alt="Click to upload"
+          id="image"
+          style="cursor: pointer"
+        />
         <div>
           <h1>{{ fullNameRaw || "null" }}</h1>
           <p style="margin: 0">{{ emailRaw || "null" }}</p>
         </div>
         <div style="display: flex; flex: 0%; justify-content: flex-end">
           <button class="btn btn-edit-profile">Edit my profile</button>
-          <button class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePassModal">
+          <button
+            class="btn btn-change-password"
+            data-bs-toggle="modal"
+            data-bs-target="#changePassModal"
+          >
             Change password
           </button>
         </div>
       </div>
       <!-- Modal -->
-      <div class="modal fade" id="changePassModal" tabindex="-1" aria-labelledby="changePassModalLabel"
-        aria-hidden="true">
+      <div
+        class="modal fade"
+        id="changePassModal"
+        tabindex="-1"
+        aria-labelledby="changePassModalLabel"
+        aria-hidden="true"
+      >
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header" style="justify-content: center">
@@ -39,45 +53,93 @@
             <form @submit.prevent="submitFormChangePassword">
               <div class="modal-body">
                 <div class="form-group">
-                  <label>Email Address<span style="color: red;">*</span></label>
-                  <input class="input-change-pass" type="email" v-model="emailRaw" readonly />
+                  <label>Email Address<span style="color: red">*</span></label>
+                  <input
+                    class="input-change-pass"
+                    type="email"
+                    v-model="emailRaw"
+                    readonly
+                  />
                 </div>
                 <div class="form-group">
-                  <label>Current Password<span style="color: red;">*</span></label>
-                  <input :type="showCurrentPassword ? 'text' : 'password'" class="input-change-pass is-valid"
-                    v-model="currentPasswordChange" required />
-                  <i :class="showCurrentPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                    @click="showCurrentPassword = !showCurrentPassword" style=""></i>
-                  <div class="invalid-feedback">
-                    Looks good!
-                  </div>
+                  <label
+                    >Current Password<span style="color: red">*</span></label
+                  >
+                  <input
+                    :type="showCurrentPassword ? 'text' : 'password'"
+                    class="input-change-pass is-valid"
+                    v-model="currentPasswordChange"
+                    required
+                  />
+                  <i
+                    :class="
+                      showCurrentPassword ? 'fa fa-eye' : 'fa fa-eye-slash'
+                    "
+                    class="eye-icon"
+                    @click="showCurrentPassword = !showCurrentPassword"
+                    style=""
+                  ></i>
+                  <div class="invalid-feedback">Looks good!</div>
                 </div>
                 <div class="form-group">
-                  <label>New Password<span style="color: red;">*</span></label>
-                  <input class="input-change-pass" v-model="password" :type="showNewPassword ? 'text' : 'password'"
-                    id="password" required />
-                  <i :class="showNewPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                    @click="showNewPassword = !showNewPassword"></i>
+                  <label>New Password<span style="color: red">*</span></label>
+                  <input
+                    class="input-change-pass"
+                    v-model="password"
+                    :type="showNewPassword ? 'text' : 'password'"
+                    id="password"
+                    required
+                  />
+                  <i
+                    :class="showNewPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"
+                    class="eye-icon"
+                    @click="showNewPassword = !showNewPassword"
+                  ></i>
                 </div>
                 <div class="form-group">
-                  <label>Confirm New Password<span style="color: red;">*</span></label>
-                  <input class="input-change-pass" id="password-repeat" v-model="passwordRepeat"
-                    :type="showConfirmPassword ? 'text' : 'password'" required />
-                  <i :class="showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'" class="eye-icon"
-                    @click="showConfirmPassword = !showConfirmPassword"></i>
+                  <label
+                    >Confirm New Password<span style="color: red"
+                      >*</span
+                    ></label
+                  >
+                  <input
+                    class="input-change-pass"
+                    id="password-repeat"
+                    v-model="passwordRepeat"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    required
+                  />
+                  <i
+                    :class="
+                      showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'
+                    "
+                    class="eye-icon"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  ></i>
                 </div>
                 <ul class="requirements">
-                  <li v-for="(requirement, key) in passwordRequirements" :key="key"
-                    :class="requirement.predicate ? 'is-success' : 'is-error'">
+                  <li
+                    v-for="(requirement, key) in passwordRequirements"
+                    :key="key"
+                    :class="requirement.predicate ? 'is-success' : 'is-error'"
+                  >
                     {{ requirement.name }}
                   </li>
                 </ul>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                <button
+                  type="button"
+                  class="btn btn-cancel"
+                  data-bs-dismiss="modal"
+                >
                   Close
                 </button>
-                <button type="submit" class="btn btn-save" :disabled="!allRequirementsMet">
+                <button
+                  type="submit"
+                  class="btn btn-save"
+                  :disabled="!allRequirementsMet"
+                >
                   Save
                 </button>
               </div>
@@ -91,45 +153,84 @@
             <div style="display: flex">
               <div class="form-group">
                 <label for="fullName">Full Name</label>
-                <input class="input-user-info" type="text" id="fullName" v-model="fullNameRaw" disabled />
+                <input
+                  class="input-user-info"
+                  type="text"
+                  id="fullName"
+                  v-model="fullNameRaw"
+                  disabled
+                />
               </div>
               <div class="form-group">
                 <label>Gender</label>
-                <select class="input-user-info" name="gender" v-model="localUser.gender">
+                <select
+                  class="input-user-info"
+                  name="gender"
+                  v-model="localUser.gender"
+                >
                   <option selected disabled value="">Select</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
-                  <option value="3">Other</option>
+                  <option value="3">Others</option>
                 </select>
               </div>
             </div>
             <div style="display: flex">
               <div class="form-group">
                 <label>Date Of Birth</label>
-                <input class="input-user-info" type="date" v-model="localUser.dateOfBirth" required/>
+                <input
+                  class="input-user-info"
+                  type="date"
+                  v-model="localUser.dateOfBirth"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label>Id Number</label>
-                <input class="input-user-info" type="text" pattern="^[0-9]{12}$" v-model="localUser.citizenId">
+                <input
+                  class="input-user-info"
+                  type="text"
+                  pattern="^[0-9]{12}$"
+                  v-model="localUser.citizenId"
+                />
               </div>
             </div>
             <div class="form-group">
               <label>Place Of Permanent</label>
-              <input class="input-user-info" type="text" v-model="localUser.placeOfPermanet" style="width: 98%"
-                placeholder="Your place of permanet" />
+              <input
+                class="input-user-info"
+                type="text"
+                v-model="localUser.placeOfPermanet"
+                style="width: 98%"
+                placeholder="Your place of permanet"
+              />
             </div>
             <div style="display: flex">
               <div class="form-group">
                 <label>Email Address</label>
-                <input class="input-user-info" type="email" v-model="localUser.email" disabled />
+                <input
+                  class="input-user-info"
+                  type="email"
+                  v-model="localUser.email"
+                  disabled
+                />
               </div>
               <div class="form-group">
                 <label>Contact Number</label>
 
-                  <input type="text" name="phone"  class="input-user-info"  v-model="localUser.contact" pattern="^[0-9]{10}$" placeholder="Nhập số điện thoại của bạn">
+                <input
+                  type="text"
+                  name="phone"
+                  class="input-user-info"
+                  v-model="localUser.contact"
+                  pattern="^[0-9]{10}$"
+                  placeholder="Nhập số điện thoại của bạn"
+                />
               </div>
             </div>
-            <div style="display: flex; justify-content: center; margin-right: 5%">
+            <div
+              style="display: flex; justify-content: center; margin-right: 5%"
+            >
               <button class="btn btn-cancel" type="button" @click="cancelEdit">
                 Go to home
               </button>
@@ -146,7 +247,7 @@ import { ref, computed, watch } from "vue";
 import type { User } from "@/type/User";
 import userService from "@/services/userService";
 import { useRouter } from "vue-router";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const localUser = ref<User>({
   userId: "",
@@ -177,7 +278,7 @@ const formatDate = (dateString: string) => {
   if (dateString == null) {
     return null;
   }
-  return dateString.split('T')[0];
+  return dateString.split("T")[0];
 };
 const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
@@ -186,19 +287,19 @@ const submitForm = () => {
   localUser.value.dateOfBirth = timeFomat(localUser.value.dateOfBirth);
   userService.editProfile(localUser.value).then((res) => {
     console.log(res);
-    
+
     if (res == "update success") {
       Swal.fire({
         title: "Success!",
         text: "Save successfully.",
         icon: "success",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-    } else{
+    } else {
       Swal.fire({
         title: "Fail!",
         text: "Save fail.",
@@ -206,7 +307,6 @@ const submitForm = () => {
         showConfirmButton: true,
       });
     }
-
   });
 };
 const cancelEdit = () => {
@@ -241,33 +341,34 @@ function init() {
 var emailChangePass = "";
 var currentPasswordChange = "";
 
-const password = ref('')
-const passwordRepeat = ref('')
-const showCurrentPassword = ref(false)
-const showNewPassword = ref(false)
+const password = ref("");
+const passwordRepeat = ref("");
+const showCurrentPassword = ref(false);
+const showNewPassword = ref(false);
 const submitFormChangePassword = () => {
-  return userService.changePassword(emailRaw, currentPasswordChange, password.value).then((response) => {
-    if (response == "wrong password") {
-      Swal.fire({
-        icon: "error",
-        text: "Wrong password",
-        showConfirmButton: true,
-      });
-    }
+  return userService
+    .changePassword(emailRaw, currentPasswordChange, password.value)
+    .then((response) => {
+      if (response == "wrong password") {
+        Swal.fire({
+          icon: "error",
+          text: "Wrong password",
+          showConfirmButton: true,
+        });
+      }
 
-    if (response != "wrong password") {
-      Swal.fire({
-        icon: "success",
-        text: "Success",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    }
-
-  });
+      if (response != "wrong password") {
+        Swal.fire({
+          icon: "success",
+          text: "Success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+    });
 };
 const showConfirmPassword = ref(false);
 const passwordRequirements = computed(() => [
@@ -284,10 +385,10 @@ const passwordRequirements = computed(() => [
     predicate: password.value.length >= 8,
   },
   {
-    name: 'The password does not match',
+    name: "The password does not match",
     predicate: password.value == passwordRepeat.value,
-  }
-])
+  },
+]);
 const allRequirementsMet = computed(() => {
   return passwordRequirements.value.every(
     (requirement) => requirement.predicate

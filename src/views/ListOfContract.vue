@@ -98,7 +98,13 @@
                     <td>{{ contract.rentalFee }}</td>
                     <td>{{ contract.securityDeposite }}</td>
                     <td>{{ contract.paymentCycle }}</td>
-                    <td>{{ contract.contract }}</td>
+                    <td>
+                      {{
+                        contract.contract.substring(
+                          contract.contract.lastIndexOf("/") + 1
+                        )
+                      }}
+                    </td>
                     <td>
                       <div v-if="contract.contractStatus == 1">
                         <img src="@/components/icons/inleaseterm.png" />
@@ -257,7 +263,13 @@
                           /><span>month</span>
                         </td>
                         <td v-else>{{ contract?.paymentCycle }} month</td>
-                        <td>{{ contract?.contract }}</td>
+                        <td>
+                          {{
+                            contract?.contract.substring(
+                              contract.contract.lastIndexOf("/") + 1
+                            )
+                          }}
+                        </td>
                         <td v-if="isEditing">
                           <input
                             type="date"
@@ -680,7 +692,7 @@ a {
 }
 /* Đặt kích thước của modal gần với kích thước của trang A4 */
 .modal-dialog.modal-a4 {
-  max-width: 26cm; /* Chiều rộng của khổ A4 */
+  max-width: 35cm; /* Chiều rộng của khổ A4 */
   min-height: 29.7cm; /* Chiều cao của khổ A4 */
   margin-top: 0;
 }

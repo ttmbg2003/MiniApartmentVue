@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <form>
-    <div class="contract-form">
+  <form id="form" ref="document">
+    <div class="contract-form" id="element-to-convert">
       <div class="header">
         <p class="centered-text" style="font-weight: bold">
           CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br />Độc lập – Tự do – Hạnh phúc<br />-o0o-
@@ -92,7 +92,7 @@
           />người
         </p>
         b) Dưới đây là thông tin chi tiết của khách thuê:
-        <table style="margin-left: -13rem">
+        <table style="margin-left: -7rem">
           <thead>
             <tr>
               <th>No</th>
@@ -114,13 +114,13 @@
               <td>1</td>
               <td>
                 <input
-                  style="width: 60px"
+                  style="width: 97px"
                   type="text"
                   v-model="contract.representative"
                 />
               </td>
               <td>
-                <select v-model="contract.gender" style="width: 100px" readonly>
+                <select v-model="contract.gender" style="width: 85px" readonly>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -144,7 +144,7 @@
                 <input
                   type="email"
                   v-model="contract.email"
-                  style="width: 100px"
+                  style="width: 110px"
                 />
               </td>
               <td>
@@ -172,21 +172,21 @@
                 <input
                   type="text"
                   v-model="contract.vehicleType"
-                  style="width: 100px"
+                  style="width: 90px"
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="contract.vehicleColor"
-                  style="width: 100px"
+                  style="width: 90px"
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="contract.relationship"
-                  style="width: 100px"
+                  style="width: 90px"
                   readonly
                 />
               </td>
@@ -195,13 +195,13 @@
               <td>{{ index + 2 }}</td>
               <td>
                 <input
-                  style="width: 60px"
+                  style="width: 97px"
                   type="text"
                   v-model="tenant.fullName"
                 />
               </td>
               <td>
-                <select v-model="tenant.gender" style="width: 100px">
+                <select v-model="tenant.gender" style="width: 85px">
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -225,7 +225,7 @@
                 <input
                   type="email"
                   v-model="tenant.email"
-                  style="width: 100px"
+                  style="width: 110px"
                 />
               </td>
               <td>
@@ -253,21 +253,21 @@
                 <input
                   type="text"
                   v-model="tenant.vehicleType"
-                  style="width: 100px"
+                  style="width: 90px"
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="tenant.vehicleColor"
-                  style="width: 100px"
+                  style="width: 90px"
                 />
               </td>
               <td>
                 <input
                   type="text"
                   v-model="tenant.relationship"
-                  style="width: 100px"
+                  style="width: 90px"
                 />
               </td>
             </tr>
@@ -545,10 +545,12 @@
     </div>
   </form>
   <div v-if="error" class="error">{{ error }}</div>
+  <button @click="exportToPDF">Export to PDF</button>
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
 import Swal from "sweetalert2";
+import html2pdf from "html2pdf.js";
 export default {
   data() {
     return {
@@ -722,26 +724,44 @@ export default {
       }
       try {
         this.contract.tenants = this.generateTenantsArray();
-        console.log(this.generateTenants);
+
         const response = await apiClient.post(
           "contract/addNewContract",
           this.contract
         );
 
-        if (response.data.status === 200) {
-          this.error = null;
-          Swal.fire({
-            title: "Success!",
-            text: "Contract is created successfully.",
-            icon: "success",
-            timer: 2000,
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-          this.$router.push("/ListOfContract");
+        if (response.data.status == 200) {
+          const roomId = this.contract.roomId; // Assume response has contractId
+
+          // Generate PDF as Blob
+          const pdfBlob = await html2pdf()
+            .from(document.getElementById("element-to-convert"))
+            .output("blob");
+
+          // Upload PDF to backend
+          const formData = new FormData();
+          formData.append("file", pdfBlob, `contract_${roomId}.pdf`);
+
+          const uploadResponse = await apiClient.post(
+            `contract/uploadContractPdf/${roomId}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+
+          if (uploadResponse.data.status == 200) {
+            Swal.fire({
+              title: "Success!",
+              text: "Contract is created and PDF uploaded successfully.",
+              icon: "success",
+              timer: 2000,
+            });
+            setTimeout(() => {
+              this.$router.push("/ListOfContract");
+            }, 2000);
+          } else {
+            throw new Error("Failed to upload PDF");
+          }
         } else {
-          console.log("Message là: ", response.data.result, this.contract);
           Swal.fire({
             icon: "error",
             title: "Error!",
@@ -750,9 +770,12 @@ export default {
           this.error = response.data.result;
         }
       } catch (error) {
-        // this.error = response.data;
-        console.log("Lỗi ở catch: ", error);
-        console.log("Dữ liệu hợp đồng:", this.contract);
+        console.error("Error in form submission:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "There was an issue submitting the form.",
+        });
       }
     },
   },
@@ -810,5 +833,8 @@ select {
   color: red;
   text-align: center;
   margin-top: 10px;
+}
+#form {
+  font-size: small;
 }
 </style>
