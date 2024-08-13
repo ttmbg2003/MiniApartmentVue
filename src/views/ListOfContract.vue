@@ -13,8 +13,8 @@
       <div class="card">
         <div style="display: flex">
           <div class="line-blue"></div>
-          <div>
-            <h3>List of Lease Contracts</h3>
+          <div style="font-weight: bold; font-size: 1.8rem">
+            List of Lease Contracts
           </div>
 
           <div class="d-flex justify-content-end" style="width: 64rem">
@@ -45,7 +45,7 @@
               v-model="searchValue"
               @change="getContractPanigation()"
               class="input-search"
-              placeholder="Please enter a full name"
+              placeholder="Please enter Room No or full name"
             />
           </div>
           <div
@@ -74,15 +74,15 @@
                     height: 45px;
                   "
                 >
-                  <th>No.</th>
-                  <th>Room No</th>
-                  <th>Representative</th>
-                  <th>Number of Tenants</th>
-                  <th>Rental Fee (VND)</th>
-                  <th>Security Deposit (VND)</th>
-                  <th>Payment Cycle</th>
+                  <th style="width: 2rem">No.</th>
+                  <th style="width: 6rem">Room No</th>
+                  <th style="width: 10rem">Representative</th>
+                  <th style="width: 7rem">Number of Tenants</th>
+                  <th style="width: 7rem">Rental Fee (VND)</th>
+                  <th style="width: 10rem">Security Deposit (VND)</th>
+                  <th style="width: 9rem">Payment Cycle</th>
                   <th>Contract</th>
-                  <th>Contract Status</th>
+                  <th style="width: 9rem">Contract Status</th>
                   <th>Action</th>
                 </thead>
                 <tbody>
@@ -586,6 +586,7 @@ const formatDate = (dateString: string) => {
   border-radius: 17px;
   background-color: #e9e9e9;
   padding: 7px;
+  width: 22rem;
 }
 .payment-status {
   border-radius: 6px;
