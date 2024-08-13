@@ -13,6 +13,7 @@ import Contract from "@/components/Contract.vue";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import apiClient from "@/utils/apiClient";
+import ListOfAsset from "@/views/ListOfAsset.vue";
 const routes = [
   { path: "/contract", component: Contract },
   {
@@ -36,13 +37,13 @@ const routes = [
     path: "/tenants",
     name: "ListTenant",
     component: ListTenant,
-    meta: { roles: ['admin'] }
+    meta: { roles: ["admin"] },
   },
   {
     path: "/payment",
     name: "ListPayment",
     component: ListOfPayment,
-    meta: { roles: ['admin'] }
+    meta: { roles: ["admin"] },
   },
   {
     path: "/login",
@@ -73,14 +74,15 @@ const routes = [
     path: "/ListOfContract",
     name: "ListOfContract",
     component: ListOfContract,
-    meta: { roles: ['admin'] }
+    meta: { roles: ["admin"] },
   },
   { path: "/report", component: ReporManageView },
+  { path: "/asset", component: ListOfAsset },
   {
     path: "/newContract",
     name: "Contract",
     component: Contract,
-    meta: { roles: ['admin'] }
+    meta: { roles: ["admin"] },
   },
 ];
 
@@ -98,14 +100,14 @@ router.beforeEach(async (to, from, next) => {
 
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
-  //check không có token, tức là đăng nhập chưa thành công  
+  //check không có token, tức là đăng nhập chưa thành công
   if (!accessToken) {
     next("/login");
     return;
   }
   const check = await axios({
     method: "get",
-    url: 'http://localhost:8080/auth/checkToken',
+    url: "http://localhost:8080/auth/checkToken",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -114,48 +116,57 @@ router.beforeEach(async (to, from, next) => {
     case "expired token":
       // refresh token
       try {
-        const response = await axios.post("http://localhost:8080/auth/refreshToken", { token: refreshToken })
+        const response = await axios.post(
+          "http://localhost:8080/auth/refreshToken",
+          { token: refreshToken }
+        );
 
         // If the request is successful, save the new access token to localStorage
         if (response.status === 200) {
-          localStorage.setItem("accessToken",response.data['result']['accessToken']);
-          localStorage.setItem('refreshToken', response.data['result']['refreshToken']);
+          localStorage.setItem(
+            "accessToken",
+            response.data["result"]["accessToken"]
+          );
+          localStorage.setItem(
+            "refreshToken",
+            response.data["result"]["refreshToken"]
+          );
           // check role
-          const decoded = jwtDecode<{ role: string }>(response.data['result']['accessToken']); // Custom payload type
+          const decoded = jwtDecode<{ role: string }>(
+            response.data["result"]["accessToken"]
+          ); // Custom payload type
           const userRole = decoded.role;
           if (roles == undefined) {
-            return next()
+            return next();
           }
           if (roles == userRole) {
-            return next()
-          }
-          else {
-            return  next("/login");
+            return next();
+          } else {
+            return next("/login");
           }
           //quay lại trang đang ở
           // next(to);
         } else {
-          return  next("/login");
+          return next("/login");
         }
       } catch (refreshError) {
         console.error(refreshError);
         router.push("/login");
-        return
+        return;
         // Handle refresh token error
       }
-    case "ok": {      
-          // check role
-          const decoded = jwtDecode<{ role: string }>(accessToken); // Custom payload type
-          const userRole = decoded.role;
-          if (roles == undefined) {
-            return next()
-          }
-          if (roles == userRole) {
-            return next()
-          }
-          else {
-            return  next("/login");
-          }
+    case "ok": {
+      // check role
+      const decoded = jwtDecode<{ role: string }>(accessToken); // Custom payload type
+      const userRole = decoded.role;
+      if (roles == undefined) {
+        return next();
+      }
+      if (roles == userRole) {
+        return next();
+      } else {
+        return next("/login");
+      }
       //quay lại trang đang ở
       // next(to);
     }

@@ -50,6 +50,15 @@
               >Report</router-link
             >
           </li>
+          <li class="li-side-bar">
+            <i
+              ><img
+                src="../components/icons/asset.png"
+                style="width: 24px" /></i
+            ><router-link to="/asset" class="a-side-bar" active-class="active"
+              >Asset</router-link
+            >
+          </li>
         </ul>
       </div>
     </div>
@@ -61,7 +70,6 @@
   width: 19.5rem;
   font-family: "Poppins", sans-serif;
   /* padding-right: 8rem; */
-  margin-right: 20px;
 }
 
 .background-icon-apartment-manage {
