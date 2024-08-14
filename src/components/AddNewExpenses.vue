@@ -42,7 +42,7 @@
                         <label>Room</label><br />
                         <select class="input-add-new-expenses" v-model="selectedRoomId" @change="selectedRoom"
                             style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
-                            <option v-for="room in roomsAvailable" :value="room.roomId">{{ room.roomId }}
+                            <option v-for="room in roomsAvailable" :value="room">{{ room }}
                             </option>
                         </select>
                     </div>
@@ -404,15 +404,13 @@ const selectedRoom = async () => {
     serviceFee.value = numberOfTenant * 130000;
     sumTotal();
 }
-const roomsAvailable = ref<Room[]>([]);
+const roomsAvailable = ref<[]>([]);
 const getRoomId = async () => {
     await roomService.getAllRoomAvailable().then((response) => {
-        roomsAvailable.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
-            roomId: room.roomId,
-            roomStatus: room.roomStatus,
-            maxTenant: room.maxTenant
-        }));
+        roomsAvailable.value = response;
     })
+    console.log(roomsAvailable.value);
+    
 }
 getRoomId();
 const submitStatus = () => {
