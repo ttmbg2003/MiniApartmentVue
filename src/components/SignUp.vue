@@ -339,17 +339,14 @@ export default {
           password: this.password,
           rePassword: this.rePassword,
         });
-
-        this.showSuccessModal = true;
-        this.error = null; // Clear any previous errors
-      } catch (error) {
-        this.otpResent = false;
-        if (error.response && error.response.status === 400) {
-          this.error = error.response.data;
+        if (response.data.status == 200) {
+          this.showSuccessModal = true;
+          this.error = null; // Clear any previous errors
         } else {
-          this.error =
-            "An error occurred during OTP verification. Please try again.";
+          this.error = response.data.result;
         }
+      } catch (error) {
+        this.error = "Incorrect OTP provided. Retry!";
       }
     },
     closeSuccessModal() {

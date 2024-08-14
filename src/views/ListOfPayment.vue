@@ -1,47 +1,81 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div style="display: flex;    min-height: 97%;">
+  <div style="display: flex; height: 97%">
     <SideBar />
-    <div style="
-    background: #F5F6F8;
-    width: 100%;
-    min-height: 100%;
-">
+    <div style="background: #f5f6f8; width: 100%; height: 100%">
       <div class="container">
         <div class="card">
-
           <div style="display: flex; margin-bottom: 10px">
             <div class="line-blue"></div>
-            <div style="display: flex;align-items: center;">
-              <h3 style="margin: 0;">List of Living Expenses</h3>
+            <div style="display: flex; align-items: center">
+              <h3 style="margin: 0">List of Living Expenses</h3>
             </div>
-            <div class="d-flex justify-content-end" style="    width: 76%;">
-              <button class="btn btn-add-new" data-bs-toggle="modal" data-bs-target="#addNewExpensesModal"
-                :disabled="month == null || month == '' || month < currentMonth" @click="getRoomId"><i
-                  style="margin-right: 10px;">
-                  <img src="../components/icons/circled-plus.png" style="margin-bottom: 3px;width: 24px;"></i>Add
-                new</button>
+            <div class="d-flex justify-content-end" style="width: 76%">
+              <button
+                class="btn btn-add-new"
+                data-bs-toggle="modal"
+                data-bs-target="#addNewExpensesModal"
+                :disabled="month == null || month == '' || month < currentMonth"
+                @click="getRoomId"
+              >
+                <i style="margin-right: 10px">
+                  <img
+                    src="../components/icons/circled-plus.png"
+                    style="margin-bottom: 3px; width: 24px" /></i
+                >Add new
+              </button>
             </div>
           </div>
           <div>
-            <div style="display: flex;">
-              <div style="    text-align: center;">
+            <div style="display: flex">
+              <div style="text-align: center">
                 <label>Year</label>
-                <VueDatePicker :model-value="year" year-picker :year-range="[2020, 2040]" :clearable="false"
-                  placeholder="Select year" @update:model-value="getListPayment" :disabled="month != null">
-                  <template #input-icon>
-                  </template>
+                <VueDatePicker
+                  :model-value="year"
+                  year-picker
+                  :year-range="[2020, 2040]"
+                  :clearable="false"
+                  placeholder="Select year"
+                  @update:model-value="getListPayment"
+                >
+                  <template #input-icon> </template>
                   <template #dp-input="{ value }">
-                    <input type="text" :value="value" readonly
-                      style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 " />
+                    <input
+                      type="text"
+                      :value="value"
+                      readonly
+                      style="
+                        cursor: pointer;
+                        height: 38px;
+                        width: 60px;
+                        text-align: center;
+                        border: 1px solid #0000002e;
+                        border-radius: 4px;
+                        outline: none;
+                        background-color: #e0dede66;
+                      "
+                    />
                   </template>
                 </VueDatePicker>
                 <!-- <VueDatePicker :model-value="month" @update:model-value="updateMonth" month-picker placeholder="Select month" style="width: 170px;" /> -->
               </div>
-              <div style="margin-left: 30px;    text-align: center;">
+              <div style="margin-left: 30px; text-align: center">
                 <label>Month</label><br />
-                <select v-model="month" @change="getExpensesByMonth" :disabled="isShowExpensesDetail == true|| isShowExpenses == true|| selectedRoomIdByMonth != ''"
-                  style="cursor: pointer;height: 38px;width: 60px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                <select
+                  v-model="month"
+                  @change="getExpensesByMonth"
+                  :disabled="isShowExpensesDetail == true"
+                  style="
+                    cursor: pointer;
+                    height: 38px;
+                    width: 60px;
+                    text-align: center;
+                    border: 1px solid #0000002e;
+                    border-radius: 4px;
+                    outline: none;
+                    background-color: #e0dede66;
+                  "
+                >
                   <option selected></option>
                   <option>1</option>
                   <option>2</option>
@@ -57,30 +91,65 @@
                   <option>12</option>
                 </select>
               </div>
-              <div style="margin-left: 30px;    text-align: center;">
+              <div style="margin-left: 30px; text-align: center">
                 <label>Room No</label><br />
-                <select v-model="selectedRoomIdByMonth" @change="selectedGetRoom"
-                  :disabled="month == null || month == '' || expensesByMonth == '' || isShowExpenses == true"
-                  style="cursor: pointer;height: 38px;width: 78px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
+                <select
+                  v-model="selectedRoomIdByMonth"
+                  @change="selectedGetRoom"
+                  :disabled="
+                    month == null || month == '' || expensesByMonth == ''
+                  "
+                  style="
+                    cursor: pointer;
+                    height: 38px;
+                    width: 78px;
+                    text-align: center;
+                    border: 1px solid #0000002e;
+                    border-radius: 4px;
+                    outline: none;
+                    background-color: #e0dede66;
+                  "
+                >
                   <option selected></option>
-                  <option v-for="room in expensesByMonth" :value="room.roomId">{{ room.roomId }}
+                  <option v-for="room in allRoom" :value="room.roomId">
+                    {{ room.roomId }}
                   </option>
                 </select>
               </div>
-              <div class="d-flex justify-content-end" style="flex: 1;">
-                <p style="margin-right: 31px; margin-bottom: 0;">Total: {{ totalElement }}</p>
-              </div>
             </div>
-
-            <div style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;margin-bottom: 11px">
+            <div style="display: flex; justify-content: flex-end">
+              <p style="margin-right: 31px; margin-bottom: 0">
+                Total: {{ totalElement }}
+              </p>
+            </div>
+            <div
+              style="
+                box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;
+                border-radius: 5px;
+              "
+            >
               <div style="margin: 12px; padding-bottom: 4px">
-                <div v-if="payment == ''" style="display: flex;justify-content: center">
-                  <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                <div
+                  v-if="payment == ''"
+                  style="display: flex; justify-content: center"
+                >
+                  <p style="margin: 0; margin-top: 10px">No data to display</p>
                 </div>
                 <table
-                  v-if="(month == null || month == '') && (selectedRoomIdByMonth == null || selectedRoomIdByMonth == '')"
-                  style="width: 100%;">
-                  <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
+                  v-if="
+                    (month == null || month == '') &&
+                    (selectedRoomIdByMonth == null ||
+                      selectedRoomIdByMonth == '')
+                  "
+                  style="width: 100%"
+                >
+                  <thead
+                    style="
+                      color: #9b9b9b;
+                      border-bottom: solid #b0b4cd 1px;
+                      height: 45px;
+                    "
+                  >
                     <th>Room No</th>
                     <th>Jan</th>
                     <th>Feb</th>
@@ -94,220 +163,413 @@
                     <th>Oct</th>
                     <th>Nov</th>
                     <th>Dec</th>
-                    <th style="width: 135px;">Status</th>
+                    <th style="width: 135px">Status</th>
                     <th>Action</th>
                   </thead>
                   <tbody>
-                    <tr v-for="payments in payment" style="height:50px;">
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.roomId }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.jan }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.feb }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.mar }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.apr }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.may }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.jun }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.jul }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.aug }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.sep }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.oct }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.nov }}</div>
-                      </td>
-                      <td>
-                        <div class="back-ground-row-table">{{ payments.dec }}</div>
-                      </td>
+                    <tr v-for="payments in payment" style="height: 50px">
                       <td>
                         <div class="back-ground-row-table">
-                          <div v-if="payments.status == 'Paid'" class="payment-status-paid payment-status">{{
-                            payments.status }}</div>
-                          <div v-if="payments.status == 'Partial Paid'" class="payment-status-partial payment-status">
-                            {{
-                              payments.status }}
-                          </div>
-                          <div v-if="payments.status == 'Unpaid'" class="payment-status-unpaid payment-status">{{
-                            payments.status }}</div>
+                          {{ payments.roomId }}
                         </div>
                       </td>
                       <td>
                         <div class="back-ground-row-table">
-                          <a @click="showExpensesDetail(payments.roomId)"><i><img v-if="!isShowExpensesDetail"
-                                src="../components/icons/eye.png" style="width: 23px;">
-                              <img v-if="isShowExpensesDetail" src="../components/icons/eye - Copy.png"
-                                style="width: 23px;"></i></a>
-                          <a href="#"><i><img src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                          {{ payments.jan }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.feb }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.mar }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.apr }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.may }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.jun }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.jul }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.aug }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.sep }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.oct }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.nov }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          {{ payments.dec }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          <div
+                            v-if="payments.status == 'Paid'"
+                            class="payment-status-paid payment-status"
+                          >
+                            {{ payments.status }}
+                          </div>
+                          <div
+                            v-if="payments.status == 'Partial Paid'"
+                            class="payment-status-partial payment-status"
+                          >
+                            {{ payments.status }}
+                          </div>
+                          <div
+                            v-if="payments.status == 'Unpaid'"
+                            class="payment-status-unpaid payment-status"
+                          >
+                            {{ payments.status }}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="back-ground-row-table">
+                          <a @click="showExpensesDetail(payments.roomId)"
+                            ><i
+                              ><img
+                                v-if="!isShowExpensesDetail"
+                                src="../components/icons/eye.png"
+                                style="width: 23px" />
+                              <img
+                                v-if="isShowExpensesDetail"
+                                src="../components/icons/eye - Copy.png"
+                                style="width: 23px" /></i
+                          ></a>
+                          <a href="#"
+                            ><i
+                              ><img
+                                src="../components/icons/TrashIcon.png"
+                                style="width: 23px" /></i
+                          ></a>
                         </div>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <div v-else-if="selectedRoomIdByMonth == null || selectedRoomIdByMonth == ''">
-                  <div v-if="expensesByMonth == ''" style="display: flex;justify-content: center">
-                    <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                <div
+                  v-else-if="
+                    selectedRoomIdByMonth == null || selectedRoomIdByMonth == ''
+                  "
+                >
+                  <div
+                    v-if="expensesByMonth == ''"
+                    style="display: flex; justify-content: center"
+                  >
+                    <p style="margin: 0; margin-top: 10px">
+                      No data to display
+                    </p>
                   </div>
-                  <table style="width: 100%;">
-
-                    <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
+                  <table style="width: 100%">
+                    <thead
+                      style="
+                        color: #9b9b9b;
+                        border-bottom: solid #b0b4cd 1px;
+                        height: 45px;
+                      "
+                    >
                       <th class="header-table-add-new">Room No</th>
-                      <th class="header-table-add-new">Rental Fee <br />(VND)</th>
-                      <th class="header-table-add-new">Electricity <br />
-                        (3.800vnd)</th>
-                      <th class="header-table-add-new">Water<br />
-                        (35.000vnd)</th>
-                      <th class="header-table-add-new">Internet<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Service<span style="color: red;">*</span><br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Security Deposit<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Debt<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Fine<br />
-                        (VND)</th>
-                      <th class="header-table-add-new" style="    width: 134px;">Status
+                      <th class="header-table-add-new">
+                        Rental Fee <br />(VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Electricity <br />
+                        (3.800vnd)
+                      </th>
+                      <th class="header-table-add-new">
+                        Water<br />
+                        (35.000vnd)
+                      </th>
+                      <th class="header-table-add-new">
+                        Internet<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Service<span style="color: red">*</span><br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Security Deposit<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Debt<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Fine<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new" style="width: 134px">
+                        Status
                       </th>
                       <th class="header-table-add-new">Action</th>
                     </thead>
                     <tbody>
-                      <tr v-for="expenses in expensesByMonth" style="height: 50px;background-color: #9c9c9c17;">
-                        <td style="padding-left: 10px;">{{ expenses.roomId }}</td>
+                      <tr
+                        v-for="expenses in expensesByMonth"
+                        style="height: 50px; background-color: #9c9c9c17"
+                      >
+                        <td style="padding-left: 10px">
+                          {{ expenses.roomId }}
+                        </td>
                         <td>{{ fomatFee(expenses.rentalFee) }}</td>
-                        <td>{{ fomatFee((expenses.electricCurrentMeter -
-                          expenses.electricPreviousMeter)
-                          * 3800) }}</td>
-                        <td>{{ fomatFee((expenses.waterCurrentMeter -
-                          expenses.waterPreviousMeter) *
-                          35000) }}</td>
+                        <td>
+                          {{
+                            fomatFee(
+                              (expenses.electricCurrentMeter -
+                                expenses.electricPreviousMeter) *
+                                3800
+                            )
+                          }}
+                        </td>
+                        <td>
+                          {{
+                            fomatFee(
+                              (expenses.waterCurrentMeter -
+                                expenses.waterPreviousMeter) *
+                                35000
+                            )
+                          }}
+                        </td>
                         <td>{{ fomatFee(expenses.internet) }}</td>
                         <td>{{ fomatFee(expenses.service) }}</td>
                         <td>{{ fomatFee(expenses.securityDeposite) }}</td>
                         <td>{{ fomatFee(expenses.debt) }}</td>
                         <td>{{ fomatFee(expenses.fine) }}</td>
                         <td>
-                          <div v-if="expenses.status == 'Paid'" class="payment-status-paid payment-status">{{
-                            expenses.status }}</div>
-                          <div v-if="expenses.status == 'Partial Paid'" class="payment-status-partial payment-status">
-                            {{
-                              expenses.status }}
+                          <div
+                            v-if="expenses.status == 'Paid'"
+                            class="payment-status-paid payment-status"
+                          >
+                            {{ expenses.status }}
                           </div>
-                          <div v-if="expenses.status == 'Unpaid'" class="payment-status-unpaid payment-status">{{
-                            expenses.status }}</div>
+                          <div
+                            v-if="expenses.status == 'Partial Paid'"
+                            class="payment-status-partial payment-status"
+                          >
+                            {{ expenses.status }}
+                          </div>
+                          <div
+                            v-if="expenses.status == 'Unpaid'"
+                            class="payment-status-unpaid payment-status"
+                          >
+                            {{ expenses.status }}
+                          </div>
                         </td>
                         <td>
-                          <a @click="getExpensesByMonthAndRoom(expenses.roomId)"><i><img
-                                src="../components/icons/eye.png" style="width: 23px;">
-                            </i></a>
-                          <a href="#" @click="deleteExpenses(expenses.roomId)"><i><img
-                                src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                          <a
+                            ><i
+                              ><img
+                                v-if="!isShowExpensesDetail"
+                                src="../components/icons/eye.png"
+                                style="width: 23px" />
+                              <img
+                                v-if="isShowExpensesDetail"
+                                src="../components/icons/eye - Copy.png"
+                                style="width: 23px" /></i
+                          ></a>
+                          <a href="#" @click="deleteExpenses(expenses.roomId)"
+                            ><i
+                              ><img
+                                src="../components/icons/TrashIcon.png"
+                                style="width: 23px" /></i
+                          ></a>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div v-else>
-                  <div v-if="expensesByMonth == null" style="display: flex;justify-content: center">
-                    <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                  <div
+                    v-if="expensesByMonth == null"
+                    style="display: flex; justify-content: center"
+                  >
+                    <p style="margin: 0; margin-top: 10px">
+                      No data to display
+                    </p>
                   </div>
-                  <table v-if="expensesByMonth != null" style="width: 100%;">
-                    <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;font-size: 14px;">
+                  <table style="width: 100%">
+                    <thead
+                      style="
+                        color: #9b9b9b;
+                        border-bottom: solid #b0b4cd 1px;
+                        height: 45px;
+                      "
+                    >
                       <th class="header-table-add-new">Room No</th>
-                      <th class="header-table-add-new">Rental Fee <br />(VND)</th>
-                      <th class="header-table-add-new">Electricity <br />
-                        (3.800vnd)</th>
-                      <th class="header-table-add-new">Water<br />
-                        (35.000vnd)</th>
-                      <th class="header-table-add-new">Internet<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Service<span style="color: red;">*</span><br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Security Deposit<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Debt<br />
-                        (VND)</th>
-                      <th class="header-table-add-new">Fine<br />
-                        (VND)</th>
-                      <th class="header-table-add-new" style="    width: 134px;">Status
+                      <th class="header-table-add-new">
+                        Rental Fee <br />(VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Electricity <br />
+                        (3.800vnd)
+                      </th>
+                      <th class="header-table-add-new">
+                        Water<br />
+                        (35.000vnd)
+                      </th>
+                      <th class="header-table-add-new">
+                        Internet<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Service<span style="color: red">*</span><br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Security Deposit<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Debt<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new">
+                        Fine<br />
+                        (VND)
+                      </th>
+                      <th class="header-table-add-new" style="width: 134px">
+                        Status
                       </th>
                       <th class="header-table-add-new">Action</th>
                     </thead>
                     <tbody>
-                      <tr style="height: 50px;background-color: #9c9c9c17;">
-                        <td style="padding-left: 10px;">{{ expensesByMonthAndRoom!.roomId }}
+                      <tr style="height: 50px; background-color: #9c9c9c17">
+                        <td style="padding-left: 10px">
+                          {{ expensesByMonthAndRoom!.roomId }}
                         </td>
-                        <td>{{ fomatFee(expensesByMonthAndRoom!.rentalFee) }}</td>
-                        <td>{{ fomatFee((expensesByMonthAndRoom!.electricCurrentMeter -
-                          expensesByMonthAndRoom!.electricPreviousMeter)
-                          * 3800) }}</td>
-                        <td>{{ fomatFee((expensesByMonthAndRoom!.waterCurrentMeter -
-                          expensesByMonthAndRoom!.waterPreviousMeter) *
-                          35000) }}</td>
-                        <td>{{ fomatFee(expensesByMonthAndRoom?.internet) }}</td>
+                        <td>
+                          {{ fomatFee(expensesByMonthAndRoom!.rentalFee) }}
+                        </td>
+                        <td>
+                          {{
+                            fomatFee(
+                              (expensesByMonthAndRoom!.electricCurrentMeter -
+                                expensesByMonthAndRoom!.electricPreviousMeter) *
+                                3800
+                            )
+                          }}
+                        </td>
+                        <td>
+                          {{
+                            fomatFee(
+                              (expensesByMonthAndRoom!.waterCurrentMeter -
+                                expensesByMonthAndRoom!.waterPreviousMeter) *
+                                35000
+                            )
+                          }}
+                        </td>
+                        <td>
+                          {{ fomatFee(expensesByMonthAndRoom?.internet) }}
+                        </td>
                         <td>{{ fomatFee(expensesByMonthAndRoom?.service) }}</td>
-                        <td>{{ fomatFee(expensesByMonthAndRoom?.securityDeposite) }}</td>
+                        <td>
+                          {{
+                            fomatFee(expensesByMonthAndRoom?.securityDeposite)
+                          }}
+                        </td>
                         <td>{{ fomatFee(expensesByMonthAndRoom?.debt) }}</td>
                         <td>{{ fomatFee(expensesByMonthAndRoom?.fine) }}</td>
                         <td>
-                          <div v-if="expensesByMonthAndRoom?.status == 'Paid'"
-                            class="payment-status-paid payment-status">{{
-                              expensesByMonthAndRoom?.status }}</div>
-                          <div v-if="expensesByMonthAndRoom?.status == 'Partial Paid'"
-                            class="payment-status-partial payment-status">{{
-                              expensesByMonthAndRoom?.status }}
+                          <div
+                            v-if="expensesByMonthAndRoom?.status == 'Paid'"
+                            class="payment-status-paid payment-status"
+                          >
+                            {{ expensesByMonthAndRoom?.status }}
                           </div>
-                          <div v-if="expensesByMonthAndRoom?.status == 'Unpaid'"
-                            class="payment-status-unpaid payment-status">{{
-                              expensesByMonthAndRoom?.status }}</div>
+                          <div
+                            v-if="
+                              expensesByMonthAndRoom?.status == 'Partial Paid'
+                            "
+                            class="payment-status-partial payment-status"
+                          >
+                            {{ expensesByMonthAndRoom?.status }}
+                          </div>
+                          <div
+                            v-if="expensesByMonthAndRoom?.status == 'Unpaid'"
+                            class="payment-status-unpaid payment-status"
+                          >
+                            {{ expensesByMonthAndRoom?.status }}
+                          </div>
                         </td>
                         <td>
-                          <a @click="showExpenses(expensesByMonthAndRoom?.roomId)"><i><img v-if="!isShowExpenses"
-                                src="../components/icons/eye.png" style="width: 23px;">
-                              <img v-if="isShowExpenses" src="../components/icons/eye - Copy.png"
-                                style="width: 23px;"></i></a>
-                          <a href="#" @click="deleteExpenses(expensesByMonthAndRoom!.roomId)"><i><img
-                                src="../components/icons/TrashIcon.png" style="width: 23px;"></i></a>
+                          <a
+                            ><i
+                              ><img
+                                v-if="!isShowExpensesDetail"
+                                src="../components/icons/eye.png"
+                                style="width: 23px" />
+                              <img
+                                v-if="isShowExpensesDetail"
+                                src="../components/icons/eye - Copy.png"
+                                style="width: 23px" /></i
+                          ></a>
+                          <a
+                            href="#"
+                            @click="
+                              deleteExpenses(expensesByMonthAndRoom!.roomId)
+                            "
+                            ><i
+                              ><img
+                                src="../components/icons/TrashIcon.png"
+                                style="width: 23px" /></i
+                          ></a>
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                  <p style="font-style: italic;font-size: 13px">Service <span style="color: red;">*</span>:
-                    Trash,
-                    light, cleaning, laundy, camera, security, parking</p>
                 </div>
               </div>
               <div v-if="isShowExpensesDetail">
                 <ExpensesDetail :roomId="roomIdSelectDetail" :year="year" />
               </div>
-              <div v-if="isShowExpenses">
-                <ShowExpensesDetail v-bind:month="month" v-bind:year="year" v-bind:room-id="roomIdSelectDetail" />
-              </div>
-
             </div>
           </div>
           <!-- Modal add new expense -->
-          <div class="modal fade" id="addNewExpensesModal" tabindex="-1" aria-labelledby="addNewExpensesModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;justify-content: center;">
+          <div
+            class="modal fade"
+            id="addNewExpensesModal"
+            tabindex="-1"
+            aria-labelledby="addNewExpensesModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              style="max-width: 90%; justify-content: center"
+            >
               <div class="modal-content">
                 <AddNewExpenses :month="month" :year="year" />
               </div>
@@ -342,14 +604,16 @@ var currentPage = 0;
 const allRoom = ref<Room[]>([]);
 const currentMonth = new Date().getMonth() + 1;
 roomService.getAllRoom().then((response) => {
-  allRoom.value = response.map((room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
-    roomId: room.roomId,
-    roomStatus: room.roomStatus,
-    maxTenant: room.maxTenant
-  }));
-})
-const expensesByMonth = ref<Expenses[]>([])
-const expensesByMonthAndRoom = ref<Expenses>()
+  allRoom.value = response.map(
+    (room: { roomId: any; roomStatus: any; maxTenant: any }) => ({
+      roomId: room.roomId,
+      roomStatus: room.roomStatus,
+      maxTenant: room.maxTenant,
+    })
+  );
+});
+const expensesByMonth = ref<Expenses[]>([]);
+const expensesByMonthAndRoom = ref<Expenses>();
 const getExpensesByMonth = async () => {
   await expensesService
     .getExpensesByMonth(year.value, month.value)
@@ -392,38 +656,16 @@ const getExpensesByMonth = async () => {
   console.log(expensesByMonth.value);
 };
 const selectedGetRoom = async () => {
-  await expensesService.getExpensesByMonthAndRoom(year.value, month.value, selectedRoomIdByMonth.value).then((response) => {
-    if (response == null) {
-      expensesByMonthAndRoom.value == null;
-    }
-    else {
+  await expensesService
+    .getExpensesByMonthAndRoom(
+      year.value,
+      month.value,
+      selectedRoomIdByMonth.value
+    )
+    .then((response) => {
       expensesByMonthAndRoom.value = response;
-    }
-  })
-  // console.log(expensesByMonthAndRoom.value);
-}
-const getExpensesByMonthAndRoom = async (roomId: number) => {
-  // await expensesService.getExpensesByMonthAndRoom(year.value, month.value, roomId).then((response) => {
-  //   expensesByMonthAndRoom.value = response;
-  // })
-  selectedRoomIdByMonth.value = roomId;
-  selectedGetRoom()
-}
-const isShowExpenses = ref(false);
-const showExpenses = async (roomId: any) => {
-  roomIdSelectDetail.value = roomId;
-  await nextTick(() => {
-    if (isShowExpenses.value == false) {
-      getListPaymentByYearAndRoom(year.value, roomId);
-      isShowExpenses.value = true;
-      return;
-    }
-    if (isShowExpenses.value == true) {
-      isShowExpenses.value = false;
-      // getListPayment(year.value);
-      return;
-    }
-  });
+    });
+  console.log(expensesByMonthAndRoom.value);
 };
 const isShowExpensesDetail = ref(false);
 const showExpensesDetail = async (roomId: number) => {
@@ -467,27 +709,28 @@ const deleteExpenses = async (roomId: number) => {
     confirmButtonColor: "#0565F9",
     confirmButtonText: "Delete",
     cancelButtonColor: "#E8E7E7",
-    denyButtonColor: "#3333"
+    denyButtonColor: "#3333",
   }).then(async (result) => {
     if (result.isConfirmed) {
-      await expensesService.deleteExpenses(year.value, month.value, roomId).then((res) => {
-        if (res == "delete success") {
-          Swal.fire({
-            text: "Delete success !",
-            icon: "success",
-            showConfirmButton: false,
-          })
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-        } else {
-          Swal.fire({
-            text: "Delete fail !",
-            icon: "error"
-          })
-        }
-
-      })
+      await expensesService
+        .deleteExpenses(year.value, month.value, roomId)
+        .then((res) => {
+          if (res == "delete success") {
+            Swal.fire({
+              text: "Delete success !",
+              icon: "success",
+              showConfirmButton: false,
+            });
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } else {
+            Swal.fire({
+              text: "Delete fail !",
+              icon: "error",
+            });
+          }
+        });
     }
   });
 };
@@ -618,11 +861,10 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
   background: white;
   margin-top: 20px;
   box-shadow: -2px -1px 9px 0px rgba(0, 0, 0, 0.25);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   border-radius: 14px;
   max-width: 97%;
-  min-height: 95%;
-  margin-bottom: 15px;
+  height: 95%;
 }
 
 .main-add-new {
@@ -632,6 +874,11 @@ paymentService.getListPaymentByYear(year.value).then((response) => {
 }
 
 .card {
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  /* margin-top: 3rem; */
+  border: none;
   display: flex;
   justify-content: center;
   padding-top: 16px;
@@ -786,6 +1033,6 @@ p {
 }
 
 .dp__theme_light {
-  --dp-background-color: #E0DEDE66;
+  --dp-background-color: #e0dede66;
 }
 </style>

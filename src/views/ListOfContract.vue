@@ -95,8 +95,8 @@
                     <td>{{ contract.roomId }}</td>
                     <td>{{ contract.representative }}</td>
                     <td>{{ contract.numberOfTenant }}</td>
-                    <td>{{ contract.rentalFee }}</td>
-                    <td>{{ contract.securityDeposite }}</td>
+                    <td>{{ formatNumber(contract.rentalFee) }}</td>
+                    <td>{{ formatNumber(contract.securityDeposite) }}</td>
                     <td>{{ contract.paymentCycle }}</td>
                     <td>
                       {{
@@ -245,15 +245,17 @@
                             class="input-edit"
                           />
                         </td>
-                        <td v-else>{{ contract?.rentalFee }}</td>
+                        <td v-else>{{ formatNumber(contract?.rentalFee) }}</td>
                         <td v-if="isEditing">
                           <input
                             type="number"
-                            v-model="contract.securityDeposite"
+                            v-model="contract.rentalFee"
                             class="input-edit"
                           />
                         </td>
-                        <td v-else>{{ contract?.securityDeposite }}</td>
+                        <td v-else>
+                          {{ formatNumber(contract?.securityDeposite) }}
+                        </td>
                         <td v-if="isEditing">
                           <input
                             type="number"
@@ -414,7 +416,10 @@ var currentPage = 0;
 const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
 };
-
+function formatNumber(value: number | undefined): string {
+  if (value === undefined) return "";
+  return value.toLocaleString("vi-VN");
+}
 const editContract = async (id: number) => {
   console.log(id);
   contractService.getContractById(id).then((response) => {

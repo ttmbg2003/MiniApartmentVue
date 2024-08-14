@@ -103,7 +103,10 @@
         </div>
       </div>
       <div id="mid2" style="width: 25rem; margin-top: 1.8rem">
-        <div class="midItems" style="flex-direction: column">
+        <div
+          class="midItems"
+          style="flex-direction: column; width: 30rem; margin-left: -2.5rem"
+        >
           <div style="width: 100%">
             <div
               style="
@@ -119,10 +122,10 @@
 
           <table style="width: 100%">
             <tr>
-              <th>No.</th>
-              <th>Status</th>
-              <th>Rooms</th>
-              <th>Rate (%)</th>
+              <th style="width: 15%">No.</th>
+              <th style="width: 35%">Status</th>
+              <th style="width: 25%">Rooms</th>
+              <th style="width: 25%">Rate (%)</th>
             </tr>
             <tr v-for="(items, index) in roomStatusTable" :key="index">
               <td>{{ index + 1 }}</td>
@@ -302,7 +305,13 @@
           >
             Showing&nbsp;
             <div style="font-weight: bold; color: rgba(0, 2, 49, 1)">
-              {{ start }} to {{ start + 9 }} of 50
+              {{ start }} to
+              {{
+                start + 9 < roomListTable.length
+                  ? start + 9
+                  : roomListTable.length
+              }}
+              of {{ roomListTable.length }}
             </div>
             &nbsp;entries
           </div>
@@ -392,7 +401,7 @@ const roomStatusTable = ref([
     room: occupied,
     rate: formatPercentage(occupied.value),
   },
-  { status: "vacant", room: vacant, rate: formatPercentage(vacant.value) },
+  { status: "Vacant", room: vacant, rate: formatPercentage(vacant.value) },
   {
     status: "Reserved",
     room: reserved,
