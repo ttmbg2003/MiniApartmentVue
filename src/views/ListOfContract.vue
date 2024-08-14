@@ -98,13 +98,53 @@
                     <td>{{ formatNumber(contract.rentalFee) }}</td>
                     <td>{{ formatNumber(contract.securityDeposite) }}</td>
                     <td>{{ contract.paymentCycle }}</td>
-                    <td>
-                      {{
-                        contract.contract.substring(
-                          contract.contract.lastIndexOf("/") + 1
-                        )
-                      }}
-                    </td>
+                    <div>
+                      <td
+                        style="
+                          display: flex;
+                          border: 0.1px solid #d0d4df;
+                          border-radius: 10px;
+                          width: 11rem;
+                        "
+                      >
+                        <div>
+                          {{
+                            contract.contract?.split("/").pop() ??
+                            "Unknown_File"
+                          }}
+                        </div>
+                        <div
+                          style="
+                            width: 13px;
+                            height: 18px;
+                            top: 67px;
+                            left: 778px;
+                            gap: 0px;
+                            opacity: 0.5;
+                            cursor: pointer;
+                          "
+                          @click="
+                            downloadFile(
+                              contract.contract?.split('/').pop() ?? ''
+                            )
+                          "
+                        >
+                          <img
+                            style="
+                              display: block;
+                              -webkit-user-select: none;
+                              margin: auto;
+                              background-color: hsl(0, 0%, 90%);
+                              transition: background-color 300ms;
+                              width: 1.3rem;
+                              margin-left: 5px;
+                            "
+                            src="@/components/icons/Download.png"
+                            alt="Download"
+                          />
+                        </div>
+                      </td>
+                    </div>
                     <td>
                       <div v-if="contract.contractStatus == 1">
                         <img src="@/components/icons/inleaseterm.png" />
@@ -271,6 +311,13 @@
                               contract.contract.lastIndexOf("/") + 1
                             )
                           }}
+                          <a @click.prevent="viewFile(contract.contract)">
+                            <i
+                              ><img
+                                src="../components/icons/eye.png"
+                                style="width: 23px"
+                            /></i>
+                          </a>
                         </td>
                         <td v-if="isEditing">
                           <input
@@ -405,6 +452,7 @@ import type { Contract } from "@/type/Contract";
 import contractService from "@/services/contractService";
 import Swal from "sweetalert2";
 import Contracts from "@/components/Contract.vue";
+import apiClient from "@/utils/apiClient";
 const contracts = ref<Contract[]>([]);
 const contractDetail = ref<Contract[]>([]);
 const contract = ref<Contract>() as any;
@@ -413,6 +461,63 @@ let isEditing = false;
 var totalElement = 0;
 var totalPage = 0;
 var currentPage = 0;
+const BUCKET_NAME = "miniapartment";
+const viewFile = async (fileName: string) => {
+  try {
+    // Xây dựng URL trực tiếp tới tệp PDF
+    const fileURL = `${fileName}`;
+
+    // Mở URL trực tiếp trong tab mới
+    const newWindow = window.open(fileURL, "_blank");
+    if (newWindow) {
+      newWindow.focus();
+    } else {
+      throw new Error(
+        "Unable to open new window. Please check your browser settings."
+      );
+    }
+  } catch (error) {
+    console.error("Error opening the file:", error);
+  }
+};
+const downloadFile = (fileName: string) => {
+  apiClient({
+    url: `contract/download/${fileName}`,
+    method: "GET",
+    responseType: "blob",
+  })
+    .then((response) => {
+      const contentDisposition = response.headers["content-disposition"];
+      let extractedFileName = fileName;
+
+      // Kiểm tra nếu header 'Content-Disposition' có chứa tên file
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (fileNameMatch.length === 2) {
+          extractedFileName = fileNameMatch[1];
+        }
+      }
+
+      // Đảm bảo tên file có đuôi '.pdf'
+      if (!extractedFileName.endsWith(".pdf")) {
+        extractedFileName += ".pdf";
+      }
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", extractedFileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+    .catch((error) => {
+      console.error("There was an error downloading the file!", error);
+    });
+};
+
 const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
 };
