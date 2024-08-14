@@ -451,7 +451,7 @@ const submitFormExpenses = () => {
             month: props.month,
             status: "Unpaid"
         }
-        expensesService.addNewExpenses(expenses.value).then((response) => {
+        expensesService.addNewExpenses(expenses.value,createDate,dueDate).then((response) => {
             if (response == "add success") {
                 Swal.fire({
                     text: "Save success !",
