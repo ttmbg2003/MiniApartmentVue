@@ -84,31 +84,53 @@
                         <!-- <div v-else style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;display: flex;
 
     justify-content: center;"><p>No data to display</p></div> -->
-                    </div>
-                    <nav v-if="tenants != ''" aria-label="Page navigation example">
-                        <ul class="pagination justify-content-end">
-                            <li class="page-item">
-                                <a href="#" :class="currentPage == 0 ? 'disabled-a-tag' : ''"
-                                    @click="getTenantPanigation(currentPage - 1)"><i class="fa fa-angle-left"
-                                        style="font-size: x-large"></i></a>
-                            </li>
-                            <li class="page-item" v-for="index in totalPage">
-                                <a href="#" :class="currentPage + 1 == index ? 'current-page' : 'non-current-page'
-                                    " @click="getTenantPanigation(index - 1)">{{ index }}</a>
-                            </li>
-                            <li class="page-item">
-                                <a href="#" :class="currentPage == totalPage - 1 ? 'disabled-a-tag' : ''"
-                                    @click="getTenantPanigation(currentPage + 1)"><i class="fa fa-angle-right"
-                                        style="font-size: x-large"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- Modal -->
-                    <div class="modal fade" id="tenantDetailModal" tabindex="-1"
-                        aria-labelledby="tenantDetailModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" style="max-width: 100%">
-                            <div class="modal-content">
-                                <!-- <div class="modal-header">
+          </div>
+          <nav v-if="tenants != ''" aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item">
+                <a
+                  href="#"
+                  :class="currentPage == 0 ? 'disabled-a-tag' : ''"
+                  @click="getTenantPanigation(currentPage - 1)"
+                  ><i class="fa fa-angle-left" style="font-size: x-large"></i
+                ></a>
+              </li>
+              <li class="page-item" v-for="index in totalPage">
+                <a
+                  href="#"
+                  :class="
+                    currentPage + 1 == index
+                      ? 'current-page'
+                      : 'non-current-page'
+                  "
+                  @click="getTenantPanigation(index - 1)"
+                  >{{ index }}</a
+                >
+              </li>
+              <li class="page-item">
+                <a
+                  href="#"
+                  :class="currentPage == totalPage - 1 ? 'disabled-a-tag' : ''"
+                  @click="getTenantPanigation(currentPage + 1)"
+                  ><i class="fa fa-angle-right" style="font-size: x-large"></i
+                ></a>
+              </li>
+            </ul>
+          </nav>
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="tenantDetailModal"
+            tabindex="-1"
+            aria-labelledby="tenantDetailModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              style="max-width: 100%"
+            >
+              <div class="modal-content">
+                <!-- <div class="modal-header">
             <h5 class="modal-title" id="changePassModalLabel">Change Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div> -->
@@ -203,79 +225,129 @@
                                                         <option value="In Progress">In Progress</option>
                                                         <option value="Failed">Failed</option>
                                                     </select> -->
-                                                        <select v-if="tenantDetail.residenceStatus == 'Success'"
-                                                            style="width: 116px;"
-                                                            class="residence-status-success residence-status"
-                                                            v-model="tenantDetail.residenceStatus">
-                                                            <option value="Success" style="color: black;">Success
-                                                            </option>
-                                                            <option value="In Progress" style="color: black;">In
-                                                                Progress
-                                                            </option>
-                                                            <option value="Failed" style="color: black;">Failed</option>
-                                                        </select>
-                                                        <select v-if="tenantDetail.residenceStatus == 'In Progress'"
-                                                            style="width: 116px;"
-                                                            class="residence-status-progress residence-status"
-                                                            v-model="tenantDetail.residenceStatus">
-                                                            <option value="Success" style="color: black;">Success
-                                                            </option>
-                                                            <option value="In Progress" style="color: black;">In
-                                                                Progress
-                                                            </option>
-                                                            <option value="Failed" style="color: black;">Failed</option>
-                                                        </select>
-                                                        <select v-if="tenantDetail.residenceStatus == 'Failed'"
-                                                            style="width: 116px;"
-                                                            class="residence-status-fail residence-status"
-                                                            v-model="tenantDetail.residenceStatus">
-                                                            <option value="Success" style="color: black;">Success
-                                                            </option>
-                                                            <option value="In Progress" style="color: black;">In
-                                                                Progress
-                                                            </option>
-                                                            <option value="Failed" style="color: black;">Failed</option>
-                                                        </select>
-                                                    </td>
-                                                    <td v-else>
-                                                        <div v-if="tenantDetail.residenceStatus == 'Success'"
-                                                            class="residence-status-success residence-status">{{
-                                                                tenantDetail.residenceStatus }}</div>
-                                                        <div v-if="tenantDetail.residenceStatus == 'In Progress'"
-                                                            class="residence-status-progress residence-status">{{
-                                                                tenantDetail.residenceStatus }}</div>
-                                                        <div v-if="tenantDetail.residenceStatus == 'Failed'"
-                                                            class="residence-status-fail residence-status">{{
-                                                                tenantDetail.residenceStatus }}</div>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" @click="editTenant()"><i><img
-                                                                    src="../components/icons/PencilIcon.png"
-                                                                    style="width: 23px;"></i></a>
-                                                        <a href="#" @click="deleteTenant(tenantDetail.email)"><i><img
-                                                                    src="../components/icons/TrashIcon.png"
-                                                                    style="width: 23px;"></i></a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" @click="isEditing = false" class="btn btn-cancel"
-                                            data-bs-dismiss="modal"><a href="#"
-                                                style="text-decoration: none;color: black;">Cancel</a></button>
-                                        <button type="submit" @click="updateTenant" :disabled="!isEditing"
-                                            class="btn btn-save"><a href="#"
-                                                style="text-decoration: none;color: white;">Save</a></button>
-                                    </div>
-                                </form>
+                            <select
+                              v-if="tenantDetail.residenceStatus == 'Success'"
+                              style="width: 116px"
+                              class="residence-status-success residence-status"
+                              v-model="tenantDetail.residenceStatus"
+                            >
+                              <option value="Success" style="color: black">
+                                Success
+                              </option>
+                              <option value="In Progress" style="color: black">
+                                In Progress
+                              </option>
+                              <option value="Failed" style="color: black">
+                                Failed
+                              </option>
+                            </select>
+                            <select
+                              v-if="
+                                tenantDetail.residenceStatus == 'In Progress'
+                              "
+                              style="width: 116px"
+                              class="residence-status-progress residence-status"
+                              v-model="tenantDetail.residenceStatus"
+                            >
+                              <option value="Success" style="color: black">
+                                Success
+                              </option>
+                              <option value="In Progress" style="color: black">
+                                In Progress
+                              </option>
+                              <option value="Failed" style="color: black">
+                                Failed
+                              </option>
+                            </select>
+                            <select
+                              v-if="tenantDetail.residenceStatus == 'Failed'"
+                              style="width: 116px"
+                              class="residence-status-fail residence-status"
+                              v-model="tenantDetail.residenceStatus"
+                            >
+                              <option value="Success" style="color: black">
+                                Success
+                              </option>
+                              <option value="In Progress" style="color: black">
+                                In Progress
+                              </option>
+                              <option value="Failed" style="color: black">
+                                Failed
+                              </option>
+                            </select>
+                          </td>
+                          <td v-else>
+                            <div
+                              v-if="tenantDetail.residenceStatus == 'Success'"
+                              class="residence-status-success residence-status"
+                            >
+                              {{ tenantDetail.residenceStatus }}
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            <div
+                              v-if="
+                                tenantDetail.residenceStatus == 'In Progress'
+                              "
+                              class="residence-status-progress residence-status"
+                            >
+                              {{ tenantDetail.residenceStatus }}
+                            </div>
+                            <div
+                              v-if="tenantDetail.residenceStatus == 'Failed'"
+                              class="residence-status-fail residence-status"
+                            >
+                              {{ tenantDetail.residenceStatus }}
+                            </div>
+                          </td>
+                          <td>
+                            <a href="#" @click="editTenant()"
+                              ><i
+                                ><img
+                                  src="../components/icons/PencilIcon.png"
+                                  style="width: 23px" /></i
+                            ></a>
+                            <a
+                              href="#"
+                              @click="deleteTenant(tenantDetail.email)"
+                              ><i
+                                ><img
+                                  src="../components/icons/TrashIcon.png"
+                                  style="width: 23px" /></i
+                            ></a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      @click="isEditing = false"
+                      class="btn btn-cancel"
+                      data-bs-dismiss="modal"
+                    >
+                      <a href="#" style="text-decoration: none; color: black"
+                        >Cancel</a
+                      >
+                    </button>
+                    <button
+                      type="submit"
+                      @click="updateTenant"
+                      :disabled="!isEditing"
+                      class="btn btn-save"
+                    >
+                      <a href="#" style="text-decoration: none; color: white"
+                        >Save</a
+                      >
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -298,24 +370,24 @@ const timeFomat = (dateString: string) => {
   return dateString + "T17:00:00.000+00:00";
 };
 const updateTenant = async () => {
-    isEditing = false;
-    for (const tenant of tenantDetail.value) {
-        tenant.dateOfBirth = timeFomat(tenant.dateOfBirth);
-    }
-    tenantService.updateTenant(tenantDetail.value).then((response) => {
-        console.log(response);
-        Swal.fire({
-            title: "Success!",
-            text: "Updated successfully.",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1500
-        });
-        setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+  isEditing = false;
+  for (const tenant of tenantDetail.value) {
+    tenant.dateOfBirth = timeFomat(tenant.dateOfBirth);
+  }
+  tenantService.updateTenant(tenantDetail.value).then((response) => {
+    console.log(response);
+    Swal.fire({
+      title: "Success!",
+      text: "Updated successfully.",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
     });
-}
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  });
+};
 const getTenantPanigation = (pageNo: number) => {
   tenantService.getAllTenant(pageNo, searchValue).then((response) => {
     tenants.value = response.content.map(
@@ -379,53 +451,71 @@ const editTenant = async () => {
 };
 
 const deleteTenant = (email: string) => {
-    Swal.fire({
-        text: "Are you sure want to delete?",
-        showCancelButton: true,
-        confirmButtonColor: "#0565F9",
-        confirmButtonText: "Delete",
-        cancelButtonColor: "#E8E7E7",
-        denyButtonColor:"#3333"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            tenantService.deleteTenant(email);
-            Swal.fire({
-                title: "Deleted!",
-                icon: "success",
-                showConfirmButton: false,
-            });
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }
-    });
+  Swal.fire({
+    text: "Are you sure want to delete?",
+    showCancelButton: true,
+    confirmButtonColor: "#0565F9",
+    confirmButtonText: "Delete",
+    cancelButtonColor: "#E8E7E7",
+    denyButtonColor: "#3333",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      tenantService.deleteTenant(email);
+      Swal.fire({
+        title: "Deleted!",
+        icon: "success",
+        showConfirmButton: false,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  });
 };
 const getTenantByRoom = async (roomId: number) => {
-    try {
-        const response = await tenantService.getTenantByRoomId(roomId);
-        tenantDetail.value = response.content.map((tenants: { id: any; email: any; roomId: any; career: any; licensePlate: any; vehicleType: any; vehicleColor: any; residenceStatus: any; contractId: any; dateOfBirth: string; firstName: any; lastName: any; gender: any; userId: any; contact: any; citizenId: any; }) => ({
-            id: tenants.id,
-            email: tenants.email,
-            roomId: tenants.roomId,
-            career: tenants.career,
-            licensePlate: tenants.licensePlate,
-            vehicleType: tenants.vehicleType,
-            vehicleColor: tenants.vehicleColor,
-            residenceStatus: tenants.residenceStatus,
-            contractId: tenants.contractId,
-            dateOfBirth: formatDate(tenants.dateOfBirth),
-            firstName: tenants.firstName,
-            lastName: tenants.lastName,
-            gender: tenants.gender,
-            userId: tenants.userId,
-            contact: tenants.contact,
-            citizenId: tenants.citizenId,
-        }));
-        console.log(tenantDetail.value);
-
-    } catch (error) {
-        console.error('Error fetching tenant data:', error);
-    }
+  try {
+    const response = await tenantService.getTenantByRoomId(roomId);
+    tenantDetail.value = response.content.map(
+      (tenants: {
+        id: any;
+        email: any;
+        roomId: any;
+        career: any;
+        licensePlate: any;
+        vehicleType: any;
+        vehicleColor: any;
+        residenceStatus: any;
+        contractId: any;
+        dateOfBirth: string;
+        firstName: any;
+        lastName: any;
+        gender: any;
+        userId: any;
+        contact: any;
+        citizenId: any;
+      }) => ({
+        id: tenants.id,
+        email: tenants.email,
+        roomId: tenants.roomId,
+        career: tenants.career,
+        licensePlate: tenants.licensePlate,
+        vehicleType: tenants.vehicleType,
+        vehicleColor: tenants.vehicleColor,
+        residenceStatus: tenants.residenceStatus,
+        contractId: tenants.contractId,
+        dateOfBirth: formatDate(tenants.dateOfBirth),
+        firstName: tenants.firstName,
+        lastName: tenants.lastName,
+        gender: tenants.gender,
+        userId: tenants.userId,
+        contact: tenants.contact,
+        citizenId: tenants.citizenId,
+      })
+    );
+    console.log(tenantDetail.value);
+  } catch (error) {
+    console.error("Error fetching tenant data:", error);
+  }
 };
 const formatDate = (dateString: string) => {
   return dateString.split("T")[0];
@@ -447,11 +537,11 @@ const formatDate = (dateString: string) => {
   width: 18%;
 }
 .card {
-    display: flex;
-    justify-content: center;
-    padding-top: 16px;
-    /* margin-top: 3rem; */
-    border: none;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  /* margin-top: 3rem; */
+  border: none;
 }
 
 .line-blue {
@@ -470,12 +560,12 @@ const formatDate = (dateString: string) => {
 }
 
 .btn {
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    margin: 10px 8px;
-    cursor: pointer;
-    padding-bottom: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 8px;
+  cursor: pointer;
+  padding-bottom: 30px;
 }
 
 .btn-save {

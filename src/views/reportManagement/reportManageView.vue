@@ -427,7 +427,7 @@ function formatPercentage(room: number, onTimeRoom: number) {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.33);
-  margin-top: -90px;
+  margin-top: -4.4rem;
   overflow-y: scroll; /* hoặc auto */
   scrollbar-width: none;
 }
