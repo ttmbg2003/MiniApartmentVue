@@ -111,11 +111,11 @@
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Creation Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" />
+                                            <input type="date" class="input-add-new-expenses" :value="formatDate(createDate)" />
                                         </div>
                                         <div class="form-group">
                                             <label>Due Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" />
+                                            <input type="date" class="input-add-new-expenses" :value="formatDate(dueDate)" />
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -224,11 +224,11 @@
                                 <h5 style="font-weight: 600;">Living Expenses</h5>
                                 <div style="display: flex;">
                                     <p class="col">Invoice Date</p>
-                                    <p class="col">01 Feb,2021</p>
+                                    <p class="col">{{ formatDateToText(formatDate(expenses?.createDate)) }}</p>
                                 </div>
                                 <div style="display: flex;">
                                     <p class="col">Due Date</p>
-                                    <p class="col">01 Feb,2021</p>
+                                    <p class="col">{{ formatDateToText(formatDate(expenses?.dueDate)) }}</p>
                                 </div>
                                 <p>Below is the detailed breakdown of living expenses for your
                                     room.
@@ -373,20 +373,22 @@ const internetFee = ref(100000);
 const serviceFee = ref(0);
 const inforOfContract = ref<IRentalFee>();
 const selectedRoomId = ref(0);
+const createDate = ref('');
+const dueDate = ref('');
 const selectedRoom = async () => {
-    if (props.roomId != 0) {
+    if (props.roomId != 0) {        
         inforOfContract.value = await contractService.getRepesentativeByRoomId(props.roomId, props.month);
         representative.value = inforOfContract.value!.representative;
         rentalFee.value = inforOfContract.value!.rentalFee;
         securityDeposite.value = inforOfContract.value!.securityDeposite;
         numberOfTenant = inforOfContract.value!.numberOfTenant;
-        serviceFee.value = numberOfTenant * 130000;
+        serviceFee.value = numberOfTenant * 130000;        
     }
 }
 const getExpensesDetailByRoom = async () => {
     if (props.roomId != 0) {
         await expensesService.getExpensesByMonthAndRoom(props.year, props.month, props.roomId).then((res) => {
-            expenses.value = res;
+            expenses.value = res;            
         })
         waterCurrentMetter = expenses.value!.waterCurrentMeter;
         waterPreviousMetter = expenses.value!.waterPreviousMeter;
@@ -398,16 +400,18 @@ const getExpensesDetailByRoom = async () => {
         service = expenses.value!.service;
         debt = expenses.value!.debt;
         fine = expenses.value!.fine;
+        createDate.value = expenses.value?.createDate;
+        dueDate.value = expenses.value?.dueDate
     }
 }
 watch(() => [props.roomId, props.month, props.year], () => {
     selectedRoom(),
-        getExpensesDetailByRoom()
+    getExpensesDetailByRoom()
 }, { immediate: true });
 const submitStatus = async () => {
     console.log("submit form status");
-    expenses.value.roomId = props.roomId;
-    expenses.value.year = expenses.value?.year.split("-")[0]
+    expenses!.value.roomId = props.roomId;
+    expenses!.value.year = expenses.value?.year.split("-")[0]
     console.log(expenses.value);
     await expensesService.updateExpensesStatus(expenses.value).then((res) => {
         console.log(res);
@@ -487,6 +491,21 @@ const fomatFee = (fee: any) => {
     }
     return new Intl.NumberFormat('vi-VN').format(fee);
 }
+const formatDate = (dateString: any) => {
+  if (dateString === undefined) {
+    return '';
+  }  
+  return dateString.split('T')[0];
+};
+const formatDateToText = (dateString: string): string => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`;
+};
 </script>
 <style scoped>
 .main-add-new {

@@ -2,11 +2,9 @@ import type { Expenses } from "@/type/ExpenseDetail";
 import apiClient from "@/utils/apiClient";
 
 class ExpensesService {
-    addNewExpenses = (expense: Expenses, createDate: Date, dueDate: Date): Promise<any> => {
+    addNewExpenses = (expense: Expenses): Promise<any> => {
         return apiClient
-            .post(`/api/expenses/addNewExpenses`, {
-                expense, createDate, dueDate
-            })
+            .post(`/api/expenses/addNewExpenses`, expense)
             .then((response) => response.data['result']);
     };
 

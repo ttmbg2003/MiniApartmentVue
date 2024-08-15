@@ -12,5 +12,7 @@ export interface Expenses{
     status:string,
     internet:number,
     service:number,
-    securityDeposite:number
+    securityDeposite:number,
+    createDate: Date,
+    dueDate:Date
 }

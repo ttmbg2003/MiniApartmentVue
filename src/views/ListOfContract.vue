@@ -5,7 +5,7 @@
       display: flex;
       height: 89%;
       width: 100%;
-      background: rgba(245, 246, 248, 1);
+      background: rgba(245, 246, 248, 1);min-height: 97%;
     "
   >
     <SideBar class="sidebar" />
@@ -567,6 +567,7 @@ const formatDate = (dateString: string) => {
   font-family: "Poppins", sans-serif;
   border-radius: 14px;
   max-width: 83%;
+  margin-left: 20px;
 }
 .sidebar {
   width: 18%;
@@ -574,7 +575,7 @@ const formatDate = (dateString: string) => {
 .card {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 1rem;
   border: none;
 }
 

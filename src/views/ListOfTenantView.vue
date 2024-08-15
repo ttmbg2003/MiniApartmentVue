@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-    <div style="display: flex;height: 97%">
+    <div style="display: flex;height: 89vh">
         <SideBar />
         <div style="
     background: #F5F6F8;
@@ -34,7 +34,7 @@
                         <div v-else style="display: flex;justify-content: flex-end;">
                             <p style="margin-right: 31px; margin-bottom: 0;">Total: {{ totalElement }}</p>
                         </div>
-                        <div style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;">
+                        <div style="box-shadow: rgba(0, 0, 0, 0.23) 0px 0px 4px;border-radius: 5px;    height: 61vh;">
                             <div style="margin: 12px;">
                                 <table style="width: 100%;">
                                     <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
@@ -139,15 +139,15 @@
                                                 <tr v-for="(tenantDetail) in tenantDetail" style="height:50px;">
                                                     <td>{{ tenantDetail.id }}</td>
                                                     <td>{{ tenantDetail.firstName }} {{ tenantDetail.lastName }}</td>
-                                                    <td v-if="isEditing">
-                                                        <!-- <input v-model="tenantDetail.roomId" style="width: 38px;"
-                                                        class="input-edit"> -->
+                                                    <!-- <td v-if="isEditing">
+                                                         <input v-model="tenantDetail.roomId" style="width: 38px;"
+                                                        class="input-edit">
                                                         <select v-model="tenantDetail.roomId" class="input-edit">
                                                             <option v-for="room in rooms" :value="room.roomId">{{
                                                                 room.roomId }}</option>
                                                         </select>
-                                                    </td>
-                                                    <td v-else>{{ tenantDetail.roomId }}</td>
+                                                    </td> -->
+                                                    <td>{{ tenantDetail.roomId }}</td>
                                                     <td v-if="isEditing">
                                                         <select v-model="tenantDetail.gender" class="input-edit">
                                                             <option :value="1">Male</option>
@@ -441,7 +441,7 @@ const formatDate = (dateString: string) => {
     font-family: 'Poppins', sans-serif;
     border-radius: 14px;
     max-width: 97%;
-    height: 95%;
+    min-height: 97%;
 }
 .sidebar {
   width: 18%;

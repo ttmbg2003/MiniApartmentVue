@@ -384,15 +384,15 @@ const setDueDate = () => {
 };
 setDueDate();
 setTodayDate();
+let isSave = false;
+const emit = defineEmits(['dataEmitted'])
 const formatDate = (dateString: string): string => {
     if (!dateString) return '';
-
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const month = monthNames[date.getMonth()];
     const year = date.getFullYear();
-
     return `${day} ${month}, ${year}`;
 };
 const selectedRoom = async () => {
@@ -409,8 +409,6 @@ const getRoomId = async () => {
     await roomService.getAllRoomAvailable().then((response) => {
         roomsAvailable.value = response;
     })
-    console.log(roomsAvailable.value);
-    
 }
 getRoomId();
 const submitStatus = () => {
@@ -449,17 +447,23 @@ const submitFormExpenses = () => {
             waterPreviousMeter: waterPreviousMetter,
             year: props.year.toString(),
             month: props.month,
-            status: "Unpaid"
+            status: "Unpaid",
+            createDate: createDate.value,
+            dueDate: dueDate.value
         }
-        expensesService.addNewExpenses(expenses.value,createDate,dueDate).then((response) => {
+        expensesService.addNewExpenses(expenses.value).then((response) => {
             if (response == "add success") {
                 Swal.fire({
                     text: "Save success !",
-                    icon: "success"
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
                 })
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
+                isSave = true;
+                emit('dataEmitted', isSave)
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 1500);
             } else {
                 Swal.fire({
                     text: "Save fail !",

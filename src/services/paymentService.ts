@@ -2,14 +2,20 @@ import type { IListPayment } from "@/type/IListPayment";
 import apiClient from "@/utils/apiClient";
 
 class PaymentService{
-    getListPaymentByYear = (year:number): Promise<any> => {
+    getListPaymentByYear = (year:number,pageNo:number): Promise<any> => {
+      if (pageNo == null) {
+        pageNo = 0;
+      }
         return apiClient
-          .get(`/api/payment/getPaymentByYear?year=${year}`)
+          .get(`/api/payment/getPaymentByYear?pageNo=${pageNo}&year=${year}`)
           .then((response) => response.data['result']);
       };
-    getListPaymentByYearAndROom = (year:number,roomId:number): Promise<any> => {
+    getListPaymentByYearAndROom = (year:number,roomId:number,pageNo:number): Promise<any> => {
+      if (pageNo == null) {
+        pageNo = 0;
+      }
         return apiClient
-          .get(`/api/payment/getPaymentByYearAndRoom?year=${year}&roomId=${roomId}`)
+          .get(`/api/payment/getPaymentByYearAndRoom?year=${year}&roomId=${roomId}&pageNo=${pageNo}`)
           .then((response) => response.data['result']);
       };
     // getTenantByRoomId = (roomId:number): Promise<IListPayment> => {

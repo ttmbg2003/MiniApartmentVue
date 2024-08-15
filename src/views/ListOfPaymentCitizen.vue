@@ -23,7 +23,8 @@
                             <div style="    text-align: center;">
                                 <label>Year</label>
                                 <VueDatePicker :model-value="year" year-picker :year-range="[2020, 2040]"
-                                    :clearable="false" placeholder="Select year" @update:model-value="getListPaymentByYearAndRoom">
+                                    :clearable="false" placeholder="Select year"
+                                    @update:model-value="getListPaymentByYearAndRoom">
                                     <template #input-icon>
                                     </template>
                                     <template #dp-input="{ value }">
@@ -55,9 +56,9 @@
                             </div>
                             <div style="margin-left: 30px;    text-align: center;">
                                 <label>Room No</label><br />
-                                <select  disabled
+                                <select disabled
                                     style="cursor: pointer;height: 38px;width: 78px;text-align: center;border: 1px solid #0000002e;border-radius: 4px;outline: none;background-color:#E0DEDE66 ">
-                                    <option selected>{{ payment!.roomId }}</option>                        
+                                    <option selected>{{ payment!.roomId }}</option>
                                 </select>
 
                             </div>
@@ -71,7 +72,8 @@
                                 <div v-if="payment == 'not found'" style="display: flex;justify-content: center">
                                     <p style="margin: 0;margin-top: 10px;">No data to display</p>
                                 </div>
-                                <table v-if="(month == null || month == '') && (selectedRoomIdByMonth == null || selectedRoomIdByMonth == '')"
+                                <table
+                                    v-if="(month == null || month == '') && (selectedRoomIdByMonth == null || selectedRoomIdByMonth == '')"
                                     style="width: 100%;">
                                     <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
                                         <th>Room No</th>
@@ -147,93 +149,24 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="back-ground-row-table"  v-if="payment != 'not found'">
+                                                <div class="back-ground-row-table" v-if="payment != 'not found'">
                                                     <a @click="showExpensesDetail(payment!.roomId)"><i><img
                                                                 v-if="!isShowExpensesDetail"
                                                                 src="../components/icons/eye.png" style="width: 23px;">
                                                             <img v-if="isShowExpensesDetail"
                                                                 src="../components/icons/eye - Copy.png"
-                                                                style="width: 23px;"></i></a>                                        
+                                                                style="width: 23px;"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                
-                                <div v-else-if="selectedRoomIdByMonth == null || selectedRoomIdByMonth == ''">
-                                    <div v-if="expensesByMonth == ''" style="display: flex;justify-content: center">
-                                        <p style="margin: 0;margin-top: 10px;">No data to display</p>
-                                    </div>
-                                    <table style="width: 100%;">
-
-                                        <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
-                                            <th class="header-table-add-new">Room No</th>
-                                            <th class="header-table-add-new">Rental Fee <br />(VND)</th>
-                                            <th class="header-table-add-new">Electricity <br />
-                                                (3.800vnd)</th>
-                                            <th class="header-table-add-new">Water<br />
-                                                (35.000vnd)</th>
-                                            <th class="header-table-add-new">Internet<br />
-                                                (VND)</th>
-                                            <th class="header-table-add-new">Service<span
-                                                    style="color: red;">*</span><br />
-                                                (VND)</th>
-                                            <th class="header-table-add-new">Security Deposit<br />
-                                                (VND)</th>
-                                            <th class="header-table-add-new">Debt<br />
-                                                (VND)</th>
-                                            <th class="header-table-add-new">Fine<br />
-                                                (VND)</th>
-                                            <th class="header-table-add-new" style="    width: 134px;">Status
-                                            </th>
-                                            <th class="header-table-add-new">Action</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="expenses in expensesByMonth"
-                                                style="height: 50px;background-color: #9c9c9c17;">
-                                                <td style="padding-left: 10px;">{{ expenses.roomId }}</td>
-                                                <td>{{ fomatFee(expenses.rentalFee) }}</td>
-                                                <td>{{ fomatFee((expenses.electricCurrentMeter -
-                                                    expenses.electricPreviousMeter)
-                                                    * 3800) }}</td>
-                                                <td>{{ fomatFee((expenses.waterCurrentMeter -
-                                                    expenses.waterPreviousMeter) *
-                                                    35000) }}</td>
-                                                <td>{{ fomatFee(expenses.internet) }}</td>
-                                                <td>{{ fomatFee(expenses.service) }}</td>
-                                                <td>{{ fomatFee(expenses.securityDeposite) }}</td>
-                                                <td>{{ fomatFee(expenses.debt) }}</td>
-                                                <td>{{ fomatFee(expenses.fine) }}</td>
-                                                <td>
-                                                    <div v-if="expenses.status == 'Paid'"
-                                                        class="payment-status-paid payment-status">{{
-                                                            expenses.status }}</div>
-                                                    <div v-if="expenses.status == 'Partial Paid'"
-                                                        class="payment-status-partial payment-status">
-                                                        {{
-                                                            expenses.status }}
-                                                    </div>
-                                                    <div v-if="expenses.status == 'Unpaid'"
-                                                        class="payment-status-unpaid payment-status">{{
-                                                            expenses.status }}</div>
-                                                </td>
-                                                <td>
-                                                    <a><i><img v-if="!isShowExpensesDetail"
-                                                                src="../components/icons/eye.png" style="width: 23px;">
-                                                            <img v-if="isShowExpensesDetail"
-                                                                src="../components/icons/eye - Copy.png"
-                                                                style="width: 23px;"></i></a>
-                                                    <a href="#" @click="deleteExpenses(expenses.roomId)"><i><img src="../components/icons/TrashIcon.png"
-                                                                style="width: 23px;"></i></a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
                                 <div v-else>
-                                    <div v-if="expensesByMonth == null" style="display: flex;justify-content: center">
-                                        <p style="margin: 0;margin-top: 10px;">No data to display</p>
+                                    <div v-if="expensesByMonthAndRoom === undefined"
+                                        style="display: flex; justify-content: center">
+                                        <p style="margin: 0; margin-top: 10px">
+                                            No data to display
+                                        </p>
                                     </div>
                                     <table style="width: 100%;">
                                         <thead style="color: #9B9B9B;border-bottom: solid #B0B4CD 1px;height: 45px;">
@@ -258,7 +191,7 @@
                                             </th>
                                             <th class="header-table-add-new">Action</th>
                                         </thead>
-                                        <tbody>
+                                        <tbody v-if="expensesByMonthAndRoom !== undefined">
                                             <tr style="height: 50px;background-color: #9c9c9c17;">
                                                 <td style="padding-left: 10px;">{{ expensesByMonthAndRoom!.roomId }}
                                                 </td>
@@ -292,7 +225,9 @@
                                                             <img v-if="isShowExpensesDetail"
                                                                 src="../components/icons/eye - Copy.png"
                                                                 style="width: 23px;"></i></a>
-                                                    <a href="#" @click="deleteExpenses(expensesByMonthAndRoom!.roomId)"><i><img src="../components/icons/TrashIcon.png"
+                                                    <a href="#"
+                                                        @click="deleteExpenses(expensesByMonthAndRoom!.roomId)"><i><img
+                                                                src="../components/icons/TrashIcon.png"
                                                                 style="width: 23px;"></i></a>
                                                 </td>
                                             </tr>
@@ -325,81 +260,55 @@ import expensesService from "@/services/expensesService";
 const payment = ref<IListPayment>();
 const roomId = ref(0)
 const selectedRoomIdByMonth = ref(0);
-const expensesByMonth = ref<Expenses[]>([])
+const expensesByMonth = ref<Expenses>()
 const expensesByMonthAndRoom = ref<Expenses>()
 const getExpensesByMonth = async () => {
-  await expensesService
-    .getExpensesCitizenByMonth(year.value, month.value)
-    .then((response) => {
-      expensesByMonth.value = response.content.map(
-        (expenses: {
-          roomId: any;
-          month: any;
-          rentalFee: any;
-          electricPreviousMeter: any;
-          electricCurrentMeter: any;
-          waterPreviousMeter: any;
-          waterCurrentMeter: any;
-          debt: any;
-          fine: any;
-          status: any;
-          internet: any;
-          service: any;
-          securityDeposite: any;
-        }) => ({
-          roomId: expenses.roomId,
-          month: expenses.month,
-          rentalFee: expenses.rentalFee,
-          electricPreviousMeter: expenses.electricPreviousMeter,
-          electricCurrentMeter: expenses.electricCurrentMeter,
-          waterPreviousMeter: expenses.waterPreviousMeter,
-          waterCurrentMeter: expenses.waterCurrentMeter,
-          debt: expenses.debt,
-          fine: expenses.fine,
-          status: expenses.status,
-          internet: expenses.internet,
-          service: expenses.service,
-          securityDeposite: expenses.securityDeposite,
-        })
-      );
-      totalElement = response.totalElements;
-      totalPage = response.totalPages;
-      currentPage = response.pageable.pageNumber;
-    });
+    await expensesService
+        .getExpensesCitizenByMonthAndRoom(year.value, month.value, payment.value?.roomId)
+        .then((response) => {            
+            if(response === undefined){
+                expensesByMonthAndRoom.value = undefined;
+            }
+            else expensesByMonthAndRoom.value = response
+        });
+        console.log(month.value);
+        
+        console.log(expensesByMonthAndRoom.value);
+        
 };
 const isShowExpensesDetail = ref(false);
 const showExpensesDetail = async (roomId: number) => {
-  // roomIdSelectDetail.value = roomId;
-  await nextTick(() => {
-    if (isShowExpensesDetail.value == false) {
-      // getListPaymentByYearAndRoom(year.value);
-      isShowExpensesDetail.value = true;
-      return;
-    }
-    if (isShowExpensesDetail.value == true) {
-      isShowExpensesDetail.value = false;
-      // getListPayment(year.value);
-      return;
-    }
-  });
+    // roomIdSelectDetail.value = roomId;
+    await nextTick(() => {
+        if (isShowExpensesDetail.value == false) {
+            // getListPaymentByYearAndRoom(year.value);
+            isShowExpensesDetail.value = true;
+            return;
+        }
+        if (isShowExpensesDetail.value == true) {
+            isShowExpensesDetail.value = false;
+            // getListPayment(year.value);
+            return;
+        }
+    });
 };
 // const roomIdSelectDetail = ref(0);
 const fomatFee = (fee: any) => {
-  if (isNaN(fee)) {
-    fee = 0;
-  }
-  return new Intl.NumberFormat("vi-VN").format(fee);
+    if (isNaN(fee)) {
+        fee = 0;
+    }
+    return new Intl.NumberFormat("vi-VN").format(fee);
 };
 const year = ref(new Date().getFullYear());
 const month = ref();
 var totalElement = 0;
 const getListPaymentByYearAndRoom = async (yearSelected: any) => {
-  year.value = yearSelected;
-  await paymentService
-    .getListPaymentCitizenByYearAndRoom(yearSelected)
-    .then((response) => {
-      payment.value = response.result      
-    });
+    year.value = yearSelected;
+    await paymentService
+        .getListPaymentCitizenByYearAndRoom(yearSelected)
+        .then((response) => {
+            payment.value = response.result
+        });
 };
 getListPaymentByYearAndRoom(year.value)
 </script>
@@ -417,9 +326,9 @@ getListPaymentByYearAndRoom(year.value)
 }
 
 .main-add-new {
-  background: white;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
+    background: white;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
 }
 
 .card {

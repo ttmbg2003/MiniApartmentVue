@@ -56,14 +56,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Previous Meter</label><br />
-                                    <input v-if="isEditing" type="text" class="input-add-new-expenses"
+                                    <input type="text" class="input-add-new-expenses"
                                         v-model="electricityPreviousMetter"
                                         :disabled="securityDeposite != 0" />
-                                    <div v-else> aaaaaaaaaaaaaaa</div>
                                 </div>
                                 <div class="form-group">
                                     <label>Current Meter</label><br />
-                                    <input  v-if="isEditing" type="text" class="input-add-new-expenses" v-model="electricityCurrentMetter"
+                                    <input type="text" class="input-add-new-expenses" v-model="electricityCurrentMetter"
                                         @change="calculatorElectricFee"
                                         :disabled="securityDeposite != 0" />
                                 </div>
@@ -75,12 +74,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Previous Meter</label><br />
-                                    <input  v-if="isEditing" type="text" class="input-add-new-expenses" v-model="waterPreviousMetter"
+                                    <input type="text" class="input-add-new-expenses" v-model="waterPreviousMetter"
                                         :disabled="securityDeposite != 0" />
                                 </div>
                                 <div class="form-group">
                                     <label>Current Meter</label><br />
-                                    <input  v-if="isEditing" type="text" class="input-add-new-expenses" @change="calculateWaterFee"
+                                    <input  type="text" class="input-add-new-expenses" @change="calculateWaterFee"
                                         v-model="waterCurrentMetter"
                                         :disabled="securityDeposite != 0" />
                                 </div>
@@ -310,7 +309,7 @@ const getExpensesDetailByRoom = async () => {
         fine = expenses.value!.fine;
     }
 }
-watch(() => [props.roomId, props.month, props.year], () => {
+watch(() => [props.roomId, props.month, props.year], () => {    
     selectedRoom(),
         getExpensesDetailByRoom()
 }, { immediate: true });

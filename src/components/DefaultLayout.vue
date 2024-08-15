@@ -39,6 +39,6 @@ watch(
   z-index: 1;
 }
 .router {
-  height: 90%;
+  min-height: 90%;
 }
 </style>
