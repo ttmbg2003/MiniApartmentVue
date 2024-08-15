@@ -105,7 +105,7 @@
           />người
         </p>
         b) Dưới đây là thông tin chi tiết của khách thuê:
-        <table style="margin-left: -7rem">
+        <table>
           <thead>
             <tr>
               <th>No</th>
@@ -117,8 +117,6 @@
               <th>Citizen ID</th>
               <th>Career</th>
               <th>License plate</th>
-              <th>Vehicle Type</th>
-              <th>Vehicle Color</th>
               <th>Relationship with Representative</th>
             </tr>
           </thead>
@@ -190,23 +188,8 @@
               <td>
                 <input
                   type="text"
-                  v-model="contract.vehicleType"
-                  style="width: 90px"
-                  required
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  v-model="contract.vehicleColor"
-                  style="width: 90px"
-                  required
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
                   v-model="contract.relationship"
+                  value="Representative"
                   style="width: 90px"
                   readonly
                 />
@@ -591,7 +574,6 @@
     </div>
   </form>
   <div v-if="error" class="error">{{ error }}</div>
-  <button @click="exportToPDF">Export to PDF</button>
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
@@ -625,7 +607,7 @@ export default {
         obligations: "",
         commit: "",
         copies: "",
-        relationship: "",
+        relationship: "Representative",
         career: "",
         licensePlate: "",
         vehicleType: "",
