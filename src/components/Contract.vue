@@ -189,6 +189,7 @@
                 <input
                   type="text"
                   v-model="contract.relationship"
+                  value="Representative"
                   style="width: 90px"
                   readonly
                 />
@@ -606,7 +607,7 @@ export default {
         obligations: "",
         commit: "",
         copies: "",
-        relationship: "",
+        relationship: "Representative",
         career: "",
         licensePlate: "",
         vehicleType: "",

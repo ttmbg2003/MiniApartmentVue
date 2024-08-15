@@ -47,7 +47,6 @@
                 "
               >
                 <img
-                  @click="getTenantPanigation()"
                   src="../components/icons/searchIcon.png"
                   style="
                     width: 8%;
@@ -58,8 +57,7 @@
                 />
                 <input
                   type="text"
-                  v-model="searchValue"
-                  @change="getTenantPanigation()"
+                  v-model="searchQuery"
                   class="input-search"
                   placeholder="Please enter Room No or full name"
                   style="width: 81%"
@@ -152,7 +150,7 @@
                     <th style="width: 6rem">Room No</th>
                     <th style="width: 10rem">Representative</th>
                     <th style="width: 7rem">Number of Tenants</th>
-                    <th style="width: 7rem">Rental Fee (VND)</th>
+                    <th style="width: 7rem">Rental Fee <span>(VND)</span></th>
                     <th style="width: 10rem">Security Deposit (VND)</th>
                     <th style="width: 9rem">Payment Cycle</th>
                     <th>Contract</th>
@@ -543,6 +541,7 @@ var currentPage = 0;
 const inLeaseTerm = ref(false);
 const approachingExpiration = ref(false);
 const pastExpiration = ref(false);
+const searchQuery = ref("");
 const filteredContracts = computed(() => {
   return contracts.value.filter((contract) => {
     let match = true;
@@ -556,7 +555,13 @@ const filteredContracts = computed(() => {
     if (pastExpiration.value) {
       match = match && contract.contractStatus === 3;
     }
-
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase();
+      match =
+        match &&
+        (contract.roomId.toString().includes(query) ||
+          contract.representative.toLowerCase().includes(query));
+    }
     return match;
   });
 });
