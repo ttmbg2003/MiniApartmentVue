@@ -385,7 +385,13 @@
                 View Detail of Room
                 {{ assetRoomList.at(clickedRoom - 1)?.roomId }}
               </div>
-              <button class="addBtn">
+              <button
+                @click="addNewItem()"
+                v-if="clickedAssetItem == -1"
+                class="addBtn"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+              >
                 <svg
                   class="addBtnSvg"
                   width="16"
@@ -412,9 +418,28 @@
                   Add new
                 </div>
               </button>
+              <div
+                v-else
+                style="display: flex; margin-right: 0.8rem; margin-top: 0.7rem"
+              >
+                <button
+                  class="updateBtn"
+                  style="margin-right: 0.5rem"
+                  @click="cancelUpdate()"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="updateBtn"
+                  style="background: rgba(5, 101, 249, 1); color: white"
+                  @click="saveUpdate()"
+                >
+                  Save
+                </button>
+              </div>
             </div>
 
-            <table style="margin-top: 1rem">
+            <table style="margin-top: 1rem; width: 99%">
               <tr style="width: 100%">
                 <th style="width: 2rem">No.</th>
                 <th style="width: 5.7rem">Item</th>
@@ -455,7 +480,7 @@
                     <div
                       style="
                         box-shadow: 0px 1px 13px 0px #00000014;
-
+                        position: relative;
                         display: flex;
                         margin-left: -5px;
                         height: 2rem;
@@ -464,6 +489,22 @@
                         width: 100%;
                       "
                     >
+                      <div
+                        v-if="clickedAssetItem === index"
+                        style="
+                          position: absolute;
+                          top: 0;
+                          left: 0;
+                          width: 90%;
+                          height: 100%;
+                          background: rgba(255, 255, 255, 0.5);
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          pointer-events: none;
+                          z-index: 1;
+                        "
+                      ></div>
                       <div
                         v-if="index > assetDetailList.length"
                         style="height: 40px; width: 2rem; margin-left: 5px"
@@ -477,21 +518,240 @@
                       <div style="width: 3rem">
                         {{ assetDetailList[index - 1]?.unit }}
                       </div>
-                      <div style="width: 4.5rem">
+                      <div style="width: 4.8rem">
                         {{ assetDetailList[index - 1]?.quantity }}
                       </div>
                       <div style="width: 5rem">
                         {{ formatNumber(assetDetailList[index - 1].value) }}
                       </div>
-                      <div style="width: 7rem">
-                        {{ assetDetailList[index - 1]?.maintCycle }} months
+                      <div
+                        v-if="clickedAssetItem !== index"
+                        style="width: 7rem"
+                      >
+                        {{ addZero(assetDetailList[index - 1]?.maintCycle) }}
+                        months
                       </div>
-                      <div style="width: 7rem">
+                      <div style="width: 7rem" v-else>
+                        <select
+                          style="border: none; margin-left: -0.25rem"
+                          v-model="assetDetailList[index - 1].maintCycle"
+                          @change="updateMaintCycle()"
+                        >
+                          <option :value="1">01 month</option>
+                          <option :value="3">03 months</option>
+                          <option :value="6">06 months</option>
+                          <option :value="9">09 months</option>
+                          <option :value="12">12 months</option>
+                        </select>
+                      </div>
+
+                      <div
+                        v-if="clickedAssetItem !== index"
+                        style="width: 7rem"
+                      >
                         {{ assetDetailList[index - 1]?.maintDate }}
                       </div>
-                      <div style="width: 7rem">
-                        {{ assetDetailList[index - 1]?.maintStatus }}
+                      <div v-else>
+                        <VueDatePicker
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                            cursor: pointer;
+                          "
+                          v-model="date"
+                          range
+                          :format="format"
+                          @update:model-value="handleDate"
+                          ><template #trigger>
+                            <div
+                              style="
+                                width: 7rem;
+                                display: flex;
+                                align-items: center;
+                              "
+                            >
+                              {{ assetDetailList[index - 1]?.maintDate }}
+                              <img
+                                style="margin-left: 0.3rem"
+                                src="@/components/icons/calendar.png"
+                              />
+                            </div>
+                          </template>
+                        </VueDatePicker>
                       </div>
+
+                      <div
+                        v-if="clickedAssetItem == index"
+                        class="custom-select"
+                      >
+                        <button @click="toggleDropdown()" class="select-button">
+                          <div v-if="selectedMaintStatus == 'Done'">
+                            <img
+                              style="width: 3.8rem; height: 1.2rem"
+                              src="@/components/icons/doneAsset.png"
+                            />
+                          </div>
+                          <div v-else-if="selectedMaintStatus == 'Overdue'">
+                            <img
+                              style="width: 3.8rem; height: 1.2rem"
+                              src="@/components/icons/overdueAsset.png"
+                            />
+                          </div>
+                          <div v-else-if="selectedMaintStatus == 'Pending'">
+                            <img
+                              style="width: 3.8rem; height: 1.2rem"
+                              src="@/components/icons/pendingAsset.png"
+                            />
+                          </div>
+                          <div v-else-if="selectedMaintStatus == 'Scheduled'">
+                            <img
+                              style="width: 3.8rem; height: 1.2rem"
+                              src="@/components/icons/scheduledAsset.png"
+                            />
+                          </div>
+                          <div v-else>
+                            <img
+                              style="width: 3.8rem; height: 1.2rem"
+                              src="@/components/icons/progressAsset.png"
+                            />
+                          </div>
+                          <svg
+                            width="12"
+                            height="7"
+                            viewBox="0 0 12 7"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="margin-left: 0.5rem"
+                          >
+                            <path
+                              d="M11.0324 1.1574C10.9626 1.0871 10.8797 1.0313 10.7883 0.993227C10.6969 0.95515 10.5989 0.935547 10.4999 0.935547C10.4009 0.935547 10.3028 0.95515 10.2114 0.993227C10.12 1.0313 10.0371 1.0871 9.96736 1.1574L6.53236 4.59239C6.46264 4.66268 6.37969 4.71848 6.28829 4.75656C6.1969 4.79463 6.09887 4.81424 5.99986 4.81424C5.90085 4.81424 5.80282 4.79463 5.71143 4.75656C5.62004 4.71848 5.53708 4.66268 5.46736 4.59239L2.03236 1.1574C1.96264 1.0871 1.87969 1.0313 1.78829 0.993227C1.6969 0.95515 1.59887 0.935547 1.49986 0.935547C1.40085 0.935547 1.30282 0.95515 1.21143 0.993227C1.12003 1.0313 1.03708 1.0871 0.967362 1.1574C0.827674 1.29792 0.749268 1.48801 0.749268 1.68614C0.749268 1.88428 0.827674 2.07437 0.967362 2.21489L4.40986 5.65739C4.83174 6.07874 5.40361 6.31541 5.99986 6.31541C6.59611 6.31541 7.16799 6.07874 7.58986 5.65739L11.0324 2.21489C11.1721 2.07437 11.2505 1.88428 11.2505 1.68614C11.2505 1.48801 11.1721 1.29792 11.0324 1.1574Z"
+                              fill="#292D32"
+                            />
+                          </svg>
+                        </button>
+                        <div v-if="dropdownOpen" class="dropdown">
+                          <div
+                            v-for="option in options"
+                            :key="option"
+                            :class="[
+                              'option',
+                              { selected: option === selectedMaintStatus },
+                            ]"
+                            @click="selectOption(option)"
+                          >
+                            <div v-if="option == 'Done'">
+                              <img
+                                style="width: 3.8rem; height: 1.2rem"
+                                src="@/components/icons/doneAsset.png"
+                              />
+                            </div>
+                            <div v-else-if="option == 'Overdue'">
+                              <img
+                                style="width: 3.8rem; height: 1.2rem"
+                                src="@/components/icons/overdueAsset.png"
+                              />
+                            </div>
+                            <div v-else-if="option == 'Pending'">
+                              <img
+                                style="width: 3.8rem; height: 1.2rem"
+                                src="@/components/icons/pendingAsset.png"
+                              />
+                            </div>
+                            <div v-else-if="option == 'Scheduled'">
+                              <img
+                                style="width: 3.8rem; height: 1.2rem"
+                                src="@/components/icons/scheduledAsset.png"
+                              />
+                            </div>
+                            <div v-else>
+                              <img
+                                style="width: 3.8rem; height: 1.2rem"
+                                src="@/components/icons/progressAsset.png"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div v-else>
+                        <div
+                          v-if="
+                            assetDetailList[index - 1]?.maintStatus == 'Done'
+                          "
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <img
+                            style="width: 3.8rem; height: 1.2rem"
+                            src="@/components/icons/doneAsset.png"
+                          />
+                        </div>
+                        <div
+                          v-else-if="
+                            assetDetailList[index - 1]?.maintStatus == 'Overdue'
+                          "
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <img
+                            style="width: 3.8rem; height: 1.2rem"
+                            src="@/components/icons/overdueAsset.png"
+                          />
+                        </div>
+                        <div
+                          v-else-if="
+                            assetDetailList[index - 1]?.maintStatus == 'Pending'
+                          "
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <img
+                            style="width: 3.8rem; height: 1.2rem"
+                            src="@/components/icons/pendingAsset.png"
+                          />
+                        </div>
+                        <div
+                          v-else-if="
+                            assetDetailList[index - 1]?.maintStatus ==
+                            'Scheduled'
+                          "
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <img
+                            style="width: 3.8rem; height: 1.2rem"
+                            src="@/components/icons/scheduledAsset.png"
+                          />
+                        </div>
+                        <div
+                          v-else
+                          style="
+                            width: 7rem;
+                            display: flex;
+                            align-items: center;
+                          "
+                        >
+                          <img
+                            style="width: 3.8rem; height: 1.2rem"
+                            src="@/components/icons/progressAsset.png"
+                          />
+                        </div>
+                      </div>
+
+                      <!-- this is icon button -->
                       <div
                         style="
                           width: 4rem;
@@ -506,11 +766,12 @@
                           viewBox="0 0 14 14"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          @click="updateAssetItem(index)"
                         >
                           <path
                             d="M4.48132 12.4999H1.32945C1.19013 12.4999 1.05651 12.4472 0.957998 12.3535C0.859483 12.2597 0.804138 12.1325 0.804138 11.9999V9.20703C0.804138 9.14137 0.817726 9.07635 0.844125 9.01569C0.870524 8.95503 0.909219 8.89991 0.957999 8.85348L8.83767 1.35348C8.93618 1.25971 9.0698 1.20703 9.20912 1.20703C9.34844 1.20703 9.48205 1.25971 9.58057 1.35348L12.5148 4.14637C12.6134 4.24014 12.6687 4.36732 12.6687 4.49992C12.6687 4.63253 12.6134 4.75971 12.5148 4.85348L4.48132 12.4999Z"
                             :stroke="
-                              clickedRoom === index ? '#0000ff' : '#000231'
+                              clickedAssetItem === index ? '#0000ff' : '#000231'
                             "
                             stroke-opacity="0.65"
                             stroke-width="1.5"
@@ -519,11 +780,14 @@
                           />
                         </svg>
                         <svg
+                          class="iconBtn"
+                          style="margin-left: 0.5rem"
                           width="17"
                           height="16"
                           viewBox="0 0 17 16"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          @click="deleteItem(index)"
                         >
                           <path
                             d="M14.2217 3.5L2.66483 3.5"
@@ -638,12 +902,30 @@
       </div>
     </div>
   </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered"
+      style="max-width: 49%; height: fit-content"
+    >
+      <AddNewAssetView />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import AddNewAssetView from "./AddNewAssetView.vue";
 import SideBar from "@/components/SideBar.vue";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import AssetService from "@/services/assetService";
+import assetService from "@/services/assetService";
+import Swal from "sweetalert2";
 const year = ref(new Date().getFullYear());
 const month = ref();
 function updateYear(newYear: number) {
@@ -664,6 +946,29 @@ const getRoomFromBE = () => {
     clickedRoom.value = -1;
   });
 };
+
+//custom select
+const dropdownOpen = ref(false);
+const selectedMaintStatus = ref("Pending");
+const options = ref(["Pending", "Scheduled", "In Progress", "Done", "Overdue"]);
+
+const toggleDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value;
+};
+
+const selectOption = (option: string) => {
+  selectedMaintStatus.value = option;
+  dropdownOpen.value = false;
+
+  assetDetailList.value[clickedAssetItem.value - 1].maintStatus =
+    selectedMaintStatus.value;
+};
+
+//format number
+function addZero(value: number | undefined): string {
+  if (value === undefined) return "";
+  return value < 10 ? `0${value}` : value.toString();
+}
 
 function formatNumber(value: number | undefined): string {
   if (value === undefined) return "";
@@ -690,6 +995,7 @@ const roomListPagination = (index: number) => {
 };
 watch([year, month], getRoomFromBE);
 
+//table 2
 const clickedRoom = ref<number>(-1);
 
 const getAssetData = ref(false);
@@ -709,7 +1015,108 @@ function updateAssetRange(totalElements: number) {
   assetRange.value = Array.from({ length: totalElements }, (_, i) => i + 1);
   console.log(assetRange.value);
 }
+const clickedAssetItem = ref(-1);
 
+//add new an item
+
+const addNewItem = async () => {};
+//delete item function
+function deleteItem(index: number) {
+  Swal.fire({
+    title: "Are you sure want to delete this item?",
+
+    showCancelButton: true,
+    confirmButtonText: "Delete",
+    confirmButtonColor: "rgba(5, 101, 249, 1)",
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      const item = assetDetailList.value[index - 1];
+      assetService.deleteAssetItem(item.id).then((res) => {
+        if (res == 200) {
+          Swal.fire("Deleted!", "", "success");
+          getAssetDetailEachRoom(clickedRoom.value);
+        } else Swal.fire("Delete failed!", "", "error");
+      });
+    }
+  });
+}
+
+//this is function for icon button
+function cancelUpdate() {
+  clickedAssetItem.value = -1;
+}
+
+function saveUpdate() {
+  const updateItem = assetDetailList.value[clickedAssetItem.value - 1];
+  console.log(assetDetailList.value[clickedAssetItem.value - 1]);
+  clickedAssetItem.value = -1;
+  assetService
+    .updateAssetDetail(
+      updateItem.id,
+      updateItem.maintCycle,
+      updateItem.maintDate,
+      updateItem.maintStatus
+    )
+    .then((res) => {
+      if (res == 200) {
+        alert("update successful!");
+      } else {
+        alert("update failed");
+      }
+    });
+}
+
+//update property
+const updateAssetItem = (index: number) => {
+  selectedMaintStatus.value = assetDetailList.value[index - 1].maintStatus;
+  clickedAssetItem.value = index;
+  parseDateRange();
+};
+
+function updateMaintCycle() {
+  console.log(assetDetailList.value[clickedAssetItem.value - 1]);
+}
+
+const date = ref<Date[]>([]);
+const format = (date: Date[]) => {
+  const day1 = date[0].getDate();
+  const month1 = date[0].getMonth() + 1;
+  const day2 = date[1].getDate();
+  const month2 = date[1].getMonth() + 1;
+  return `${day1}/${month1} - ${day2}/${month2}`;
+};
+const handleDate = (modelData: Date[]) => {
+  assetDetailList.value[clickedAssetItem.value - 1].maintDate =
+    format(modelData);
+};
+const parseDateRange = () => {
+  // Chuỗi ngày
+  const dateString =
+    assetDetailList.value[clickedAssetItem.value - 1].maintDate;
+
+  // Phân tích chuỗi ngày thành hai phần
+  const [start, end] = dateString.split(" - ");
+
+  // Tạo đối tượng Date cho startDate và endDate
+  const startDate = new Date(
+    new Date().getFullYear(),
+    parseInt(start.split("/")[1]) - 1,
+    parseInt(start.split("/")[0])
+  );
+  const endDate = new Date(
+    new Date().getFullYear(),
+    parseInt(end.split("/")[1]) - 1,
+    parseInt(end.split("/")[0])
+  );
+  // Loại bỏ giờ, phút, giây khỏi ngày
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+  // Gán giá trị cho date
+  date.value = [startDate, endDate];
+};
+
+//get asset detail list in table 2
 const checkAssetData = ref(false);
 const assetDetailList = ref<assetDetailItem[]>([]);
 const getAssetDetailEachRoom = (index: number) => {
@@ -723,6 +1130,7 @@ const getAssetDetailEachRoom = (index: number) => {
       assetDetailList.value = res.content;
       maxPage.value = res.totalPages;
       updateAssetRange(res.totalElements);
+
       console.log(res.totalElements);
       console.log(assetRange.value);
 
@@ -907,5 +1315,55 @@ input:not(:placeholder-shown) ~ .reset {
 
 .addBtn:hover .addBtnSvg {
   transform: rotate(180deg);
+}
+.updateBtn {
+  border: none;
+  border-radius: 20px;
+  width: 4.3rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.custom-select {
+  width: 7rem;
+  position: relative;
+}
+
+.select-button {
+  margin-left: -0.35rem;
+  margin-top: -0.3rem;
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: fit-content;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.option {
+  width: fit-content;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.option:hover,
+.option.selected {
+  background-color: #e6f7ff;
 }
 </style>

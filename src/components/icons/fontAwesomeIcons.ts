@@ -25,6 +25,7 @@ import {
   faArrowUp,
   faEye,
   faTrashCan,
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -52,5 +53,6 @@ library.add(
   faFaceLaughSquint,
   faArrowUp,
   faEye,
-  faTrashCan
+  faTrashCan,
+  faChevronDown
 );
