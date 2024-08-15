@@ -1153,6 +1153,8 @@ const getAssetDetailEachRoom = (index: number) => {
   background: white;
   box-shadow: 0px 4px 5px 0px #0000001f;
   padding: 0.5rem;
+  min-height: 88vh;
+  border-radius: 8px;
 }
 .setTime {
   display: flex;
