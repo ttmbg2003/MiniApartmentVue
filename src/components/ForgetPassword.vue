@@ -6,7 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 10rem; margin-bottom: 6rem"
+          style="width: 10rem; margin-bottom: 20rem"
         />
       </div>
       <div class="illustration">
@@ -221,7 +221,7 @@ export default {
         const response = await apiClient.post("/auth/verifyOtpForgetPassword", {
           email: this.email,
           otp: otp,
-        });
+        });  
         this.showSuccessModal = true;
         this.errorMessage = "";
         localStorage.setItem("email", this.email);
@@ -379,7 +379,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40rem;
+  height: 100%;
+  width: 100%;
   background-color: #b7dae8;
 }
 .login-container {

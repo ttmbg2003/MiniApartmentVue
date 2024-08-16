@@ -424,7 +424,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40rem;
+  height: 45rem;
   background-color: #b7dae8;
 }
 .login-container {
@@ -436,7 +436,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 100%;
+  height: 113vh;
   background-image: url(@/components/icons/Login.png);
 }
 .illustration {
