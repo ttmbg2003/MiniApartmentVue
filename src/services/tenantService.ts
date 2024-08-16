@@ -20,10 +20,9 @@ class TenantService {
       .post(`/api/tenants/getTenantByRoomId?roomId=${roomId}`)
       .then((response) => response.data["result"]);
   };
-  updateTenant = (tenantList: Tenant[]): Promise<void> => {
+  updateTenant = (tenantList: Tenant[]): Promise<any> => {
     return apiClient
-      .post("/api/tenants/updateTenants", tenantList)
-      .then((response) => response.data["result"]);
+      .post("/api/tenants/updateTenants", tenantList);
   };
   // searchTenant = (key:string) :Promise<any> =>{
   //     return apiClient.post(`/api/tenants/search?keySearch=${key}`)

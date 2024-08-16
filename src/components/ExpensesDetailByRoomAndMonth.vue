@@ -111,11 +111,13 @@
                                     <div class="input-group">
                                         <div class="form-group">
                                             <label>Creation Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" :value="formatDate(createDate)" />
+                                            <input type="date" class="input-add-new-expenses"
+                                                :value="formatDate(createDate)" />
                                         </div>
                                         <div class="form-group">
                                             <label>Due Date<span style="color: red;">*</span></label><br />
-                                            <input type="date" class="input-add-new-expenses" :value="formatDate(dueDate)" />
+                                            <input type="date" class="input-add-new-expenses"
+                                                :value="formatDate(dueDate)" />
                                         </div>
                                     </div>
                                     <div class="input-group">
@@ -376,19 +378,19 @@ const selectedRoomId = ref(0);
 const createDate = ref('');
 const dueDate = ref('');
 const selectedRoom = async () => {
-    if (props.roomId != 0) {        
+    if (props.roomId != 0) {
         inforOfContract.value = await contractService.getRepesentativeByRoomId(props.roomId, props.month);
         representative.value = inforOfContract.value!.representative;
         rentalFee.value = inforOfContract.value!.rentalFee;
         securityDeposite.value = inforOfContract.value!.securityDeposite;
         numberOfTenant = inforOfContract.value!.numberOfTenant;
-        serviceFee.value = numberOfTenant * 130000;        
+        serviceFee.value = numberOfTenant * 130000;
     }
 }
 const getExpensesDetailByRoom = async () => {
     if (props.roomId != 0) {
         await expensesService.getExpensesByMonthAndRoom(props.year, props.month, props.roomId).then((res) => {
-            expenses.value = res;            
+            expenses.value = res;
         })
         waterCurrentMetter = expenses.value!.waterCurrentMeter;
         waterPreviousMetter = expenses.value!.waterPreviousMeter;
@@ -406,8 +408,9 @@ const getExpensesDetailByRoom = async () => {
 }
 watch(() => [props.roomId, props.month, props.year], () => {
     selectedRoom(),
-    getExpensesDetailByRoom()
+        getExpensesDetailByRoom()
 }, { immediate: true });
+const emit = defineEmits(["dataEmitted"]);
 const submitStatus = async () => {
     console.log("submit form status");
     expenses!.value.roomId = props.roomId;
@@ -415,7 +418,24 @@ const submitStatus = async () => {
     console.log(expenses.value);
     await expensesService.updateExpensesStatus(expenses.value).then((res) => {
         console.log(res);
-
+        if (res.result == "update success") {
+            Swal.fire({
+                title: "Success!",
+                text: "Updated status successfully.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            emit("dataEmitted", true);
+        } else {
+            Swal.fire({
+                title: "Error!",
+                text: "Updated status not successfully.",
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     })
 }
 const submitFormExpenses = () => {
@@ -492,10 +512,10 @@ const fomatFee = (fee: any) => {
     return new Intl.NumberFormat('vi-VN').format(fee);
 }
 const formatDate = (dateString: any) => {
-  if (dateString === undefined) {
-    return '';
-  }  
-  return dateString.split('T')[0];
+    if (dateString === undefined) {
+        return '';
+    }
+    return dateString.split('T')[0];
 };
 const formatDateToText = (dateString: string): string => {
     if (!dateString) return '';

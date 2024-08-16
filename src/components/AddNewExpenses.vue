@@ -9,31 +9,19 @@
     <div class="modal-body" style="padding-bottom: 0">
       <div>
         <p style="color: #0265ff">
-          <i
-            ><img
-              src="../components/icons/circled-plusblue.png"
-              style="width: 23px" /></i
-          >Add new
+          <i><img src="../components/icons/circled-plusblue.png" style="width: 23px" /></i>Add new
         </p>
       </div>
       <div>
         <div style="display: flex">
           <div style="text-align: center">
             <label>Year</label>
-            <VueDatePicker
-              :model-value="year"
-              year-picker
-              :year-range="[2020, 2040]"
-              :clearable="false"
-              placeholder="Select year"
-              style="width: 107px"
-            />
+            <VueDatePicker :model-value="year" year-picker :year-range="[2020, 2040]" :clearable="false"
+              placeholder="Select year" style="width: 107px" />
           </div>
           <div style="margin-left: 30px; text-align: center">
             <label>Month</label><br />
-            <select
-              v-model="props.month"
-              style="
+            <select v-model="props.month" style="
                 cursor: pointer;
                 height: 38px;
                 width: 60px;
@@ -42,8 +30,7 @@
                 border-radius: 4px;
                 outline: none;
                 background-color: #e0dede66;
-              "
-            >
+              ">
               <option selected></option>
               <option>1</option>
               <option>2</option>
@@ -61,11 +48,7 @@
           </div>
           <div style="text-align: center; margin-left: 30px">
             <label>Room</label><br />
-            <select
-              class="input-add-new-expenses"
-              v-model="selectedRoomId"
-              @change="selectedRoom"
-              style="
+            <select class="input-add-new-expenses" v-model="selectedRoomId" @change="selectedRoom" style="
                 cursor: pointer;
                 height: 38px;
                 width: 60px;
@@ -74,8 +57,7 @@
                 border-radius: 4px;
                 outline: none;
                 background-color: #e0dede66;
-              "
-            >
+              ">
               <option v-for="room in roomsAvailable" :value="room">
                 {{ room }}
               </option>
@@ -131,21 +113,29 @@
                 <td>{{ fomatFee(securityDeposite) }}</td>
                 <td>0</td>
                 <td>0</td>
-                <td>0</td>
                 <td>
-                  <a
-                    ><i
-                      ><img
-                        src="../components/icons/eye.png"
-                        style="width: 23px"
-                      /> </i
-                  ></a>
-                  <a href="#"
-                    ><i
-                      ><img
-                        src="../components/icons/TrashIcon.png"
-                        style="width: 23px" /></i
-                  ></a>
+                  <select class="payment-status-unpaid payment-status"
+                    v-model="expensesStatus">
+                    <option value="Paid" style="color: black;">Paid</option>
+                    <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                    <option value="Unpaid" style="color: black;">Unpaid</option>
+                  </select>
+                  <!-- <select v-if="expensesStatus == 'Partial Paid'" class="payment-status-partial payment-status"
+                    v-model="expensesStatus">
+                    <option value="Paid" style="color: black;">Paid</option>
+                    <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                    <option value="Unpaid" style="color: black;">Unpaid</option>
+                  </select>
+                  <select v-if="expenses?.status == 'Unpaid'" class="payment-status-unpaid payment-status"
+                    v-model="expensesStatus">
+                    <option value="Paid" style="color: black;">Paid</option>
+                    <option value="Partial Paid" style="color: black;">Partial Paid</option>
+                    <option value="Unpaid" style="color: black;">Unpaid</option>
+                  </select> -->
+                </td>
+                <td>
+                  <a><i><img src="../components/icons/eye.png" style="width: 23px" /> </i></a>
+                  <a href="#"><i><img src="../components/icons/TrashIcon.png" style="width: 23px" /></i></a>
                 </td>
               </tr>
             </tbody>
@@ -156,176 +146,92 @@
           laundy, camera, security, parking
         </p>
         <div class="row">
-          <div
-            class="col"
-            style="display: flex; justify-content: end; margin-right: 20px"
-          >
+          <div class="col" style="display: flex; justify-content: end; margin-right: 20px">
             <div class="form-add">
               <div style="margin: 6px">
                 <h5 style="font-weight: 600">Living Expenses</h5>
                 <form @submit.prevent="submitFormExpenses">
                   <div class="input-group">
                     <div class="form-group">
-                      <label
-                        >Creation Date<span style="color: red">*</span></label
-                      ><br />
-                      <input
-                        type="date"
-                        class="input-add-new-expenses"
-                        v-model="createDate"
-                      />
+                      <label>Creation Date<span style="color: red">*</span></label><br />
+                      <input type="date" class="input-add-new-expenses" v-model="createDate" />
                     </div>
                     <div class="form-group">
-                      <label>Due Date<span style="color: red">*</span></label
-                      ><br />
-                      <input
-                        type="date"
-                        class="input-add-new-expenses"
-                        v-model="dueDate"
-                      />
+                      <label>Due Date<span style="color: red">*</span></label><br />
+                      <input type="date" class="input-add-new-expenses" v-model="dueDate" />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
-                      <label>Room No<span style="color: red">*</span></label
-                      ><br />
-                      <input
-                        type="text"
-                        :value="selectedRoomId"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <label>Room No<span style="color: red">*</span></label><br />
+                      <input type="text" :value="selectedRoomId" class="input-add-new-expenses" disabled />
                     </div>
                     <div class="form-group">
-                      <label
-                        >Representative<span style="color: red">*</span></label
-                      ><br />
-                      <input
-                        type="text"
-                        :value="representative"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <label>Representative<span style="color: red">*</span></label><br />
+                      <input type="text" :value="representative" class="input-add-new-expenses" disabled />
                     </div>
                     <div class="form-group">
                       <label>Total</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        :value="fomatFee(totalFee)"
-                        disabled
-                      />
+                      <input type="text" class="input-add-new-expenses" :value="fomatFee(totalFee)" disabled />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
                       <label>Rental Fee</label><br />
-                      <input
-                        type="text"
-                        :value="rentalFee"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <input type="text" :value="rentalFee" class="input-add-new-expenses" disabled />
                     </div>
                     <div class="form-group">
                       <label>Security Deposit</label><br />
-                      <input
-                        type="text"
-                        :value="securityDeposite"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <input type="text" :value="securityDeposite" class="input-add-new-expenses" disabled />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
                       <label>Electricity</label><br />
-                      <input
-                        type="text"
-                        v-model="electricityFee"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <input type="text" v-model="electricityFee" class="input-add-new-expenses" disabled />
                     </div>
                     <div class="form-group">
                       <label>Previous Meter</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="electricityPreviousMetter"
-                        :disabled="securityDeposite != 0"
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="electricityPreviousMetter"
+                        :disabled="securityDeposite != 0" />
                     </div>
                     <div class="form-group">
                       <label>Current Meter</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="electricityCurrentMetter"
-                        @change="calculatorElectricFee"
-                        :disabled="securityDeposite != 0"
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="electricityCurrentMetter"
+                        @change="calculatorElectricFee" :disabled="securityDeposite != 0" />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
                       <label>Water</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="waterFee"
-                        disabled
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="waterFee" disabled />
                     </div>
                     <div class="form-group">
                       <label>Previous Meter</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="waterPreviousMetter"
-                        :disabled="securityDeposite != 0"
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="waterPreviousMetter"
+                        :disabled="securityDeposite != 0" />
                     </div>
                     <div class="form-group">
                       <label>Current Meter</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        @change="calculateWaterFee"
-                        v-model="waterCurrentMetter"
-                        :disabled="securityDeposite != 0"
-                      />
+                      <input type="text" class="input-add-new-expenses" @change="calculateWaterFee"
+                        v-model="waterCurrentMetter" :disabled="securityDeposite != 0" />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
                       <label>Internet</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="internetFee"
-                        disabled
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="internetFee" disabled />
                     </div>
                     <div class="form-group">
                       <label>Service</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        v-model="serviceFee"
-                        :disabled="securityDeposite != 0"
-                        @change="sumTotal"
-                      />
+                      <input type="text" class="input-add-new-expenses" v-model="serviceFee"
+                        :disabled="securityDeposite != 0" @change="sumTotal" />
                     </div>
                   </div>
                   <div class="input-group">
                     <div class="form-group">
                       <label>Debt</label><br />
-                      <input
-                        type="text"
-                        class="input-add-new-expenses"
-                        disabled
-                      />
+                      <input type="text" class="input-add-new-expenses" disabled />
                     </div>
                     <div class="form-group">
                       <label>Fine</label><br />
@@ -337,11 +243,7 @@
                     </div>
                   </div>
                   <div style="display: flex; justify-content: center">
-                    <button
-                      type="button"
-                      @click="submitFormExpenses"
-                      class="btn btn-save"
-                    >
+                    <button type="button" @click="submitFormExpenses" class="btn btn-save">
                       Save
                     </button>
                   </div>
@@ -508,6 +410,7 @@ const serviceFee = ref(0);
 const inforOfContract = ref<IRentalFee>();
 const selectedRoomId = ref(0);
 const totalFee = ref(0);
+const expensesStatus = ref('Unpaid')
 const sumTotal = () => {
   let service = Math.round(serviceFee.value);
   totalFee.value =
@@ -619,7 +522,7 @@ const submitFormExpenses = () => {
       waterPreviousMeter: waterPreviousMetter,
       year: props.year.toString(),
       month: props.month,
-      status: "Unpaid",
+      status: expensesStatus.value,
       createDate: createDate.value,
       dueDate: dueDate.value,
     };
