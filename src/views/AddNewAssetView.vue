@@ -107,7 +107,7 @@
                   text-overflow: ellipsis;
                 "
               >
-                {{ newItemList[index - 1]?.item }}
+                {{ newItemList[index - 1]?.itemName }}
               </div>
               <div v-else>
                 <input
@@ -118,7 +118,7 @@
                     text-overflow: ellipsis;
                   "
                   type="text"
-                  v-model="newItemList[index - 1].item"
+                  v-model="newItemList[index - 1].itemName"
                 />
               </div>
               <div v-if="clickedAssetItem != index" style="width: 3rem">
@@ -424,7 +424,12 @@
       >
         Cancel
       </button>
-      <button type="button" class="btn btn-primary" @click="addNewItem()">
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="addNewItem()"
+        data-bs-dismiss="modal"
+      >
         Save
       </button>
     </div>
@@ -432,17 +437,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-
+import Swal from "sweetalert2";
+import AssetService from "@/services/assetService";
+import { ref, defineEmits } from "vue";
 const prop = defineProps({
   roomId: Number,
   year: Number,
   month: Number,
 });
-
+const emit = defineEmits(["result"]);
 const clickedAssetItem = ref(-1);
 interface assetDetailItem {
-  item: string;
+  itemName: string;
   unit: string;
   quantity: number;
   value: number;
@@ -454,7 +460,7 @@ interface assetDetailItem {
 // Hàm để tạo một item implement assetDetailItem với id là index và thêm vào newItemList
 const createAssetDetailItem = () => {
   const assetDetailItem: assetDetailItem = {
-    item: "",
+    itemName: "",
     unit: "",
     quantity: 0,
     value: 0,
@@ -561,12 +567,46 @@ const resetList = () => {
   newItemList.value = [];
   createAssetDetailItem();
 };
-
+const validateInputs = () => {
+  for (const item of newItemList.value) {
+    if (!item.unit || !item.quantity || !item.value) {
+      return false;
+    }
+  }
+  return true;
+};
 const addNewItem = () => {
-  console.log(prop.year);
-  console.log(prop.month);
-  console.log(prop.roomId);
-  console.log(newItemList.value);
+  if (!validateInputs()) {
+    Swal.fire("Please fill all required fields!", "", "error");
+    return;
+  }
+  Swal.fire({
+    title: "Are you sure want to add these items?",
+
+    showCancelButton: true,
+    confirmButtonText: "Confirm",
+    confirmButtonColor: "rgba(5, 101, 249, 1)",
+    width: "27rem",
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      const item = {
+        year: prop.year,
+        month: prop.month,
+        roomId: prop.roomId,
+        asset: newItemList.value,
+      };
+      AssetService.addNewAssetItems(item).then((res) => {
+        console.log(res);
+        if (res == 200) {
+          Swal.fire("Successful!", "", "success");
+          emit("result", true);
+        } else {
+          Swal.fire("Add failed!", "", "error");
+        }
+      });
+    }
+  });
 };
 </script>
 

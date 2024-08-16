@@ -934,6 +934,7 @@
         :room-id="filteredRooms.at(clickedRoom - 1)?.roomId"
         :year="year"
         :month="month"
+        @result="handleResult"
       />
     </div>
   </div>
@@ -1201,6 +1202,12 @@ const computedIndex = ref(assetDetailList.value.length + 1);
 watch(assetDetailList, (newList) => {
   computedIndex.value = newList.length + 1;
 });
+
+function handleResult(payload: boolean) {
+  if (payload) {
+    getAssetDetailEachRoom(clickedRoom.value);
+  }
+}
 </script>
 
 <style scoped>

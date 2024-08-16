@@ -36,5 +36,10 @@ class AssetService {
       .delete(`/asset/deleteAssetItem?id=${id}`)
       .then((res) => res.data["status"]);
   };
+  addNewAssetItems = (item: any): Promise<any> => {
+    return apiClient
+      .post("/asset/addNewAssetItem", item)
+      .then((res) => res.data["status"]);
+  };
 }
 export default new AssetService();
