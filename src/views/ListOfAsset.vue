@@ -166,7 +166,7 @@
         <div class="table1">
           <div class="search">
             <form class="form">
-              <button>
+              <button disabled>
                 <svg
                   width="17"
                   height="16"
@@ -185,12 +185,14 @@
                 </svg>
               </button>
               <input
+                v-model="roomSearch"
                 class="input"
                 placeholder="Please enter room no"
                 required
                 type="text"
+                @input="searchRoomNo"
               />
-              <button class="reset" type="reset">
+              <button class="reset" type="reset" @click="dropFilter">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -228,7 +230,7 @@
                   >
                 </div>
               </th>
-              <th style="width: 3rem">hehe</th>
+              <th style="width: 3rem"></th>
             </tr>
             <template v-if="checkData">
               <tr v-for="index in range" :key="index">
@@ -245,20 +247,20 @@
                     "
                   >
                     <div
-                      v-if="index > assetRoomList.length"
+                      v-if="index > filteredRooms.length"
                       style="height: 40px; width: 3rem; margin-left: 5px"
                     ></div>
                     <div v-else style="width: 3rem; margin-left: 5px">
                       {{ index }}
                     </div>
                     <div style="width: 5rem">
-                      {{ assetRoomList[index - 1]?.roomId }}
+                      {{ filteredRooms[index - 1]?.roomId }}
                     </div>
                     <div style="width: 5rem">
-                      {{ assetRoomList[index - 1]?.quantity }}
+                      {{ filteredRooms[index - 1]?.quantity }}
                     </div>
                     <div style="width: 8rem">
-                      {{ formatNumber(assetRoomList[index - 1]?.totalValue) }}
+                      {{ formatNumber(filteredRooms[index - 1]?.totalValue) }}
                     </div>
                     <div
                       style="
@@ -314,11 +316,13 @@
           <div
             v-if="checkData"
             style="
+              position: absolute;
+              bottom: 0;
               display: flex;
               justify-content: space-between;
 
               margin-top: 0.6rem;
-              width: 100%;
+              width: 95%;
             "
           >
             <div
@@ -332,19 +336,25 @@
               <div style="font-weight: bold; color: rgba(0, 2, 49, 1)">
                 {{ start }} to
                 {{
-                  start + 9 < assetRoomList.length
+                  start + 9 < filteredRooms.length
                     ? start + 9
-                    : assetRoomList.length
+                    : filteredRooms.length
                 }}
-                of {{ assetRoomList.length }}
+                of {{ filteredRooms.length }}
               </div>
               &nbsp;entries
             </div>
-            <div style="display: flex">
+            <div
+              v-if="Math.ceil(filteredRooms.length / 10) > 1"
+              style="display: flex"
+            >
               (
               <div
                 class="indexPage"
-                v-for="index in 5"
+                v-for="index in Array.from(
+                  { length: Math.ceil(filteredRooms.length / 10) },
+                  (_, i) => i + 1
+                )"
                 :key="index"
                 :style="{
                   color:
@@ -383,10 +393,9 @@
                 "
               >
                 View Detail of Room
-                {{ assetRoomList.at(clickedRoom - 1)?.roomId }}
+                {{ filteredRooms.at(clickedRoom - 1)?.roomId }}
               </div>
               <button
-                @click="addNewItem()"
                 v-if="clickedAssetItem == -1"
                 class="addBtn"
                 data-bs-toggle="modal"
@@ -472,7 +481,7 @@
                   Maintainance<br />
                   Status
                 </th>
-                <th style="width: 4rem">hehe</th>
+                <th style="width: 4rem"></th>
               </tr>
               <template v-if="checkAssetData">
                 <tr v-for="index in assetRange" :key="index">
@@ -512,7 +521,14 @@
                       <div v-else style="width: 2rem; margin-left: 5px">
                         {{ index }}
                       </div>
-                      <div style="width: 5.7rem">
+                      <div
+                        style="
+                          width: 5.7rem;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        "
+                      >
                         {{ assetDetailList[index - 1]?.item }}
                       </div>
                       <div style="width: 3rem">
@@ -535,7 +551,6 @@
                         <select
                           style="border: none; margin-left: -0.25rem"
                           v-model="assetDetailList[index - 1].maintCycle"
-                          @change="updateMaintCycle()"
                         >
                           <option :value="1">01 month</option>
                           <option :value="3">03 months</option>
@@ -879,7 +894,7 @@
                 (
                 <div
                   class="indexPage"
-                  v-for="index in 5"
+                  v-for="index in maxPage"
                   :key="index"
                   :style="{
                     color:
@@ -914,7 +929,12 @@
       class="modal-dialog modal-dialog-centered"
       style="max-width: 49%; height: fit-content"
     >
-      <AddNewAssetView />
+      <AddNewAssetView
+        v-if="filteredRooms.length > 0 && clickedIndex > 0"
+        :room-id="filteredRooms.at(clickedRoom - 1)?.roomId"
+        :year="year"
+        :month="month"
+      />
     </div>
   </div>
 </template>
@@ -942,11 +962,33 @@ const getRoomFromBE = () => {
   AssetService.getRoomByTime(month.value, year.value).then((res) => {
     assetRoomList.value = [];
     assetRoomList.value = res;
+
+    filteredRooms.value = res;
+    roomSearch.value = null;
     checkData.value = true;
     clickedRoom.value = -1;
   });
 };
 
+//search by room no
+const roomSearch = ref();
+const filteredRooms = ref<assetRoomItem[]>([]);
+const searchRoomNo = () => {
+  filteredRooms.value = [];
+  if (roomSearch.value && assetRoomList.value) {
+    console.log(roomSearch.value);
+
+    filteredRooms.value = assetRoomList.value.filter((room) =>
+      room.roomId.toString().startsWith(roomSearch.value)
+    );
+    checkData.value = filteredRooms.value.length == 0 ? false : true;
+  } else {
+    filteredRooms.value = assetRoomList.value;
+  }
+};
+const dropFilter = () => {
+  filteredRooms.value = assetRoomList.value;
+};
 //custom select
 const dropdownOpen = ref(false);
 const selectedMaintStatus = ref("Pending");
@@ -979,7 +1021,14 @@ function formatNumber(value: number | undefined): string {
 const start = ref(1);
 const range = computed(() => {
   const rangeArray = [];
-  for (let i = start.value; i <= start.value + 9; i++) {
+  for (
+    let i = start.value;
+    i <=
+    (start.value + 9 > filteredRooms.value.length
+      ? filteredRooms.value.length
+      : start.value + 9);
+    i++
+  ) {
     rangeArray.push(i);
   }
   return rangeArray;
@@ -996,6 +1045,7 @@ const roomListPagination = (index: number) => {
 watch([year, month], getRoomFromBE);
 
 //table 2
+
 const clickedRoom = ref<number>(-1);
 
 const getAssetData = ref(false);
@@ -1017,9 +1067,6 @@ function updateAssetRange(totalElements: number) {
 }
 const clickedAssetItem = ref(-1);
 
-//add new an item
-
-const addNewItem = async () => {};
 //delete item function
 function deleteItem(index: number) {
   Swal.fire({
@@ -1028,6 +1075,7 @@ function deleteItem(index: number) {
     showCancelButton: true,
     confirmButtonText: "Delete",
     confirmButtonColor: "rgba(5, 101, 249, 1)",
+    width: "27rem",
   }).then((result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
@@ -1048,23 +1096,36 @@ function cancelUpdate() {
 }
 
 function saveUpdate() {
-  const updateItem = assetDetailList.value[clickedAssetItem.value - 1];
-  console.log(assetDetailList.value[clickedAssetItem.value - 1]);
-  clickedAssetItem.value = -1;
-  assetService
-    .updateAssetDetail(
-      updateItem.id,
-      updateItem.maintCycle,
-      updateItem.maintDate,
-      updateItem.maintStatus
-    )
-    .then((res) => {
-      if (res == 200) {
-        alert("update successful!");
-      } else {
-        alert("update failed");
-      }
-    });
+  Swal.fire({
+    title: "Are you sure want to update this item?",
+
+    showCancelButton: true,
+    confirmButtonText: "Update",
+    confirmButtonColor: "rgba(5, 101, 249, 1)",
+    width: "27rem",
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      const updateItem = assetDetailList.value[clickedAssetItem.value - 1];
+      console.log(assetDetailList.value[clickedAssetItem.value - 1]);
+      clickedAssetItem.value = -1;
+      assetService
+        .updateAssetDetail(
+          updateItem.id,
+          updateItem.maintCycle,
+          updateItem.maintDate,
+          updateItem.maintStatus
+        )
+        .then((res) => {
+          if (res == 200) {
+            Swal.fire("Updated!", "", "success");
+            getAssetDetailEachRoom(clickedRoom.value);
+          } else {
+            Swal.fire("Update failed!", "", "error");
+          }
+        });
+    }
+  });
 }
 
 //update property
@@ -1073,10 +1134,6 @@ const updateAssetItem = (index: number) => {
   clickedAssetItem.value = index;
   parseDateRange();
 };
-
-function updateMaintCycle() {
-  console.log(assetDetailList.value[clickedAssetItem.value - 1]);
-}
 
 const date = ref<Date[]>([]);
 const format = (date: Date[]) => {
@@ -1130,6 +1187,7 @@ const getAssetDetailEachRoom = (index: number) => {
       assetDetailList.value = res.content;
       maxPage.value = res.totalPages;
       updateAssetRange(res.totalElements);
+      computedIndex.value = assetDetailList.value.length + 1;
 
       console.log(res.totalElements);
       console.log(assetRange.value);
@@ -1138,6 +1196,11 @@ const getAssetDetailEachRoom = (index: number) => {
     }
   );
 };
+const computedIndex = ref(assetDetailList.value.length + 1);
+
+watch(assetDetailList, (newList) => {
+  computedIndex.value = newList.length + 1;
+});
 </script>
 
 <style scoped>
@@ -1168,6 +1231,7 @@ const getAssetDetailEachRoom = (index: number) => {
 }
 .table1,
 .table2 {
+  position: relative;
   box-shadow: 0px 1px 5px 0px #0000001f;
   height: 100%;
 }
