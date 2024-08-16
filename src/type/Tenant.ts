@@ -15,4 +15,6 @@ export interface Tenant {
     dateOfBirth: string;
     contact: string;
     citizenId: string;
+    moveinDate: string;
+    expireDate: string;
 }

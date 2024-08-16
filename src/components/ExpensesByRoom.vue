@@ -92,7 +92,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;justify-content: center;">
                     <div class="modal-content">
                         <ShowExpensesDetail v-bind:month="monthShowDetail" v-bind:year="year"
-                            v-bind:room-id="roomIdShowDetail" />
+                            v-bind:room-id="roomIdShowDetail" @dataEmitted="saveStatus"/>
                     </div>
                 </div>
             </div>
@@ -147,6 +147,14 @@ var currentPage = 0;
 const month = ref();
 const expensesDetail = ref<Expenses[]>([]);
 var totalElement = 0;
+function saveStatus(isSave: boolean) {
+  if (isSave) {
+    getExpensesByRoomId(0);
+    // const modalElement = document.getElementById('addNewExpensesModal');
+    // modalElement?.hidden;
+  }
+
+}
 const deleteExpenses = async (roomId: number, month: number) => {
     Swal.fire({
         text: "Are you sure want to delete?",
