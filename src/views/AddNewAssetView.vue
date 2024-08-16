@@ -424,7 +424,12 @@
       >
         Cancel
       </button>
-      <button type="button" class="btn btn-primary" @click="addNewItem()">
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="addNewItem()"
+        data-bs-dismiss="modal"
+      >
         Save
       </button>
     </div>
@@ -434,13 +439,13 @@
 <script lang="ts" setup>
 import Swal from "sweetalert2";
 import AssetService from "@/services/assetService";
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 const prop = defineProps({
   roomId: Number,
   year: Number,
   month: Number,
 });
-
+const emit = defineEmits(["result"]);
 const clickedAssetItem = ref(-1);
 interface assetDetailItem {
   itemName: string;
@@ -595,6 +600,7 @@ const addNewItem = () => {
         console.log(res);
         if (res == 200) {
           Swal.fire("Successful!", "", "success");
+          emit("result", true);
         } else {
           Swal.fire("Add failed!", "", "error");
         }
