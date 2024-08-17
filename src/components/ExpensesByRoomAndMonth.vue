@@ -57,14 +57,12 @@
                                 <div class="form-group">
                                     <label>Previous Meter</label><br />
                                     <input type="text" class="input-add-new-expenses"
-                                        v-model="electricityPreviousMetter"
-                                        :disabled="securityDeposite != 0" />
+                                        v-model="electricityPreviousMetter" :disabled="securityDeposite != 0" />
                                 </div>
                                 <div class="form-group">
                                     <label>Current Meter</label><br />
                                     <input type="text" class="input-add-new-expenses" v-model="electricityCurrentMetter"
-                                        @change="calculatorElectricFee"
-                                        :disabled="securityDeposite != 0" />
+                                        @change="calculatorElectricFee" :disabled="securityDeposite != 0" />
                                 </div>
                             </div>
                             <div class="input-group">
@@ -79,9 +77,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Current Meter</label><br />
-                                    <input  type="text" class="input-add-new-expenses" @change="calculateWaterFee"
-                                        v-model="waterCurrentMetter"
-                                        :disabled="securityDeposite != 0" />
+                                    <input type="text" class="input-add-new-expenses" @change="calculateWaterFee"
+                                        v-model="waterCurrentMetter" :disabled="securityDeposite != 0" />
                                 </div>
                             </div>
                             <div class="input-group">
@@ -276,11 +273,11 @@ let isEditing = false;
 const editExpenses = async () => {
     selectedRoom()
     await nextTick(() => {
-            isEditing = true;
-            return
+        isEditing = true;
+        return
     });
     console.log(isEditing);
-    
+
 }
 const selectedRoom = async () => {
     if (props.roomId != 0) {
@@ -309,7 +306,7 @@ const getExpensesDetailByRoom = async () => {
         fine = expenses.value!.fine;
     }
 }
-watch(() => [props.roomId, props.month, props.year], () => {    
+watch(() => [props.roomId, props.month, props.year], () => {
     selectedRoom(),
         getExpensesDetailByRoom()
 }, { immediate: true });

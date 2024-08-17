@@ -6,7 +6,7 @@
           src="@/components/icons/TheNiceHouseLogo.png"
           alt="Logo"
           class="navbar-logo"
-          style="width: 10rem; margin-bottom: 6rem"
+          style="width: 10rem;     margin-bottom: 21rem;"
         />
       </div>
       <div class="illustration">
@@ -523,7 +523,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40rem;
+  height: 100%;
   background-color: #b7dae8;
 }
 .signup-container {
@@ -590,11 +590,10 @@ export default {
   margin-left: 9.5rem;
 }
 .signin-link {
-  text-align: center;
-  margin-left: 12rem;
   position: absolute;
-  bottom: 33rem;
-  right: 6rem;
+    /* bottom: 33rem; */
+    right: 6rem;
+    top: 8rem;
 }
 .signin-link a {
   color: #007bff;
